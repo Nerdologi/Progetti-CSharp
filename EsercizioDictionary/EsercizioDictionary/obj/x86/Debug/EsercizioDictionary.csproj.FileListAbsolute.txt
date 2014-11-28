@@ -1,0 +1,4 @@
+\\psf\home\documents\visual studio 2010\Projects\EsercizioDictionary\EsercizioDictionary\bin\Debug\EsercizioDictionary.exe
+\\psf\home\documents\visual studio 2010\Projects\EsercizioDictionary\EsercizioDictionary\bin\Debug\EsercizioDictionary.pdb
+\\psf\home\documents\visual studio 2010\Projects\EsercizioDictionary\EsercizioDictionary\obj\x86\Debug\EsercizioDictionary.exe
+\\psf\home\documents\visual studio 2010\Projects\EsercizioDictionary\EsercizioDictionary\obj\x86\Debug\EsercizioDictionary.pdb

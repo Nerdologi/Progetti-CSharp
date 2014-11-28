@@ -1,0 +1,7 @@
+\\psf\home\documents\visual studio 2010\Projects\EsercizioForm\EsercizioForm\bin\Debug\EsercizioForm.exe
+\\psf\home\documents\visual studio 2010\Projects\EsercizioForm\EsercizioForm\bin\Debug\EsercizioForm.pdb
+\\psf\home\documents\visual studio 2010\Projects\EsercizioForm\EsercizioForm\obj\x86\Debug\EsercizioForm.Form1.resources
+\\psf\home\documents\visual studio 2010\Projects\EsercizioForm\EsercizioForm\obj\x86\Debug\EsercizioForm.Properties.Resources.resources
+\\psf\home\documents\visual studio 2010\Projects\EsercizioForm\EsercizioForm\obj\x86\Debug\EsercizioForm.csproj.GenerateResource.Cache
+\\psf\home\documents\visual studio 2010\Projects\EsercizioForm\EsercizioForm\obj\x86\Debug\EsercizioForm.exe
+\\psf\home\documents\visual studio 2010\Projects\EsercizioForm\EsercizioForm\obj\x86\Debug\EsercizioForm.pdb
