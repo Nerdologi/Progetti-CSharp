@@ -1,0 +1,9 @@
+\\psf\home\documents\visual studio 2010\Projects\LoginEsercizio\LoginEsercizio\bin\Debug\LoginEsercizio.exe
+\\psf\home\documents\visual studio 2010\Projects\LoginEsercizio\LoginEsercizio\bin\Debug\LoginEsercizio.pdb
+\\psf\home\documents\visual studio 2010\Projects\LoginEsercizio\LoginEsercizio\obj\x86\Debug\LoginEsercizio.Properties.Resources.resources
+\\psf\home\documents\visual studio 2010\Projects\LoginEsercizio\LoginEsercizio\obj\x86\Debug\LoginEsercizio.csproj.GenerateResource.Cache
+\\psf\home\documents\visual studio 2010\Projects\LoginEsercizio\LoginEsercizio\obj\x86\Debug\LoginEsercizio.exe
+\\psf\home\documents\visual studio 2010\Projects\LoginEsercizio\LoginEsercizio\obj\x86\Debug\LoginEsercizio.pdb
+\\psf\home\documents\visual studio 2010\Projects\LoginEsercizio\LoginEsercizio\obj\x86\Debug\LoginEsercizio.InsertBoat.resources
+\\psf\home\documents\visual studio 2010\Projects\LoginEsercizio\LoginEsercizio\obj\x86\Debug\LoginEsercizio.FormPrincipale.resources
+\\psf\home\documents\visual studio 2010\Projects\LoginEsercizio\LoginEsercizio\obj\x86\Debug\LoginEsercizio.InsertUser.resources
