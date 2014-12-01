@@ -23,7 +23,7 @@ namespace LoginEsercizio
             bool isNumeric = float.TryParse(this.textBoxLunghezza.Text, out n_lunghezza);
             if (!isNumeric)
             {
-                MessageBox.Show("La lunghezza deve essere un numero");
+                MessageBox.Show("La lunghezza deve essere un numero!");
                 return;
             }
 
@@ -31,7 +31,7 @@ namespace LoginEsercizio
             isNumeric = float.TryParse(this.textBoxPrezzo.Text, out n_prezzo);
             if (!isNumeric)
             {
-                MessageBox.Show("Il prezzo deve essere un numero");
+                MessageBox.Show("Il prezzo deve essere un numero!");
                 return;
             }
 

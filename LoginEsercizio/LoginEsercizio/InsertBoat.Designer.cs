@@ -98,9 +98,9 @@
             // 
             // textBoxPrezzo
             // 
-            this.textBoxPrezzo.Location = new System.Drawing.Point(59, 103);
+            this.textBoxPrezzo.Location = new System.Drawing.Point(79, 103);
             this.textBoxPrezzo.Name = "textBoxPrezzo";
-            this.textBoxPrezzo.Size = new System.Drawing.Size(213, 20);
+            this.textBoxPrezzo.Size = new System.Drawing.Size(193, 20);
             this.textBoxPrezzo.TabIndex = 7;
             // 
             // button1
