@@ -7,8 +7,6 @@ namespace EsercizioDictionary
 {
     class Person
     {
-        String cacca;
-        String Lorenzo;
         string nome;
         string cognome;
         private string p;

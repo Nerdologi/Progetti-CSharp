@@ -4,3 +4,5 @@
 \\psf\home\documents\visual studio 2010\Projects\EsercizioDictionary\EsercizioDictionary\obj\x86\Debug\EsercizioDictionary.pdb
 C:\Users\Lorenzo\Documents\Progetti-CSharp\EsercizioDictionary\EsercizioDictionary\obj\x86\Debug\EsercizioDictionary.exe
 C:\Users\Lorenzo\Documents\Progetti-CSharp\EsercizioDictionary\EsercizioDictionary\obj\x86\Debug\EsercizioDictionary.pdb
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\EsercizioDictionary\EsercizioDictionary\obj\x86\Debug\EsercizioDictionary.exe
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\EsercizioDictionary\EsercizioDictionary\obj\x86\Debug\EsercizioDictionary.pdb
