@@ -1,6 +1,22 @@
+<<<<<<< HEAD
 \\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\bin\Debug\Delegate.exe
 \\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\bin\Debug\Delegate.pdb
 \\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\obj\x86\Debug\Delegate.exe
 \\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\obj\x86\Debug\Delegate.pdb
 \\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\Delegate\Delegate\obj\x86\Debug\Delegate.exe
 \\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\Delegate\Delegate\obj\x86\Debug\Delegate.pdb
+=======
+<<<<<<< HEAD
+\\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\bin\Debug\Delegate.exe
+\\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\bin\Debug\Delegate.pdb
+\\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\obj\x86\Debug\Delegate.exe
+\\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\obj\x86\Debug\Delegate.pdb
+C:\Users\Lorenzo\Documents\Progetti-CSharp\Delegate\Delegate\obj\x86\Debug\Delegate.exe
+C:\Users\Lorenzo\Documents\Progetti-CSharp\Delegate\Delegate\obj\x86\Debug\Delegate.pdb
+=======
+\\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\bin\Debug\Delegate.exe
+\\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\bin\Debug\Delegate.pdb
+\\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\obj\x86\Debug\Delegate.exe
+\\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\obj\x86\Debug\Delegate.pdb
+>>>>>>> origin/master
+>>>>>>> FETCH_HEAD
