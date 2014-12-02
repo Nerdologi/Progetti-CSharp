@@ -9,3 +9,4 @@
 *.suo
 
 *.cache
+Progetti-CSharp/**/*.suo
