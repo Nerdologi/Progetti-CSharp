@@ -2,3 +2,5 @@
 \\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\bin\Debug\Delegate.pdb
 \\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\obj\x86\Debug\Delegate.exe
 \\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\obj\x86\Debug\Delegate.pdb
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\Delegate\Delegate\obj\x86\Debug\Delegate.exe
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\Delegate\Delegate\obj\x86\Debug\Delegate.pdb
