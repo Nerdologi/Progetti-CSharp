@@ -1,0 +1,6 @@
+\\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\bin\Debug\Delegate.exe
+\\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\bin\Debug\Delegate.pdb
+\\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\obj\x86\Debug\Delegate.exe
+\\psf\home\documents\visual studio 2010\Projects\Delegate\Delegate\obj\x86\Debug\Delegate.pdb
+C:\Users\Lorenzo\Documents\Progetti-CSharp\Delegate\Delegate\obj\x86\Debug\Delegate.exe
+C:\Users\Lorenzo\Documents\Progetti-CSharp\Delegate\Delegate\obj\x86\Debug\Delegate.pdb
