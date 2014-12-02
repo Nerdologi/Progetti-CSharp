@@ -1,12 +1,12 @@
 *.exe
-*.suo
+
 *.pdb
 *.cache
 *.cache
+Delegate.suo
 
-*.suo
 
 *.suo
 
 *.cache
-C:\Users\Lorenzo\Documents\Progetti-CSharp\**\*.suo
+C:/Users/Lorenzo/Documents/Progetti-CSharp/**/*.suo
