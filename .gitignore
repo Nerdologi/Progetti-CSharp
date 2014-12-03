@@ -4,6 +4,13 @@
 
 # User-specific files
 *.suo
+<<<<<<< Updated upstream
 *.user
 *.userosscache
 *.sln.docstates
+=======
+
+*.cache
+
+*.suo
+>>>>>>> Stashed changes
