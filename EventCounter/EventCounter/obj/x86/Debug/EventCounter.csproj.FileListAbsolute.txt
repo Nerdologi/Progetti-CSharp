@@ -5,3 +5,10 @@
 \\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\EventCounter\EventCounter\obj\x86\Debug\EventCounter.csproj.GenerateResource.Cache
 \\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\EventCounter\EventCounter\obj\x86\Debug\EventCounter.exe
 \\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\EventCounter\EventCounter\obj\x86\Debug\EventCounter.pdb
+C:\Users\Lorenzo\Documents\Progetti-CSharp\EventCounter\EventCounter\bin\Debug\EventCounter.exe
+C:\Users\Lorenzo\Documents\Progetti-CSharp\EventCounter\EventCounter\bin\Debug\EventCounter.pdb
+C:\Users\Lorenzo\Documents\Progetti-CSharp\EventCounter\EventCounter\obj\x86\Debug\EventCounter.Form1.resources
+C:\Users\Lorenzo\Documents\Progetti-CSharp\EventCounter\EventCounter\obj\x86\Debug\EventCounter.Properties.Resources.resources
+C:\Users\Lorenzo\Documents\Progetti-CSharp\EventCounter\EventCounter\obj\x86\Debug\EventCounter.csproj.GenerateResource.Cache
+C:\Users\Lorenzo\Documents\Progetti-CSharp\EventCounter\EventCounter\obj\x86\Debug\EventCounter.exe
+C:\Users\Lorenzo\Documents\Progetti-CSharp\EventCounter\EventCounter\obj\x86\Debug\EventCounter.pdb

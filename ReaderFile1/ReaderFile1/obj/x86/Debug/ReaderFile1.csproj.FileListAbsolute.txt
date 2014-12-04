@@ -1,0 +1,7 @@
+c:\users\lorenzo\documents\visual studio 2010\Projects\ReaderFile1\ReaderFile1\bin\Debug\ReaderFile1.exe
+c:\users\lorenzo\documents\visual studio 2010\Projects\ReaderFile1\ReaderFile1\bin\Debug\ReaderFile1.pdb
+c:\users\lorenzo\documents\visual studio 2010\Projects\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.Form1.resources
+c:\users\lorenzo\documents\visual studio 2010\Projects\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.Properties.Resources.resources
+c:\users\lorenzo\documents\visual studio 2010\Projects\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.csproj.GenerateResource.Cache
+c:\users\lorenzo\documents\visual studio 2010\Projects\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.exe
+c:\users\lorenzo\documents\visual studio 2010\Projects\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.pdb
