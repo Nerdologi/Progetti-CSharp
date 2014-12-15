@@ -1,0 +1,4 @@
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ThreadExercise\ThreadExercise\bin\Debug\ThreadExercise.exe
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ThreadExercise\ThreadExercise\bin\Debug\ThreadExercise.pdb
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ThreadExercise\ThreadExercise\obj\x86\Debug\ThreadExercise.exe
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ThreadExercise\ThreadExercise\obj\x86\Debug\ThreadExercise.pdb

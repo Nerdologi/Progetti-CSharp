@@ -5,3 +5,10 @@ c:\users\lorenzo\documents\visual studio 2010\Projects\ReaderFile1\ReaderFile1\o
 c:\users\lorenzo\documents\visual studio 2010\Projects\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.csproj.GenerateResource.Cache
 c:\users\lorenzo\documents\visual studio 2010\Projects\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.exe
 c:\users\lorenzo\documents\visual studio 2010\Projects\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.pdb
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ReaderFile1\ReaderFile1\bin\Debug\ReaderFile1.exe
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ReaderFile1\ReaderFile1\bin\Debug\ReaderFile1.pdb
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.Form1.resources
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.Properties.Resources.resources
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.csproj.GenerateResource.Cache
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.exe
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ReaderFile1\ReaderFile1\obj\x86\Debug\ReaderFile1.pdb
