@@ -1,0 +1,4 @@
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ProduttoreConsumatore\ProduttoreConsumatore\bin\Debug\ProduttoreConsumatore.exe
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ProduttoreConsumatore\ProduttoreConsumatore\bin\Debug\ProduttoreConsumatore.pdb
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ProduttoreConsumatore\ProduttoreConsumatore\obj\x86\Debug\ProduttoreConsumatore.exe
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ProduttoreConsumatore\ProduttoreConsumatore\obj\x86\Debug\ProduttoreConsumatore.pdb
