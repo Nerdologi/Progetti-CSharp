@@ -51,7 +51,7 @@ namespace ProduttoreConsumatore
             {
                 lock (_s.lista)
                 {
-                    if (_s.lista.Count > Program.MAX_LENGTH)
+                    while (_s.lista.Count > Program.MAX_LENGTH)
                     {
                         Console.WriteLine("Produttore in attesa...");
                         Monitor.Wait(_s.lista);
@@ -84,7 +84,7 @@ namespace ProduttoreConsumatore
             {
                 lock (_s.lista)
                 {
-                    if (_s.lista.Count < 1)
+                    while (_s.lista.Count < 1)
                     {
                         Console.WriteLine("Consumatore in attesa...");
                         Monitor.Wait(_s.lista);
