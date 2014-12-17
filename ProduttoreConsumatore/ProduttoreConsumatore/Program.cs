@@ -8,7 +8,7 @@ namespace ProduttoreConsumatore
 {
     class Program
     {
-        public static int MAX_LENGTH = 100;
+        public static int MAX_LENGTH = 1000;
         static void Main(string[] args)
         {
             Store s = new Store();
@@ -93,7 +93,7 @@ namespace ProduttoreConsumatore
                     _s.ReadFrom();
                     Monitor.Pulse(_s.lista);
                 }
-                rand = random.Next(500, 1000);
+                rand = random.Next(1000, 1500);
                 Thread.Sleep(rand);
             }
         }
