@@ -2,3 +2,7 @@
 \\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ProduttoreConsumatore\ProduttoreConsumatore\bin\Debug\ProduttoreConsumatore.pdb
 \\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ProduttoreConsumatore\ProduttoreConsumatore\obj\x86\Debug\ProduttoreConsumatore.exe
 \\psf\Home\Documents\Visual Studio 2010\Projects\ProgettiCondivisi\ProduttoreConsumatore\ProduttoreConsumatore\obj\x86\Debug\ProduttoreConsumatore.pdb
+C:\Users\Lorenzo\Documents\Progetti-CSharp\ProduttoreConsumatore\ProduttoreConsumatore\bin\Debug\ProduttoreConsumatore.exe
+C:\Users\Lorenzo\Documents\Progetti-CSharp\ProduttoreConsumatore\ProduttoreConsumatore\bin\Debug\ProduttoreConsumatore.pdb
+C:\Users\Lorenzo\Documents\Progetti-CSharp\ProduttoreConsumatore\ProduttoreConsumatore\obj\x86\Debug\ProduttoreConsumatore.exe
+C:\Users\Lorenzo\Documents\Progetti-CSharp\ProduttoreConsumatore\ProduttoreConsumatore\obj\x86\Debug\ProduttoreConsumatore.pdb
