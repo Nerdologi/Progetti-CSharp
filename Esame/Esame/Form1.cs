@@ -15,30 +15,89 @@ namespace Esame
     public partial class Form1 : Form
     {
         public static TextBox info;
+        private List<float[,]> samples; 
+        private TextBox infoSample;
+        private Button showSample;
+        private NumericUpDown numSample;
+        private NumericUpDown numSensor;
+        private Server server;
         public Form1()
         {
             InitializeComponent();
             info = this.textBoxInfo;
+            infoSample = this.textBox1;
+            showSample = this.button1;
+            numSample = this.numericUpDown1;
+            numSensor = this.numericUpDown2;
+            infoSample.Enabled = false;
+            showSample.Enabled = false;
+            numSample.Enabled = false;
+            numSensor.Enabled = false;
+
+            server = new Server();
         }
 
         private void startServer_Click(object sender, EventArgs e)
         {
-            Server.StartListening();
+            samples = server.StartListening();
+            if (samples != null) {
+                infoSample.Enabled = true;
+
+                showSample.Enabled = true;
+                numSample.Enabled = true;
+                numSample.Maximum = (samples.Count - 1);
+                numSensor.Enabled = true;
+                numSensor.Maximum = 4;
+            
+            
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            infoSample.Clear();
+            infoSample.AppendText("acc1: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 0] + "\r\n");
+            infoSample.AppendText("acc2: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 1] + "\r\n");
+            infoSample.AppendText("acc3: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 2] + "\r\n");
+            infoSample.AppendText("gyr1: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 3] + "\r\n");
+            infoSample.AppendText("gyr2: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 4] + "\r\n");
+            infoSample.AppendText("gyr3: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 5] + "\r\n");
+            infoSample.AppendText("mag1: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 6] + "\r\n");
+            infoSample.AppendText("mag2: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 7] + "\r\n");
+            infoSample.AppendText("mag3: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 8] + "\r\n");
+            infoSample.AppendText("q1: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 9] + "\r\n");
+            infoSample.AppendText("q2: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 10] + "\r\n");
+            infoSample.AppendText("q3: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 11] + "\r\n");
+            infoSample.AppendText("q4: ");
+            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 12] + "\r\n");
         }
     }
     public class Server
     {
-        public static void StartListening()
-        {
-            // Establish the local endpoint for the socket.
+        private IPAddress ipAddress;
+        private Socket listener;
+        public Server() 
+        { 
             // Dns.GetHostName returns the name of the 
             // host running the application.
             IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            ipAddress = ipHostInfo.AddressList[0];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 45555);
 
             // Create a TCP/IP socket.
-            Socket listener = new Socket(AddressFamily.InterNetwork,
+            listener = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
 
             // Bind the socket to the local endpoint and 
@@ -47,13 +106,23 @@ namespace Esame
             {
                 listener.Bind(localEndPoint);
                 listener.Listen(10);
-
+            }
+            catch (Exception e)
+            {
+                Form1.info.AppendText(e.ToString());
+            }
+        }
+        public List<float[,]> StartListening()
+        {
+            try
+            {
                 // Start listening for connections.
-                while (true)
+                //while (true)
                 {
-                    Form1.info.AppendText("HOST IP: " + ipAddress.ToString()  + "\r\nWaiting for a connection....\r\n");
+                    Form1.info.AppendText("\r\nHOST IP: " + this.ipAddress.ToString()  + "\r\nWaiting for a connection....\r\n");
                     // Program is suspended while waiting for an incoming connection.
-                    Socket handler = listener.Accept();
+                    Socket handler = this.listener.Accept();
+                    Form1.info.AppendText("\r\nClient connect :)\r\nReading samples....\r\n");
                     NetworkStream myNetworkStream =  new NetworkStream(handler, true);
                     BinaryReader bin = new BinaryReader(myNetworkStream);
                     int byteToRead;
@@ -80,7 +149,7 @@ namespace Esame
                         byteToRead = (len[0] * 256) + len[1]; // byte da leggere
                     }
 
-                    byte[] data = new byte[byteToRead + 1];
+                    byte[] data = new byte[byteToRead + 1]; //il +1 è dovuto al checksum?
                     data = bin.ReadBytes(byteToRead + 1); // lettura dei dati
 
                     if (tem[2] != 0xFF)
@@ -93,6 +162,8 @@ namespace Esame
                     }
 
                     numSensori = (byteToRead - 2) / 52; // calcolo del numero di sensori
+                    //il -2 è dovuto ai due byte che fungono da contatore 
+                   
                     pacchetto[0] = 0xFF; // copia dei primi elementi
                     pacchetto[1] = 0x32;
                     pacchetto[2] = tem[2];
@@ -109,21 +180,20 @@ namespace Esame
                     }
 
 
-                    List<List<double>> array = new List<List<double>>(); // salvataggio dati
-
-
+                    //List<List<double>> array = new List<List<double>>(); // salvataggio dati
+                    List<float[,]> campioni = new List<float[,]>();
                     int[] t = new int[maxSensori];
-
                     for (int x = 0; x < numSensori; x++)
                     {
-                        array.Add(new List<double>()); // una lista per ogni sensore
+                        //array.Add(new List<double>()); // una lista per ogni sensore
                         t[x] = 5 + (52 * x);
                     }
                     bool part1 = handler.Poll(1000, SelectMode.SelectRead);
                     bool part2 = (handler.Available == 0);
                     while (!part1 || !part2)
-                    //while(true) crash
+                    //while(true) //crash
                     {
+                        float [,] campione = new float[numSensori, 13];
                         for (int i = 0; i < numSensori; i++)
                         {
                             byte[] temp = new byte[4];
@@ -144,23 +214,26 @@ namespace Esame
                                     temp[3] = pacchetto[t[i] + 2];
                                 }
                                 float valore = BitConverter.ToSingle(temp, 0); // conversione
-                                array[i].Add(valore); // memorizzazione
-                                t[i] += 4;
+                                //array[i].Add(valore); // memorizzazione
+                                campione[i, tr] = valore;
+                                t[i] += 4; //passa al byte successivo
                             }
                         }
+                        campioni.Add(campione);
+                        Form1.info.AppendText(campioni.Count+ ", ");
                         for (int x = 0; x < numSensori; x++)
                         {
                             t[x] = 5 + (52 * x);
                         }
 
-                        for (int j = 0; j < numSensori; j++)
+                        /*for (int j = 0; j < numSensori; j++)
                         {
                             for (int tr = 0; tr < 13; tr++)
                             {
                                 Form1.info.AppendText(array[j][tr] + "; ");
                             }
                             array[j].RemoveRange(0, 13); // cancellazione dati
-                        }
+                        }*/
                         if (numSensori < 5) // lettura pacchetto seguente
                         {
                             pacchetto = bin.ReadBytes(byteToRead + 4);
@@ -174,7 +247,8 @@ namespace Esame
                     }
 
                     handler.Shutdown(SocketShutdown.Both);
-                    handler.Close();   
+                    handler.Close();
+                    return campioni;
                     
                 }
 
@@ -182,9 +256,8 @@ namespace Esame
             catch (Exception e)
             {
                 Form1.info.AppendText(e.ToString());
+                return null;
             }
-
         }
-    
     }
 }
