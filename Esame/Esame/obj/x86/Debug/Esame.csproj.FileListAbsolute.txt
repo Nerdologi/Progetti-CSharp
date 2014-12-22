@@ -1,0 +1,8 @@
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\Esame.exe
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\Esame.pdb
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.Form1.resources
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.Properties.Resources.resources
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.csproj.GenerateResource.Cache
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.exe
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.pdb
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.csprojResolveAssemblyReference.cache
