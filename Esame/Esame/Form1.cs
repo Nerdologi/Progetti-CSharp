@@ -300,7 +300,8 @@ namespace Esame
             return angoliEulero;
         
         }
-    
+        public void metodo(){
+        }
     
     
     }
