@@ -20,6 +20,7 @@ namespace Esame
         private Button showSample;
         private NumericUpDown numSample;
         private NumericUpDown numSensor;
+        private CheckBox eulerAngles;
         private Server server;
         public Form1()
         {
@@ -29,10 +30,12 @@ namespace Esame
             showSample = this.button1;
             numSample = this.numericUpDown1;
             numSensor = this.numericUpDown2;
+            eulerAngles = this.checkBox1;
             infoSample.Enabled = false;
             showSample.Enabled = false;
             numSample.Enabled = false;
             numSensor.Enabled = false;
+            eulerAngles.Enabled = false;
 
             server = new Server();
         }
@@ -48,8 +51,7 @@ namespace Esame
                 numSample.Maximum = (samples.Count - 1);
                 numSensor.Enabled = true;
                 numSensor.Maximum = 4;
-            
-            
+                eulerAngles.Enabled = true;
             }
         }
 
@@ -74,14 +76,24 @@ namespace Esame
             infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 7] + "\r\n");
             infoSample.AppendText("mag3: ");
             infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 8] + "\r\n");
-            infoSample.AppendText("q1: ");
+            infoSample.AppendText("q0: ");
             infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 9] + "\r\n");
-            infoSample.AppendText("q2: ");
+            infoSample.AppendText("q1: ");
             infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 10] + "\r\n");
-            infoSample.AppendText("q3: ");
+            infoSample.AppendText("q2: ");
             infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 11] + "\r\n");
-            infoSample.AppendText("q4: ");
+            infoSample.AppendText("q3: ");
             infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 12] + "\r\n");
+            if (eulerAngles.Checked == true) {
+                List<AngoloEulero[]> angoliEulero = ElabroazioneDati.angoliEulero(samples);
+                infoSample.AppendText("yaw: ");
+                infoSample.AppendText(angoliEulero[(int)numSample.Value][(int)numSensor.Value].getYaw() + "\r\n");
+                infoSample.AppendText("pitch: ");
+                infoSample.AppendText(angoliEulero[(int)numSample.Value][(int)numSensor.Value].getPitch() + "\r\n");
+                infoSample.AppendText("roll: ");
+                infoSample.AppendText(angoliEulero[(int)numSample.Value][(int)numSensor.Value].getRoll() + "\r\n");
+            
+            }
         }
     }
     public class Server
@@ -260,4 +272,82 @@ namespace Esame
             }
         }
     }
+
+    public class ElabroazioneDati
+    { 
+        public static List<AngoloEulero[]> angoliEulero (List<float[,]> campioni)
+        {
+            
+            List<AngoloEulero[]> angoliEulero = new List<AngoloEulero[]>();
+            for (int i = 0; i < campioni.Count; i++){
+                //un angolo di eulero per ogni sensore (nel nostro caso sono 5)
+                //nel caso di un numero di sensori variabile bisogna pescare il numero di
+                //sensori dalla classe Server
+                angoliEulero.Add(new AngoloEulero[5]);
+                //itero i sensori del campione che sto considerando
+                for (int numSensore = 0; numSensore < 5; numSensore++ ){
+                    float q0 = campioni[i][numSensore, 9];
+                    float q1 = campioni[i][numSensore, 10];
+                    float q2 = campioni[i][numSensore, 11];
+                    float q3 = campioni[i][numSensore, 12];
+                    float yaw = (float)Math.Atan(((2 * q2 * q3) + (2 * q0 * q1)) / ((2 * q0 * q0) + (2 * q3 * q3) - 1));
+                    float pitch = (float)Math.Asin(((2 * q1 * q3) - (2 * q0 * q2)));
+                    float roll = (float)Math.Atan(((2 * q1 * q2) + (2 * q0 * q3)) / ((2 * q0 * q0) + (2 * q1 * q1) - 1));
+                    angoliEulero[i][numSensore] = new AngoloEulero(yaw, pitch, roll);
+                }
+            }
+
+            return angoliEulero;
+        
+        }
+    
+    
+    
+    }
+
+    public class AngoloEulero
+    {
+        float yaw;
+        float pitch;
+        float roll;
+  
+        public AngoloEulero(float yaw, float pitch, float roll)
+        {
+            this.yaw = yaw;
+            this.pitch = pitch;
+            this.roll = roll;
+        }
+
+        public void setYaw (float value)
+        {
+            this.yaw = value;
+        }
+
+        public void setPitch (float value)
+        {
+            this.pitch = value;
+        }
+
+        public void setRoll (float value)
+        {
+            this.roll = value;
+        }
+
+        public float getYaw ()
+        {
+            return this.yaw;
+        }
+
+        public float getPitch ()
+        {
+            return this.pitch;
+        }
+
+        public float getRoll ()
+        {
+            return this.roll;
+        }
+    }
+
+
 }
