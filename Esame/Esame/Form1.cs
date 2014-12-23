@@ -300,8 +300,14 @@ namespace Esame
             return angoliEulero;
         
         }
+<<<<<<< HEAD
         public void metodo(){
         }
+=======
+
+        public static void prima_funzione(List<float[,]> campioni) { }
+    
+>>>>>>> origin/master
     
     
     }
