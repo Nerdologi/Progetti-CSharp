@@ -21,7 +21,14 @@ namespace Esame
         private NumericUpDown numSample;
         private NumericUpDown numSensor;
         private CheckBox eulerAngles;
+        private CheckBox modulation;
+        private CheckBox smoothing;
         private Server server;
+        List<AngoloEulero[]> angoliEulero;
+        List<float> modacc;
+        List<float> modgiro;
+        List<float> smoothacc;
+        List<float> smoothgir;
         public Form1()
         {
             InitializeComponent();
@@ -31,11 +38,15 @@ namespace Esame
             numSample = this.numericUpDown1;
             numSensor = this.numericUpDown2;
             eulerAngles = this.checkBox1;
+            modulation = this.checkBox2;
+            smoothing = this.checkBox3;
             infoSample.Enabled = false;
             showSample.Enabled = false;
             numSample.Enabled = false;
             numSensor.Enabled = false;
             eulerAngles.Enabled = false;
+            modulation.Enabled = false;
+            smoothing.Enabled = false;
 
             server = new Server();
         }
@@ -87,7 +98,7 @@ namespace Esame
             infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 12] + "\r\n");
             if (eulerAngles.Checked == true)
             {
-                List<AngoloEulero[]> angoliEulero = ElaboraDati.angoliEulero(samples);
+                AngoliEulero = ElaboraDati.angoliEulero(samples);
                 infoSample.AppendText("yaw: ");
                 infoSample.AppendText(angoliEulero[(int)numSample.Value][(int)numSensor.Value].getYaw() + "\r\n");
                 infoSample.AppendText("pitch: ");
@@ -96,7 +107,22 @@ namespace Esame
                 infoSample.AppendText(angoliEulero[(int)numSample.Value][(int)numSensor.Value].getRoll() + "\r\n");
 
             }
-        }
+            if (modulation.Checked == true)
+            {
+                modacc = ElaboraDati.modulation(samples, 0);
+                modgiro = ElaboraDati.modulation(samples, 1);
+
+            }
+            if (smoothing.Checked == true)
+            {
+                smoothacc = ElaboraDati.smoothing(modacc, 0);
+                smoothgir = ElaboraDati.smoothing(modgiro, 1);
+
+            }
+            
+      }
+
+        public List<AngoloEulero[]> AngoliEulero { get; set; }
     }
    
 }

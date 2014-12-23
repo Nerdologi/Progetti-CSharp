@@ -7,6 +7,7 @@ namespace Esame
 {
     class ElaboraDati
     {
+       
         public static List<AngoloEulero[]> angoliEulero(List<float[,]> campioni)
         {
 
@@ -33,6 +34,87 @@ namespace Esame
 
             return angoliEulero;
 
+        }
+        public static List<float> modulation(List<float[,]> samples , int _type)
+        {
+            float a0, a1, a2;
+            float g0, g1, g2;
+            List<float> valori = new List<float>();
+            for (int i = 0; i < samples.Count; i++)
+            {
+                for (int numSensore = 0; numSensore < 5; numSensore++)
+                {
+                    if (_type == 0)
+                    {
+                        a0 = samples[i][numSensore, 0];
+                        a1 = samples[i][numSensore, 1];
+                        a2 = samples[i][numSensore, 2];
+                        a0 = (float)Math.Pow(a0, 2);
+                        a1 = (float)Math.Pow(a1, 2);
+                        a2 = (float)Math.Pow(a2, 2);
+                        valori[i] = (float)Math.Sqrt(a0 + a1 + a2);
+                    }
+                    else
+                    {
+                        g0 = samples[i][numSensore, 0];
+                        g1 = samples[i][numSensore, 1];
+                        g2 = samples[i][numSensore, 2];
+                        g0 = (float)Math.Pow(g0, 2);
+                        g1 = (float)Math.Pow(g1, 2);
+                        g2 = (float)Math.Pow(g2, 2);
+                        valori[i] = (float)Math.Sqrt(g0 + g1 + g2);
+                    
+                    }
+                }
+            }
+
+            return valori;         
+        }
+        public static List<float> smoothing(List<float> module, int _type)
+        {
+            List<float> valori = new List<float>();
+            float mean = 0;
+            float sommatoria = 0;
+            int K = 10;//Fisso a 10 la variabile K che sarà il mio range per costruire la media mobile per ogni i-esimo campione
+            float summary=0;
+            int j,h,f;
+            for (int i = 0; i < module.Count(); i++)
+            {
+                summary+=module[i];
+                mean=0;
+                if (i < K && (module.Count() - i + 1) >= K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori ma davanti si
+                {
+                    for (j = i - 1; j >= 0; j--)
+                        summary += module[j];
+                    for (h = i + 1; h < i + K; h++)
+                        summary += module[h];
+                    mean = summary / ((K + i) + 1);
+                }
+                    ////CASISTICA GENERALE (Ho dieci valori dietro e dieci valori davanti per cui posso effettuare una semplice media mobile)
+                else
+                {    
+                     f=0;
+                     j = i - 1;
+                     h = i + 1;
+                    while (f < K)
+                    {
+                        
+                        summary += module[j];
+                        summary += module[h];
+                        K++;
+                        j--;
+                        h++;                
+                    }
+                    mean = summary / (2 * K + 1);
+
+                  }
+                //FINE CASISTICA GENERALE
+               /* ////////////
+                TODO ALTRE CASISTICHE
+                *//////////////
+                valori[i] = mean;
+            }
+            return valori;
         }
     }
 }
