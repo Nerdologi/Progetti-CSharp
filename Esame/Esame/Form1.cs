@@ -71,7 +71,6 @@ namespace Esame
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
             infoSample.Clear();
             infoSample.AppendText("acc1: ");
             infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 0] + "\r\n");
@@ -112,15 +111,34 @@ namespace Esame
             }
             if (modulation.Checked == true)
             {
-                modacc = ElaboraDati.modulation(samples, 0);
-                modgiro = ElaboraDati.modulation(samples, 1);
-
+                modacc = ElaboraDati.modulation(samples, (int)numSensor.Value, 0);
+                modgiro = ElaboraDati.modulation(samples, (int)numSensor.Value, 1);
+                infoSample.AppendText("\r\nmodacc: ");
+                foreach (float elem in modacc)
+                {
+                    infoSample.AppendText(elem + "- ");
+                }
+                infoSample.AppendText("\r\nmodgiro: ");
+                foreach (float elem in modgiro)
+                {
+                    infoSample.AppendText(elem + "- ");
+                }
+                
             }
             if (smoothing.Checked == true)
             {
                 smoothacc = ElaboraDati.smoothing(modacc);
                 smoothgir = ElaboraDati.smoothing(modgiro);
-
+                infoSample.AppendText("\r\nsmoothacc: ");
+                foreach (float elem in smoothacc)
+                {
+                    infoSample.AppendText(elem + "- ");
+                }
+                infoSample.AppendText("\r\nsmoothgir: ");
+                foreach (float elem in smoothgir)
+                {
+                    infoSample.AppendText(elem + "- ");
+                }
             }
             
       }
