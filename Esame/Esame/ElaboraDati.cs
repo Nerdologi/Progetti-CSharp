@@ -107,6 +107,24 @@ namespace Esame
             return valori;
         }
 
+        /*
+         *La funzione prende un vettore di valori in ingresso e 
+         *restituisce il vettore monodimensionale RI[]. 
+         *L' elemento RI[i] rappresenta il Rapporto Incrementale
+         *della funzione nel punto i.
+         */ 
+        public static float[] RIfun(float[] input) 
+        {
+            float[] RI = new float [input.Length -1];
+            //l' elemento i+1 non esiste se scorro l' array fino all' elemento length
+            //dunque mi fermo a length -1
+            for (int i = 1; i < (input.Length - 1); i++) {
+                float deltaF = input[i + 1] - input[i];
+                float deltaX = (i + 1) - i;
+                RI[i] = deltaF / deltaX;
+            }
+            return RI;  
+        }
         public static List<AngoloEulero[]> angoliEulero(List<float[,]> campioni)
         {
 

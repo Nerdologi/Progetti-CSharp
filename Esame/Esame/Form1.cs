@@ -23,6 +23,7 @@ namespace Esame
         private CheckBox eulerAngles;
         private CheckBox modulation;
         private CheckBox smoothing;
+        private CheckBox modaccRI;
         private Server server;
         List<float> modacc;
         List<float> modgiro;
@@ -40,6 +41,7 @@ namespace Esame
             eulerAngles = this.checkBox1;
             modulation = this.checkBox2;
             smoothing = this.checkBox3;
+            modaccRI = this.checkBox4;
             infoSample.Enabled = false;
             showSample.Enabled = false;
             numSample.Enabled = false;
@@ -47,6 +49,7 @@ namespace Esame
             eulerAngles.Enabled = false;
             modulation.Enabled = false;
             smoothing.Enabled = false;
+            modaccRI.Enabled = false;
 
             server = new Server();
         }
@@ -66,6 +69,7 @@ namespace Esame
                 eulerAngles.Enabled = true;
                 modulation.Enabled = true;
                 smoothing.Enabled = true;
+                modaccRI.Enabled = true;
             }
         }
 
@@ -116,12 +120,12 @@ namespace Esame
                 infoSample.AppendText("\r\nmodacc: ");
                 foreach (float elem in modacc)
                 {
-                    infoSample.AppendText(elem + "- ");
+                    infoSample.AppendText(elem + " - ");
                 }
                 infoSample.AppendText("\r\nmodgiro: ");
                 foreach (float elem in modgiro)
                 {
-                    infoSample.AppendText(elem + "- ");
+                    infoSample.AppendText(elem + " - ");
                 }
                 
             }
@@ -132,13 +136,32 @@ namespace Esame
                 infoSample.AppendText("\r\nsmoothacc: ");
                 foreach (float elem in smoothacc)
                 {
-                    infoSample.AppendText(elem + "- ");
+                    infoSample.AppendText(elem + " - ");
                 }
                 infoSample.AppendText("\r\nsmoothgir: ");
                 foreach (float elem in smoothgir)
                 {
-                    infoSample.AppendText(elem + "- ");
+                    infoSample.AppendText(elem + " - ");
                 }
+            }
+            if (modaccRI.Checked == true)
+            {
+                modacc = ElaboraDati.modulation(samples, (int)numSensor.Value, 0);
+                /* Fino ad ora le varie informazioni sono state salvate in List dato che
+                 * non lavoriamo su finestre di dati, ma sull' insieme di campioni
+                 * e non  possiamo sapere a priori quanti sono e dunque abbaimo bisogno di 
+                 * strutture dati dinamiche. Dalla documentazione la funzione RIfun accetta in input
+                 * un array e dunque ho dovuto trasfomare la List in array in modo che la signature della 
+                 * funzione sia esattamente uguale a quella della documentazione
+                 */
+                float[] modaccArray = modacc.ToArray();
+                float[] modaccRIArray = ElaboraDati.RIfun(modaccArray);
+                infoSample.AppendText("\r\nFI of modacc: ");
+                foreach (float elem in modaccRIArray)
+                {
+                    infoSample.AppendText(elem + " - ");
+                }
+              
             }
             
       }
