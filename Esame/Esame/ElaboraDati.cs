@@ -52,7 +52,8 @@ namespace Esame
                         a0 = (float)Math.Pow(a0, 2);
                         a1 = (float)Math.Pow(a1, 2);
                         a2 = (float)Math.Pow(a2, 2);
-                        valori[i] = (float)Math.Sqrt(a0 + a1 + a2);
+                        valori[i] = (float)Math.Sqrt((double)a0 + (double)a1 + (double)a2);
+                        
                     }
                     else
                     {
@@ -70,11 +71,10 @@ namespace Esame
 
             return valori;         
         }
-        public static List<float> smoothing(List<float> module, int _type)
+        public static List<float> smoothing(List<float> module)
         {
             List<float> valori = new List<float>();
             float mean = 0;
-            float sommatoria = 0;
             int K = 10;//Fisso a 10 la variabile K che sarà il mio range per costruire la media mobile per ogni i-esimo campione
             float summary=0;
             int j,h,f;
@@ -82,13 +82,30 @@ namespace Esame
             {
                 summary+=module[i];
                 mean=0;
-                if (i < K && (module.Count() - i + 1) >= K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori ma davanti si
+                if (i < K && (module.Count() - i - 1) >= K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori ma davanti si
                 {
                     for (j = i - 1; j >= 0; j--)
                         summary += module[j];
                     for (h = i + 1; h < i + K; h++)
                         summary += module[h];
                     mean = summary / ((K + i) + 1);
+                }
+                if(i >= K && (module.Count() - i - 1) < K)//Ipotizzo che io abbia dietro K valori ma davanti no
+                {
+                    for (j = i - 1; j >= (i - 1 - K); j--)
+                        summary += module[j];
+                    for (h = i + 1; h < module.Count(); h++)
+                        summary += module[h];
+                    mean = summary / (K + h + 1);
+                }
+
+                if (i < K && (module.Count() - i - 1) < K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori e nemmeno davanti
+                {
+                    for (j = i - 1; j >= 0; j--)
+                        summary += module[j];
+                    for (h = i + 1; h < module.Count(); h++)
+                        summary += module[h];
+                    mean = summary / ((h + i) + 1);
                 }
                     ////CASISTICA GENERALE (Ho dieci valori dietro e dieci valori davanti per cui posso effettuare una semplice media mobile)
                 else

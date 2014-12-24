@@ -152,6 +152,7 @@
             this.checkBox3.TabIndex = 11;
             this.checkBox3.Text = "Smoothing";
             this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
             // Form1
             // 

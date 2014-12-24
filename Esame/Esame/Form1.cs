@@ -24,11 +24,11 @@ namespace Esame
         private CheckBox modulation;
         private CheckBox smoothing;
         private Server server;
-        List<AngoloEulero[]> angoliEulero;
         List<float> modacc;
         List<float> modgiro;
         List<float> smoothacc;
         List<float> smoothgir;
+        private List<AngoloEulero[]> AngoliEulero;
         public Form1()
         {
             InitializeComponent();
@@ -64,11 +64,14 @@ namespace Esame
                 numSensor.Enabled = true;
                 numSensor.Maximum = 4;
                 eulerAngles.Enabled = true;
+                modulation.Enabled = true;
+                smoothing.Enabled = true;
             }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            
             infoSample.Clear();
             infoSample.AppendText("acc1: ");
             infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 0] + "\r\n");
@@ -98,13 +101,13 @@ namespace Esame
             infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 12] + "\r\n");
             if (eulerAngles.Checked == true)
             {
-                AngoliEulero = ElaboraDati.angoliEulero(samples);
+                /*List<AngoloEulero[]> */ AngoliEulero = ElaboraDati.angoliEulero(samples);
                 infoSample.AppendText("yaw: ");
-                infoSample.AppendText(angoliEulero[(int)numSample.Value][(int)numSensor.Value].getYaw() + "\r\n");
+                infoSample.AppendText(AngoliEulero[(int)numSample.Value][(int)numSensor.Value].getYaw() + "\r\n");
                 infoSample.AppendText("pitch: ");
-                infoSample.AppendText(angoliEulero[(int)numSample.Value][(int)numSensor.Value].getPitch() + "\r\n");
+                infoSample.AppendText(AngoliEulero[(int)numSample.Value][(int)numSensor.Value].getPitch() + "\r\n");
                 infoSample.AppendText("roll: ");
-                infoSample.AppendText(angoliEulero[(int)numSample.Value][(int)numSensor.Value].getRoll() + "\r\n");
+                infoSample.AppendText(AngoliEulero[(int)numSample.Value][(int)numSensor.Value].getRoll() + "\r\n");
 
             }
             if (modulation.Checked == true)
@@ -115,14 +118,20 @@ namespace Esame
             }
             if (smoothing.Checked == true)
             {
-                smoothacc = ElaboraDati.smoothing(modacc, 0);
-                smoothgir = ElaboraDati.smoothing(modgiro, 1);
+                smoothacc = ElaboraDati.smoothing(modacc);
+                smoothgir = ElaboraDati.smoothing(modgiro);
 
             }
             
       }
 
-        public List<AngoloEulero[]> AngoliEulero { get; set; }
+       // public List<AngoloEulero[]> AngoliEulero { get; set; }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.checkBox3.Checked == true)
+                checkBox2.Checked = true;
+        }
     }
    
 }
