@@ -57,25 +57,27 @@ namespace Esame
             int j,h,f;
             for (int i = 0; i < module.Count(); i++)
             {
-                summary+=module[i];
-                mean=0;
+                
+                summary = module[i];
+                mean = 0;
                 if (i < K && (module.Count() - i - 1) >= K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori ma davanti si
                 {
                     for (j = i - 1; j >= 0; j--)
                         summary += module[j];
-                    for (h = i + 1; h < i + K; h++)
+                    for (h = i + 1; h <= i + K; h++)
                         summary += module[h];
                     mean = summary / ((K + i) + 1);
                 }
+                else
                 if(i >= K && (module.Count() - i - 1) < K)//Ipotizzo che io abbia dietro K valori ma davanti no
                 {
-                    for (j = i - 1; j >= (i - 1 - K); j--)
+                    for (j = i - 1; j >= (i - K); j--)
                         summary += module[j];
                     for (h = i + 1; h < module.Count(); h++)
                         summary += module[h];
-                    mean = summary / (K + h + 1);
+                    mean = summary / (K + (module.Count() - i) );
                 }
-
+                else
                 if (i < K && (module.Count() - i - 1) < K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori e nemmeno davanti
                 {
                     for (j = i - 1; j >= 0; j--)
@@ -92,17 +94,17 @@ namespace Esame
                      h = i + 1;
                     while (f < K)
                     {
-                        summary += module[j]; //crasha con j=-1
+                        summary += module[j]; 
                         summary += module[h];
-                        K++;
                         j--;
-                        h++;                
+                        h++;
+                        f++;
                     }
                     mean = summary / (2 * K + 1);
 
                   }
                 //FINE CASISTICA GENERALE
-                valori[i] = mean;
+                valori.Add(mean);
             }
             return valori;
         }
