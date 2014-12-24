@@ -14,3 +14,10 @@ C:\Users\Lorenzo\Documents\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.Prope
 C:\Users\Lorenzo\Documents\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.csproj.GenerateResource.Cache
 C:\Users\Lorenzo\Documents\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.exe
 C:\Users\Lorenzo\Documents\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.pdb
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProjCondivisi\Esame\Esame\bin\Debug\Esame.exe
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProjCondivisi\Esame\Esame\bin\Debug\Esame.pdb
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProjCondivisi\Esame\Esame\obj\x86\Debug\Esame.Form1.resources
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProjCondivisi\Esame\Esame\obj\x86\Debug\Esame.Properties.Resources.resources
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProjCondivisi\Esame\Esame\obj\x86\Debug\Esame.csproj.GenerateResource.Cache
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProjCondivisi\Esame\Esame\obj\x86\Debug\Esame.exe
+\\psf\Home\Documents\Visual Studio 2010\Projects\ProjCondivisi\Esame\Esame\obj\x86\Debug\Esame.pdb
