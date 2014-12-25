@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
 using System.IO;
+using ZedGraph;
 
 namespace Esame
 {
@@ -127,7 +128,9 @@ namespace Esame
                 {
                     infoSample.AppendText(elem + " - ");
                 }
-                
+
+                // Visualizzo grafico
+                CreateGraph(zedGraphControl1, modacc);
             }
             if (smoothing.Checked == true)
             {
@@ -172,6 +175,38 @@ namespace Esame
         {
             if (this.checkBox3.Checked == true)
                 checkBox2.Checked = true;
+        }
+
+        // Build the Chart
+        private void CreateGraph(ZedGraphControl zgc, List<float> mod)
+        {
+            // Ottengo riferimento al pannello
+            GraphPane myPane = zgc.GraphPane;
+
+            // Setto il titolo del grafico e le etichette degli assi cartesiani
+            myPane.Title.Text = "Grafico di prova";
+            myPane.XAxis.Title.Text = "Tempo";
+            myPane.YAxis.Title.Text = "modacc";
+
+            // Creo la lista di punti
+            PointPairList list1 = new PointPairList();
+            for (int i = 0; i < modacc.Count; ++i)
+            {
+                list1.Add((float)i, modacc[i]);
+            }
+
+            // Creo la curva da visualizzare, di colore rosso 
+            // e i diamanti come punti
+            LineItem myCurve = myPane.AddCurve("",
+                  list1, Color.Red, SymbolType.Diamond);
+
+            myPane.XAxis.Type = AxisType.Text;
+
+            // Risetto gli assi
+            zgc.AxisChange();
+
+            // Ricarico grafico
+            zedGraphControl1.Refresh();
         }
     }
    
