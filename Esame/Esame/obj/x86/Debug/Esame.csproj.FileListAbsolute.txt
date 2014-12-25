@@ -44,3 +44,4 @@ C:\Users\Lorenzo\Documents\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.pdb
 \\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.csproj.GenerateResource.Cache
 \\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.exe
 \\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.pdb
+\\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.FormGraph.resources

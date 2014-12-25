@@ -9,7 +9,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
 using System.IO;
-using ZedGraph;
 
 namespace Esame
 {
@@ -129,8 +128,15 @@ namespace Esame
                     infoSample.AppendText(elem + " - ");
                 }
 
-                // Visualizzo grafico
-                CreateGraph(zedGraphControl1, modacc);
+                // Visualizzo grafico dell'accelerometro
+                FormGraph fG1 = new FormGraph();
+                fG1.Show();
+                fG1.CreateGraph(modacc, "Segmentazione", "tempo", "MODACC");
+
+                // Visualizzo grafico del giroscopio
+                FormGraph fG2 = new FormGraph();
+                fG2.Show();
+                fG2.CreateGraph(modgiro, "Segmentazione", "tempo", "MODGIRO");
             }
             if (smoothing.Checked == true)
             {
@@ -166,7 +172,7 @@ namespace Esame
                 }
               
             }
-            
+        
       }
 
        // public List<AngoloEulero[]> AngoliEulero { get; set; }
@@ -177,37 +183,6 @@ namespace Esame
                 checkBox2.Checked = true;
         }
 
-        // Build the Chart
-        private void CreateGraph(ZedGraphControl zgc, List<float> mod)
-        {
-            // Ottengo riferimento al pannello
-            GraphPane myPane = zgc.GraphPane;
-
-            // Setto il titolo del grafico e le etichette degli assi cartesiani
-            myPane.Title.Text = "Grafico di prova";
-            myPane.XAxis.Title.Text = "Tempo";
-            myPane.YAxis.Title.Text = "modacc";
-
-            // Creo la lista di punti
-            PointPairList list1 = new PointPairList();
-            for (int i = 0; i < modacc.Count; ++i)
-            {
-                list1.Add((float)i, modacc[i]);
-            }
-
-            // Creo la curva da visualizzare, di colore rosso 
-            // e i diamanti come punti
-            LineItem myCurve = myPane.AddCurve("",
-                  list1, Color.Red, SymbolType.Diamond);
-
-            myPane.XAxis.Type = AxisType.Text;
-
-            // Risetto gli assi
-            zgc.AxisChange();
-
-            // Ricarico grafico
-            zedGraphControl1.Refresh();
-        }
     }
    
 }

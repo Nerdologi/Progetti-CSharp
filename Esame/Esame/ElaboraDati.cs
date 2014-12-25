@@ -30,7 +30,6 @@ namespace Esame
                     a1 = (float)Math.Pow(a1, 2);
                     a2 = (float)Math.Pow(a2, 2);
                     valori.Add((float)Math.Sqrt(a0 + a1 + a2));
-                        
                 }
                 else
                 {
@@ -41,7 +40,6 @@ namespace Esame
                     g1 = (float)Math.Pow(g1, 2);
                     g2 = (float)Math.Pow(g2, 2);
                     valori.Add((float)Math.Sqrt(g0 + g1 + g2));
-                    
                 }
             }
 
