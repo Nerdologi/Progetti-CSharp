@@ -39,6 +39,8 @@ namespace Esame
                 list1.Add((float)i, data[i]);
             }
 
+            
+
             // Creo la curva da visualizzare, di colore rosso 
             // e i diamanti come punti
             LineItem myCurve = myPane.AddCurve("",

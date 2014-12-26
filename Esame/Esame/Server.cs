@@ -12,32 +12,16 @@ namespace Esame
 {
     class Server
     {
-        private IPAddress ipAddress;
-        private Socket listener;
+        private TcpListener listener;
         public static List<float[,]> samples = new List<float[,]>();
+        
         public Server()
         {
             // Dns.GetHostName returns the name of the 
             // host running the application.
-            IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
-            ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 45555);
-
-            // Create a TCP/IP socket.
-            listener = new Socket(AddressFamily.InterNetwork,
-                SocketType.Stream, ProtocolType.Tcp);
-
-            // Bind the socket to the local endpoint and 
-            // listen for incoming connections.
-            try
-            {
-                listener.Bind(localEndPoint);
-                listener.Listen(10);
-            }
-            catch (Exception e)
-            {
-                Form1.info.AppendText(e.ToString());
-            }
+            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 45555);
+            listener = new TcpListener(localEndPoint);
+            listener.Start();
         }
         public void StartListening()
         {
@@ -46,17 +30,14 @@ namespace Esame
                 // Start listening for connections.
                 //while (true)
                 {
-                    Form1.info.AppendText("\r\nHOST IP: " + this.ipAddress.ToString() + "\r\nWaiting for a connection....\r\n");
+                    Form1.info.AppendText("Waiting for a connection at LOCALHOST... \r\n");
                     // Program is suspended while waiting for an incoming connection.
-                    Socket handler = this.listener.Accept();
-                    ParameterizedThreadStart ts1 = new ParameterizedThreadStart(Server.readFromSocket);
-                    Thread t1 = new Thread(ts1);
-                    // Start the thread
-                    t1.Start(handler);
-                    ParameterizedThreadStart ts2 = new ParameterizedThreadStart(Server.readFromSocket);
-                    Thread t2 = new Thread(ts2);
-                    // Start the thread
-                    t2.Start(handler);
+                    Socket socket = this.listener.AcceptSocket();
+                    
+                    Thread t1 = new Thread(new ParameterizedThreadStart(Server.readFromSocket));
+                    t1.Start(socket);
+                    Thread t2 = new Thread(new ParameterizedThreadStart(Server.readFromSocket));
+                    t2.Start(socket);
                 }
             }
             catch (Exception e)
@@ -66,18 +47,17 @@ namespace Esame
         }
         public static void  readFromSocket (Object obj)
         {
-         //   try 
+            try
             {
-                
-                Socket handler = (Socket)obj;
-                if (Form1.info.InvokeRequired)
+                Socket socket = (Socket)obj;
+                using (Stream myNetworkStream = new NetworkStream(socket))
+                using (BinaryReader bin = new BinaryReader(myNetworkStream))
                 {
-                    Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText("\r\nClient connect :)\r\nReading samples....\r\n"); }));
-                }
-               
-                    NetworkStream myNetworkStream = new NetworkStream(handler, true);
-                    BinaryReader bin = new BinaryReader(myNetworkStream);
-                    
+                    if (Form1.info.InvokeRequired)
+                    {
+                        Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText("\r\nClient connect :)\r\nReading samples....\r\n"); }));
+                    }
+
                     int byteToRead;
                     byte[] pacchetto;
                     int numSensori;
@@ -89,10 +69,7 @@ namespace Esame
                         tem[0] = tem[1];
                         tem[1] = tem[2];
                         byte[] read;
-                        lock (handler)
-                        {
                         read = bin.ReadBytes(1);
-                        }
                         tem[2] = read[0];
                     }
                     if (tem[2] != 0xFF) // modalità normale
@@ -144,10 +121,10 @@ namespace Esame
                         //array.Add(new List<double>()); // una lista per ogni sensore
                         t[x] = 5 + (52 * x);
                     }
-                    //bool part1 = handler.Poll(1000, SelectMode.SelectRead);
-                    //bool part2 = (handler.Available == 0);
-                    //while (!part1 || !part2)
-                    while(true)
+                    bool part1 = socket.Poll(1000, SelectMode.SelectRead);
+                    bool part2 = (socket.Available == 0);
+                    while (!part1 || !part2)
+                    //while(true)
                     {
                         float[,] campione = new float[numSensori, 13];
                         for (int i = 0; i < numSensori; i++)
@@ -178,7 +155,7 @@ namespace Esame
                         samples.Add(campione);
                         if (Form1.info.InvokeRequired)
                         {
-                            Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText(samples.Count + ", "); }));
+                            Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText(Thread.CurrentThread.ManagedThreadId + ": " + samples.Count + "\r\n"); }));
                         }
                         for (int x = 0; x < numSensori; x++)
                         {
@@ -201,21 +178,22 @@ namespace Esame
                         {
                             pacchetto = bin.ReadBytes(byteToRead + 6);
                         }
-                        //part1 = handler.Poll(1000, SelectMode.SelectRead);
-                        //part2 = (handler.Available == 0);
+                        part1 = socket.Poll(1000, SelectMode.SelectRead);
+                        part2 = (socket.Available == 0);
                     }
 
-                    handler.Shutdown(SocketShutdown.Both);
-                    handler.Close();
-                
+                    /*handler.Shutdown(SocketShutdown.Both);
+                    handler.Close();*/
+
+                }
             }
-          /*  catch (Exception e)
+            catch (Exception e)
             {
                 if (Form1.info.InvokeRequired)
                 {
                     Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText(e.ToString()); }));
                 }
-            }*/ 
+            } 
         }
     }
 }
