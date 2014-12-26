@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
 using System.IO;
+using System.Threading;
 
 namespace Esame
 {
@@ -13,6 +14,7 @@ namespace Esame
     {
         private IPAddress ipAddress;
         private Socket listener;
+        public static List<float[,]> samples = new List<float[,]>();
         public Server()
         {
             // Dns.GetHostName returns the name of the 
@@ -37,7 +39,7 @@ namespace Esame
                 Form1.info.AppendText(e.ToString());
             }
         }
-        public List<float[,]> StartListening()
+        public void StartListening()
         {
             try
             {
@@ -47,9 +49,35 @@ namespace Esame
                     Form1.info.AppendText("\r\nHOST IP: " + this.ipAddress.ToString() + "\r\nWaiting for a connection....\r\n");
                     // Program is suspended while waiting for an incoming connection.
                     Socket handler = this.listener.Accept();
-                    Form1.info.AppendText("\r\nClient connect :)\r\nReading samples....\r\n");
+                    ParameterizedThreadStart ts1 = new ParameterizedThreadStart(Server.readFromSocket);
+                    Thread t1 = new Thread(ts1);
+                    // Start the thread
+                    t1.Start(handler);
+                    ParameterizedThreadStart ts2 = new ParameterizedThreadStart(Server.readFromSocket);
+                    Thread t2 = new Thread(ts2);
+                    // Start the thread
+                    t2.Start(handler);
+                }
+            }
+            catch (Exception e)
+            {
+                    Form1.info.AppendText(e.ToString());
+            }
+        }
+        public static void  readFromSocket (Object obj)
+        {
+         //   try 
+            {
+                
+                Socket handler = (Socket)obj;
+                if (Form1.info.InvokeRequired)
+                {
+                    Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText("\r\nClient connect :)\r\nReading samples....\r\n"); }));
+                }
+               
                     NetworkStream myNetworkStream = new NetworkStream(handler, true);
                     BinaryReader bin = new BinaryReader(myNetworkStream);
+                    
                     int byteToRead;
                     byte[] pacchetto;
                     int numSensori;
@@ -60,7 +88,11 @@ namespace Esame
                     {
                         tem[0] = tem[1];
                         tem[1] = tem[2];
-                        byte[] read = bin.ReadBytes(1);
+                        byte[] read;
+                        lock (handler)
+                        {
+                        read = bin.ReadBytes(1);
+                        }
                         tem[2] = read[0];
                     }
                     if (tem[2] != 0xFF) // modalità normale
@@ -106,17 +138,16 @@ namespace Esame
 
 
                     //List<List<double>> array = new List<List<double>>(); // salvataggio dati
-                    List<float[,]> campioni = new List<float[,]>();
                     int[] t = new int[maxSensori];
                     for (int x = 0; x < numSensori; x++)
                     {
                         //array.Add(new List<double>()); // una lista per ogni sensore
                         t[x] = 5 + (52 * x);
                     }
-                    bool part1 = handler.Poll(1000, SelectMode.SelectRead);
-                    bool part2 = (handler.Available == 0);
-                    while (!part1 || !part2)
-                    //while(true) //crash
+                    //bool part1 = handler.Poll(1000, SelectMode.SelectRead);
+                    //bool part2 = (handler.Available == 0);
+                    //while (!part1 || !part2)
+                    while(true)
                     {
                         float[,] campione = new float[numSensori, 13];
                         for (int i = 0; i < numSensori; i++)
@@ -144,8 +175,11 @@ namespace Esame
                                 t[i] += 4; //passa al byte successivo
                             }
                         }
-                        campioni.Add(campione);
-                        Form1.info.AppendText(campioni.Count + ", ");
+                        samples.Add(campione);
+                        if (Form1.info.InvokeRequired)
+                        {
+                            Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText(samples.Count + ", "); }));
+                        }
                         for (int x = 0; x < numSensori; x++)
                         {
                             t[x] = 5 + (52 * x);
@@ -167,23 +201,21 @@ namespace Esame
                         {
                             pacchetto = bin.ReadBytes(byteToRead + 6);
                         }
-                        part1 = handler.Poll(1000, SelectMode.SelectRead);
-                        part2 = (handler.Available == 0);
+                        //part1 = handler.Poll(1000, SelectMode.SelectRead);
+                        //part2 = (handler.Available == 0);
                     }
 
                     handler.Shutdown(SocketShutdown.Both);
                     handler.Close();
-                    return campioni;
-
-                }
-
+                
             }
-            catch (Exception e)
+          /*  catch (Exception e)
             {
-                Form1.info.AppendText(e.ToString());
-                return null;
-            }
+                if (Form1.info.InvokeRequired)
+                {
+                    Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText(e.ToString()); }));
+                }
+            }*/ 
         }
-
     }
 }

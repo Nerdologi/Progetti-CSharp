@@ -15,7 +15,6 @@ namespace Esame
     public partial class Form1 : Form
     {
         public static TextBox info;
-        private List<float[,]> samples;
         private TextBox infoSample;
         private Button showSample;
         private NumericUpDown numSample;
@@ -56,55 +55,53 @@ namespace Esame
 
         private void startServer_Click(object sender, EventArgs e)
         {
-            samples = server.StartListening();
-            if (samples != null)
-            {
-                infoSample.Enabled = true;
-
-                showSample.Enabled = true;
-                numSample.Enabled = true;
-                numSample.Maximum = (samples.Count - 1);
-                numSensor.Enabled = true;
-                numSensor.Maximum = 4;
-                eulerAngles.Enabled = true;
-                modulation.Enabled = true;
-                smoothing.Enabled = true;
-                modaccRI.Enabled = true;
-            }
+            server.StartListening();
+            
+            infoSample.Enabled = true;
+            showSample.Enabled = true;
+            numSample.Enabled = true;
+            //numSample.Maximum = (Server.samples.Count - 1);
+            numSensor.Enabled = true;
+            numSensor.Maximum = 4;
+            eulerAngles.Enabled = true;
+            modulation.Enabled = true;
+            smoothing.Enabled = true;
+            modaccRI.Enabled = true;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             infoSample.Clear();
             infoSample.AppendText("acc1: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 0] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 0] + "\r\n");
             infoSample.AppendText("acc2: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 1] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 1] + "\r\n");
             infoSample.AppendText("acc3: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 2] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 2] + "\r\n");
             infoSample.AppendText("gyr1: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 3] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 3] + "\r\n");
             infoSample.AppendText("gyr2: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 4] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 4] + "\r\n");
             infoSample.AppendText("gyr3: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 5] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 5] + "\r\n");
             infoSample.AppendText("mag1: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 6] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 6] + "\r\n");
             infoSample.AppendText("mag2: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 7] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 7] + "\r\n");
             infoSample.AppendText("mag3: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 8] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 8] + "\r\n");
             infoSample.AppendText("q0: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 9] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 9] + "\r\n");
             infoSample.AppendText("q1: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 10] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 10] + "\r\n");
             infoSample.AppendText("q2: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 11] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 11] + "\r\n");
             infoSample.AppendText("q3: ");
-            infoSample.AppendText(samples[(int)numSample.Value][(int)numSensor.Value, 12] + "\r\n");
+            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 12] + "\r\n");
             if (eulerAngles.Checked == true)
             {
-                /*List<AngoloEulero[]> */ AngoliEulero = ElaboraDati.angoliEulero(samples);
+                /*List<AngoloEulero[]> */
+                AngoliEulero = ElaboraDati.angoliEulero(Server.samples);
                 infoSample.AppendText("yaw: ");
                 infoSample.AppendText(AngoliEulero[(int)numSample.Value][(int)numSensor.Value].getYaw() + "\r\n");
                 infoSample.AppendText("pitch: ");
@@ -115,8 +112,8 @@ namespace Esame
             }
             if (modulation.Checked == true)
             {
-                modacc = ElaboraDati.modulation(samples, (int)numSensor.Value, 0);
-                modgiro = ElaboraDati.modulation(samples, (int)numSensor.Value, 1);
+                modacc = ElaboraDati.modulation(Server.samples, (int)numSensor.Value, 0);
+                modgiro = ElaboraDati.modulation(Server.samples, (int)numSensor.Value, 1);
                 infoSample.AppendText("\r\nmodacc: ");
                 foreach (float elem in modacc)
                 {
@@ -155,7 +152,7 @@ namespace Esame
             }
             if (modaccRI.Checked == true)
             {
-                modacc = ElaboraDati.modulation(samples, (int)numSensor.Value, 0);
+                modacc = ElaboraDati.modulation(Server.samples, (int)numSensor.Value, 0);
                 /* Fino ad ora le varie informazioni sono state salvate in List dato che
                  * non lavoriamo su finestre di dati, ma sull' insieme di campioni
                  * e non  possiamo sapere a priori quanti sono e dunque abbaimo bisogno di 

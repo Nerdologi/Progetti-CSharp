@@ -45,3 +45,18 @@ C:\Users\Lorenzo\Documents\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.pdb
 \\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.exe
 \\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.pdb
 \\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.FormGraph.resources
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\ZedGraph.xml
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\de\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\es\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\fr\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\hu\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\it\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\ja\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\pt\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\ru\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\sk\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\sv\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\tr\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\zh-cn\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\bin\Debug\zh-tw\ZedGraph.resources.dll
+C:\Users\Silvio\Desktop\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.FormGraph.resources
