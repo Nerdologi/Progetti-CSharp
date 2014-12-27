@@ -13,31 +13,31 @@ namespace Esame
     class Server
     {
         private TcpListener listener;
-        public static List<float[,]> samples = new List<float[,]>();
+        //la grandezza della finestra e la capacità del buffer andranno settati
+        //in base alla velocità di campionamento
+        //se campiono a 50 Hz in 10s avrò 500 campioni = > buffer size > 500
+        public static Buffer samples = new Buffer(750);
+        private static int windowSize = 500;
+        private static int samplesSize = 0;
+        private static bool flag = true;
         
         public Server()
         {
-            // Dns.GetHostName returns the name of the 
-            // host running the application.
             IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 45555);
             listener = new TcpListener(localEndPoint);
             listener.Start();
         }
+
         public void StartListening()
         {
             try
             {
-                // Start listening for connections.
                 //while (true)
                 {
                     Form1.info.AppendText("Waiting for a connection at LOCALHOST... \r\n");
-                    // Program is suspended while waiting for an incoming connection.
                     Socket socket = this.listener.AcceptSocket();
-                    
                     Thread t1 = new Thread(new ParameterizedThreadStart(Server.readFromSocket));
                     t1.Start(socket);
-                    Thread t2 = new Thread(new ParameterizedThreadStart(Server.readFromSocket));
-                    t2.Start(socket);
                 }
             }
             catch (Exception e)
@@ -45,11 +45,13 @@ namespace Esame
                     Form1.info.AppendText(e.ToString());
             }
         }
+
         public static void  readFromSocket (Object obj)
         {
             try
             {
                 Socket socket = (Socket)obj;
+                //using da tenere o meno??
                 using (Stream myNetworkStream = new NetworkStream(socket))
                 using (BinaryReader bin = new BinaryReader(myNetworkStream))
                 {
@@ -126,7 +128,7 @@ namespace Esame
                     while (!part1 || !part2)
                     //while(true)
                     {
-                        float[,] campione = new float[numSensori, 13];
+                        float[,] sample = new float[numSensori, 13];
                         for (int i = 0; i < numSensori; i++)
                         {
                             byte[] temp = new byte[4];
@@ -148,14 +150,36 @@ namespace Esame
                                 }
                                 float valore = BitConverter.ToSingle(temp, 0); // conversione
                                 //array[i].Add(valore); // memorizzazione
-                                campione[i, tr] = valore;
+                                sample[i, tr] = valore;
                                 t[i] += 4; //passa al byte successivo
                             }
                         }
-                        samples.Add(campione);
+                        samples.insertElement(sample);
+                        if (flag)
+                        {
+                            samplesSize++;
+                             if (samplesSize == windowSize) { 
+                                 samplesSize = 0;
+                                 flag = false;
+                                 Thread thread = new Thread(new ParameterizedThreadStart(Server.FunzioneCheElaboraIDati));
+                                 thread.Start(samples.getWindow(samples.Count(), windowSize));
+                            }
+                        }
+                        else
+                        {
+                            samplesSize++;
+                            if (samplesSize >= windowSize/2 )
+                            {
+                                samplesSize = 0;
+                                Thread thread = new Thread(new ParameterizedThreadStart(Server.FunzioneCheElaboraIDati));
+                                thread.Start(samples.getWindow(samples.Count(), windowSize));
+                            }
+                        }
+                        
+                        
                         if (Form1.info.InvokeRequired)
                         {
-                            Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText(Thread.CurrentThread.ManagedThreadId + ": " + samples.Count + "\r\n"); }));
+                            Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText(samples.Count() + ", "); }));
                         }
                         for (int x = 0; x < numSensori; x++)
                         {
@@ -194,6 +218,17 @@ namespace Esame
                     Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText(e.ToString()); }));
                 }
             } 
+        }
+
+        public static void FunzioneCheElaboraIDati(Object obj)
+        {
+            List<float[,]> window = (List<float[,]>) obj; 
+            if (Form1.info.InvokeRequired)
+            {
+                Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText("\r\nTHREAD CHE LAVORA SU UNA FINSTRA DI " + window.Count + " CAMPIONI\r\n"); }));
+            }
+        
+        
         }
     }
 }

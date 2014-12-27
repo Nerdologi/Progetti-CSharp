@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AngoloEulero.cs" />
+    <Compile Include="Buffer.cs" />
     <Compile Include="ElaboraDati.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

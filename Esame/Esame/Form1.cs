@@ -73,34 +73,34 @@ namespace Esame
         {
             infoSample.Clear();
             infoSample.AppendText("acc1: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 0] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 0] + "\r\n");
             infoSample.AppendText("acc2: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 1] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 1] + "\r\n");
             infoSample.AppendText("acc3: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 2] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 2] + "\r\n");
             infoSample.AppendText("gyr1: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 3] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 3] + "\r\n");
             infoSample.AppendText("gyr2: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 4] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 4] + "\r\n");
             infoSample.AppendText("gyr3: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 5] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 5] + "\r\n");
             infoSample.AppendText("mag1: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 6] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 6] + "\r\n");
             infoSample.AppendText("mag2: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 7] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 7] + "\r\n");
             infoSample.AppendText("mag3: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 8] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 8] + "\r\n");
             infoSample.AppendText("q0: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 9] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 9] + "\r\n");
             infoSample.AppendText("q1: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 10] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 10] + "\r\n");
             infoSample.AppendText("q2: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 11] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 11] + "\r\n");
             infoSample.AppendText("q3: ");
-            infoSample.AppendText(Server.samples[(int)numSample.Value][(int)numSensor.Value, 12] + "\r\n");
+            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 12] + "\r\n");
             if (eulerAngles.Checked == true)
             {
-                /*List<AngoloEulero[]> */
+                /*List<AngoloEulero[]> 
                 AngoliEulero = ElaboraDati.angoliEulero(Server.samples);
                 infoSample.AppendText("yaw: ");
                 infoSample.AppendText(AngoliEulero[(int)numSample.Value][(int)numSensor.Value].getYaw() + "\r\n");
@@ -159,14 +159,14 @@ namespace Esame
                  * strutture dati dinamiche. Dalla documentazione la funzione RIfun accetta in input
                  * un array e dunque ho dovuto trasfomare la List in array in modo che la signature della 
                  * funzione sia esattamente uguale a quella della documentazione
-                 */
+                 *
                 float[] modaccArray = modacc.ToArray();
                 float[] modaccRIArray = ElaboraDati.RIfun(modaccArray);
                 infoSample.AppendText("\r\nFI of modacc: ");
                 foreach (float elem in modaccRIArray)
                 {
                     infoSample.AppendText(elem + " - ");
-                }
+                }*/
               
             }
         
