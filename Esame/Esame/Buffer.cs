@@ -5,9 +5,12 @@ public class Buffer
 {
     private List<float[,]> buffer;
     private int head;
+    private int capacity;
+
     public Buffer(int size) {
         buffer = new List<float[,]>(size);
         head = 0;
+        capacity = size;
     }
 
     public float[,] GetElementAtIndex(int index)
@@ -17,7 +20,7 @@ public class Buffer
 
     public void insertElement(float[,] value)
     {
-        if (head >= buffer.Capacity)
+        if (head >= this.capacity)
         {
             head = 0;
         }
@@ -32,7 +35,7 @@ public class Buffer
 
     public int Capacity()
     {
-        return buffer.Capacity;
+        return this.capacity;
     }
     // CONTROLLARE ASSOLUTAMENTE TUTTI GLI INDICI
     /*la funzione permette di estrarre dal Buffer la finestra di campioni
@@ -43,8 +46,8 @@ public class Buffer
         List<float[,]> window = new List<float[,]>();
         if (index - windowSize < 0)
         {
-            int missing = buffer.Capacity - (windowSize - index);
-            for (int i = missing; i < buffer.Capacity; i++)
+            int missing = this.capacity - (windowSize - index);
+            for (int i = missing; i < this.capacity; i++)
             {
                 window.Add(buffer[i]);
             }
@@ -62,7 +65,12 @@ public class Buffer
             }
         }
         return window;
-    
+    }
+
+    public void Clear()
+    {
+        buffer.Clear();
+        head = 0;
     }
 
 }

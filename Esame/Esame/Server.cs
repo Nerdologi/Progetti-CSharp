@@ -161,7 +161,7 @@ namespace Esame
                              if (samplesSize == windowSize) { 
                                  samplesSize = 0;
                                  flag = false;
-                                 Thread thread = new Thread(new ParameterizedThreadStart(Server.FunzioneCheElaboraIDati));
+                                 Thread thread = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
                                  thread.Start(samples.getWindow(samples.Count(), windowSize));
                             }
                         }
@@ -171,7 +171,7 @@ namespace Esame
                             if (samplesSize >= windowSize/2 )
                             {
                                 samplesSize = 0;
-                                Thread thread = new Thread(new ParameterizedThreadStart(Server.FunzioneCheElaboraIDati));
+                                Thread thread = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
                                 thread.Start(samples.getWindow(samples.Count(), windowSize));
                             }
                         }
@@ -206,9 +206,22 @@ namespace Esame
                         part2 = (socket.Available == 0);
                     }
 
-                    /*handler.Shutdown(SocketShutdown.Both);
-                    handler.Close();*/
+                    socket.Shutdown(SocketShutdown.Both);
+                    socket.Close();
 
+                    if (flag)
+                    {
+                        Thread t2 = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
+                        t2.Start(samples.getWindow(samples.Count(), samplesSize));
+                    }
+                    else
+                    {
+                        Thread t2 = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
+                        t2.Start(samples.getWindow(samples.Count(), windowSize / 2 + samplesSize));
+                    }
+
+                    // Pulisco buffer
+                    samples.Clear();
                 }
             }
             catch (Exception e)
@@ -220,15 +233,5 @@ namespace Esame
             } 
         }
 
-        public static void FunzioneCheElaboraIDati(Object obj)
-        {
-            List<float[,]> window = (List<float[,]>) obj; 
-            if (Form1.info.InvokeRequired)
-            {
-                Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText("\r\nTHREAD CHE LAVORA SU UNA FINSTRA DI " + window.Count + " CAMPIONI\r\n"); }));
-            }
-        
-        
-        }
     }
 }

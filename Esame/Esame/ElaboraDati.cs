@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Esame
 {
@@ -150,6 +151,15 @@ namespace Esame
             }
 
             return angoliEulero;
+        }
+
+        public static void FunzioneCheElaboraIDati(Object obj)
+        {
+            List<float[,]> window = (List<float[,]>)obj;
+            if (Form1.info.InvokeRequired)
+            {
+                Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText("\r\nTHREAD CHE LAVORA SU UNA FINSTRA DI " + window.Count + " CAMPIONI\r\n"); }));
+            }
         }
     }
 }
