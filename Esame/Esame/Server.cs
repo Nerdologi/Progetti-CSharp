@@ -222,6 +222,8 @@ namespace Esame
 
                     // Pulisco buffer
                     samples.Clear();
+                    flag = true;
+                    samplesSize = 0;
                 }
             }
             catch (Exception e)

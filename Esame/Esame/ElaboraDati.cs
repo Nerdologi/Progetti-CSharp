@@ -8,6 +8,11 @@ namespace Esame
 {
     class ElaboraDati
     {
+        static List<float> modacc;
+        static List<float> modgiro;
+        static List<float> smoothacc;
+        static List<float> smoothgir;
+
         /*
          * modulation accetta come parametri i campioni, il numero del sensore (0..5), e 
          * il tipo di modulazione da eseguire: 
@@ -158,8 +163,21 @@ namespace Esame
             List<float[,]> window = (List<float[,]>)obj;
             if (Form1.info.InvokeRequired)
             {
-                Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText("\r\nTHREAD CHE LAVORA SU UNA FINSTRA DI " + window.Count + " CAMPIONI\r\n"); }));
+                Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText("\r\n\r\nTHREAD CHE LAVORA SU UNA FINSTRA DI " + window.Count + " CAMPIONI\r\n\r\n"); }));
             }
+
+            modacc = modulation(window, 0, 0);
+            modgiro = modulation(window, 0, 1);
+
+            // Visualizzo grafico dell'accelerometro
+            FormGraph fG1 = new FormGraph();
+            fG1.Show();
+            fG1.CreateGraph(modacc, "Segmentazione", "tempo", "MODACC");
+
+            // Visualizzo grafico del giroscopio
+            FormGraph fG2 = new FormGraph();
+            fG2.Show();
+            fG2.CreateGraph(modgiro, "Segmentazione", "tempo", "MODGIRO");
         }
     }
 }
