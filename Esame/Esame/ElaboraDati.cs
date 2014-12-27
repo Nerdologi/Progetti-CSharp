@@ -113,6 +113,81 @@ namespace Esame
             return valori;
         }
 
+        public List<float> deviazioneStandard(List<float> _value)
+        {
+            List<float> dev_stand=new List<float>();
+            int K= 10;//Range di elementi per calcolare la deviazione standard mobile
+            //ricavo i valori mediati tramite una media mobile(smmothing)
+            _value = smoothing(_value);
+            //Effettuo una semplice media
+            float mean=0,summary=0,sd=0;
+            int j, h, f;
+
+            for (int i = 0; i < _value.Count(); i++)
+                summary += _value[i];
+            mean = summary / _value.Count();
+            /////////////////////////////////////////////
+
+            for (int i = 0; i < _value.Count(); i++)
+            {
+
+                summary = _value[i];
+               
+                if (i < K && (_value.Count() - i - 1) >= K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori ma davanti si
+                {
+                    for (j = i - 1; j >= 0; j--)
+                        summary += (float)Math.Pow( (_value[j] - mean) , 2);
+                    for (h = i + 1; h <= i + K; h++)
+                        summary += (float)Math.Pow( (_value[h] - mean), 2);
+                    sd =(float) Math.Sqrt( summary / ((K + i) + 1) );
+                }
+                else
+                    if (i >= K && (_value.Count() - i - 1) < K)//Ipotizzo che io abbia dietro K valori ma davanti no
+                    {
+                        for (j = i - 1; j >= (i - K); j--)
+                            summary += (float)Math.Pow( (_value[j] - mean) , 2);
+                        for (h = i + 1; h < _value.Count(); h++)
+                            summary += (float)Math.Pow((_value[h] - mean), 2);
+                        sd =(float)Math.Sqrt( summary / (K + (_value.Count() - i)));
+                    }
+                    else
+                        if (i < K && (_value.Count() - i - 1) < K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori e nemmeno davanti
+                        {
+                            for (j = i - 1; j >= 0; j--)
+                                summary += (float)Math.Pow((_value[j] - mean), 2);
+                            for (h = i + 1; h < _value.Count(); h++)
+                                summary += (float)Math.Pow((_value[h] - mean), 2);
+                            sd =(float)Math.Sqrt( summary / ((h + i) + 1) );
+                        }
+                        ////CASISTICA GENERALE (Ho dieci valori dietro e dieci valori davanti per cui posso effettuare una semplice media mobile)
+                        else
+                        {
+                            f = 0;
+                            j = i - 1;
+                            h = i + 1;
+                            while (f < K)
+                            {
+                                summary += (float)Math.Pow((_value[j] - mean), 2);
+                                summary += (float)Math.Pow((_value[h] - mean), 2);
+                                j--;
+                                h++;
+                                f++;
+                            }
+                            sd =(float)Math.Sqrt( summary / (2 * K + 1));
+
+                        }
+                //FINE CASISTICA GENERALE
+                dev_stand.Add(sd);
+            }
+
+
+
+            ////////////////////////////////////////////
+            
+
+            return dev_stand;
+            }
+
         /*
          *La funzione prende un vettore di valori in ingresso e 
          *restituisce il vettore monodimensionale RI[]. 

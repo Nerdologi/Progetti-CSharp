@@ -23,6 +23,7 @@ namespace Esame
         private CheckBox modulation;
         private CheckBox smoothing;
         private CheckBox modaccRI;
+        private CheckBox sd;
         private Server server;
         List<float> modacc;
         List<float> modgiro;
@@ -41,6 +42,7 @@ namespace Esame
             modulation = this.checkBox2;
             smoothing = this.checkBox3;
             modaccRI = this.checkBox4;
+            sd = this.checkBox5;
             infoSample.Enabled = false;
             showSample.Enabled = false;
             numSample.Enabled = false;
@@ -49,6 +51,7 @@ namespace Esame
             modulation.Enabled = false;
             smoothing.Enabled = false;
             modaccRI.Enabled = false;
+            sd.Enabled = false;
 
             server = new Server();
         }
@@ -67,6 +70,7 @@ namespace Esame
             modulation.Enabled = true;
             smoothing.Enabled = true;
             modaccRI.Enabled = true;
+            sd.Enabled = true;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -179,6 +183,14 @@ namespace Esame
             if (this.checkBox3.Checked == true)
                 checkBox2.Checked = true;
         }
+
+        private void checkBox5_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.checkBox5.Checked == true)
+                checkBox2.Checked = true;
+
+        }
+
 
     }
    
