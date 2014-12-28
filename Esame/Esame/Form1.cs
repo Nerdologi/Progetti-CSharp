@@ -134,7 +134,7 @@ namespace Esame
                 {
                     infoSample.AppendText(elem + " - ");
                 }
-
+                /*
                 // Visualizzo grafico dell'accelerometro
                 FormGraph fG1 = new FormGraph();
                 fG1.Show();
@@ -144,6 +144,7 @@ namespace Esame
                 FormGraph fG2 = new FormGraph();
                 fG2.Show();
                 fG2.CreateGraph(modgiro, "Segmentazione", "tempo", "MODGIRO");
+                 */
             }
             if (smoothing.Checked == true)
             {
@@ -189,12 +190,14 @@ namespace Esame
                 }
             
             }
+            /*
             if (graficoAngoloTheta.Checked == true) 
             {
                 FormGraph fG3 = new FormGraph();
                 fG3.Show();
                 fG3.CreateGraph(ElaboraDati.FunzioneOrientamento(Server.samplesList), "", "tempo", "Angolo Theta");
             }
+             */
         
       }
         

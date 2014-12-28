@@ -165,7 +165,7 @@ namespace Esame
                                 summary += (float)Math.Pow((_value[h] - mean), 2);
                             sd =(float)Math.Sqrt( summary / ((h + i) + 1) );
                         }
-                        ////CASISTICA GENERALE (Ho dieci valori dietro e dieci valori davanti per cui posso effettuare una semplice media mobile)
+                        // CASISTICA GENERALE (Ho dieci valori dietro e dieci valori davanti per cui posso effettuare una semplice media mobile)
                         else
                         {
                             f = 0;
@@ -185,11 +185,6 @@ namespace Esame
                 //FINE CASISTICA GENERALE
                 dev_stand.Add(sd);
             }
-
-
-
-            ////////////////////////////////////////////
-            
 
             return dev_stand;
             }
@@ -303,9 +298,10 @@ namespace Esame
         {
         }
 
-        //in linea teorica per lo studio della girata ci basiamo sul sensore del bacino
-        //nell' algoritmo fisso dunque come numero dal sensore qeullo 
-        //qeullo che si trova sul bacino
+        /* In linea teorica per lo studio della girata ci basiamo sul sensore del bacino
+         * nell' algoritmo fisso dunque come numero dal sensore qeullo 
+         * qeullo che si trova sul bacino
+         */
         public static List<float>  FunzioneOrientamento(List<float[,]> samples)
         {
             int sensoreBacino = 2;
