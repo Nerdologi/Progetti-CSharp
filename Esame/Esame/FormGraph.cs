@@ -12,17 +12,23 @@ namespace Esame
 {
     public partial class FormGraph : Form
     {
+        private ZedGraphControl zgc;
+        private GraphPane myPane;
+        private int numFinestra;
+        private LineItem myCurve;
+
         public FormGraph()
         {
             InitializeComponent();
         }
 
         // Costruisce grafico
-        public void CreateGraph(List<float> data, string _title, string _XAxisTitle, string _YAxisTitle)
+        public void InitGraph(string _title, string _XAxisTitle, string _YAxisTitle)
         {
             // Ottengo riferimento al pannello
-            ZedGraphControl zgc = zedGraphControl1;
-            GraphPane myPane = zgc.GraphPane;
+            zgc = zedGraphControl1;
+            myPane = zedGraphControl1.GraphPane;
+            numFinestra = 0;
 
             // Cancello eventuali linee presenti sul grafico
             myPane.CurveList.Clear();
@@ -32,25 +38,37 @@ namespace Esame
             myPane.XAxis.Title.Text = _XAxisTitle;
             myPane.YAxis.Title.Text = _YAxisTitle;
 
+            myPane.XAxis.Scale.Min = -40;
+            myPane.XAxis.Scale.MinorStep = 100;
+            myPane.XAxis.Scale.MajorStep = 500;
+            myPane.XAxis.Scale.MinorUnit = DateUnit.Millisecond;
+            myPane.XAxis.Scale.MajorUnit = DateUnit.Millisecond;
+        }
+
+        public void DrawGraph(List<float> data)
+        {
+            // Informo il server che ho iniziato ad elaborare i dati aggiornati
+            ElaboraDati.graphAck = true;
+
             // Creo la lista di punti
             PointPairList list1 = new PointPairList();
+            int inizio = numFinestra * 250;
+            numFinestra++;
             for (int i = 0; i < data.Count; ++i)
             {
-                list1.Add((float)i, data[i]);
+                list1.Add((float)inizio*20, data[i]);
+                inizio++;
             }
 
-            
+            myPane.XAxis.Scale.Max = (inizio + 2)*20;
 
-            // Creo la curva da visualizzare, di colore rosso 
-            // e i diamanti come punti
-            LineItem myCurve = myPane.AddCurve("",
-                  list1, Color.Red, SymbolType.Default);
-
-            myPane.XAxis.Type = AxisType.Text;
+            // Creo la curva da visualizzare, di colore rosso
+            myCurve = myPane.AddCurve("",
+                  list1, Color.Red, SymbolType.None);
 
             // Risetto gli assi
             zgc.AxisChange();
-
+            zgc.Invalidate();
             // Ricarico grafico
             zedGraphControl1.Refresh();
         }

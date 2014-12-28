@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace Esame
 {
     class ElaboraDati
     {
+        public static bool ModaccGraphThreadStarted = false;
+        public static Thread ModaccGraphThread = null;
+        static FormGraph fGAcc;
+        public static bool datiAggiornati = false;
+        public static bool datiFiniti = false;
+        public static bool graphAck = false;
         static List<float> modacc;
         static List<float> modgiro;
-        static List<float> smoothacc;
-        static List<float> smoothgir;
 
         /*
          * modulation accetta come parametri i campioni, il numero del sensore (0..5), e 
@@ -236,6 +241,7 @@ namespace Esame
 
         public static void FunzioneCheElaboraIDati(Object obj)
         {
+            ElaboraDati.graphAck = false;
             List<float[,]> window = (List<float[,]>)obj;
             if (Form1.info.InvokeRequired)
             {
@@ -245,15 +251,52 @@ namespace Esame
             modacc = modulation(window, 0, 0);
             modgiro = modulation(window, 0, 1);
 
-            // Visualizzo grafico dell'accelerometro
-            FormGraph fG1 = new FormGraph();
-            fG1.Show();
-            fG1.CreateGraph(modacc, "Segmentazione", "tempo", "MODACC");
+            ElaboraDati.datiAggiornati = true;
+            
+            /* Se non è mai stato fatto partire il thread che gestisce lo faccio partire
+             * Viene chiamato il metodo DisegnaSulGrafico() che automaticamente
+             * inizializza la form dove verrà visualizzato il grafico se è il "primo avvio"
+             */
+            
+            if (!ModaccGraphThreadStarted)
+                ModaccGraphThread.Start();
+        }
 
-            // Visualizzo grafico del giroscopio
-            FormGraph fG2 = new FormGraph();
-            fG2.Show();
-            fG2.CreateGraph(modgiro, "Segmentazione", "tempo", "MODGIRO");
+        /* Viene chiamata solo al primo avvio del thread che gestisce il grafico
+         * e inizializza gli assi e le etichette del g. stesso
+         */
+        public static void InizializzaGrafico()
+        {
+            fGAcc = new FormGraph();
+            fGAcc.InitGraph("Segmentazione", "tempo", "MODACC");
+            fGAcc.Show();
+        }
+
+        // Questa fz. viene chiamata quando si lancia il thread che gestisce il grafico
+        public static void DisegnaSulGrafico()
+        {
+            if (!ModaccGraphThreadStarted)
+            {
+                InizializzaGrafico();
+                ModaccGraphThreadStarted = true;
+            }
+            fGAcc.DrawGraph(modacc);
+
+            // Aspetto che mi vengano inviati nuovi dati
+            ElaboraDati.datiAggiornati = false;
+            while (!datiAggiornati && !datiFiniti)
+            { }
+
+            if (!datiFiniti)
+                DisegnaSulGrafico();
+            else
+            {
+                // Inizializzo per eventuale invio di nuovi pacchetti
+                datiAggiornati = false;
+                datiFiniti = false;
+
+                Application.Run();
+            }
         }
 
         public static void CalcoloGirata() 

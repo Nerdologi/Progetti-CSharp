@@ -13,9 +13,10 @@ namespace Esame
     class Server
     {
         private TcpListener listener;
-        //la grandezza della finestra e la capacità del buffer andranno settati
-        //in base alla velocità di campionamento
-        //se campiono a 50 Hz in 10s avrò 500 campioni = > buffer size > 500
+        /* la grandezza della finestra e la capacità del buffer andranno settati
+         * in base alla velocità di campionamento
+         * se campiono a 50 Hz in 10s avrò 500 campioni = > buffer size > 500
+         */
         public static Buffer samples = new Buffer(750);
         public static List<float[,]> samplesList;
         private static int windowSize = 500;
@@ -35,6 +36,17 @@ namespace Esame
             {
                 //while (true)
                 {
+                    /* Inizializzo Thread grafici nel caso in cui fosse
+                     * già stato elaborato qualche dato in una sessione 
+                     * precedente, senza chiudere però il programma
+                     */
+                    if (ElaboraDati.ModaccGraphThread != null)
+                    {
+                        ElaboraDati.ModaccGraphThreadStarted = false;
+                        ElaboraDati.ModaccGraphThread.Abort();
+                    }
+                    ElaboraDati.ModaccGraphThread = new Thread(ElaboraDati.DisegnaSulGrafico);
+
                     Form1.info.AppendText("Waiting for a connection at LOCALHOST... \r\n");
                     Socket socket = this.listener.AcceptSocket();
                     Thread t1 = new Thread(new ParameterizedThreadStart(Server.readFromSocket));
@@ -122,7 +134,7 @@ namespace Esame
                     int[] t = new int[maxSensori];
                     for (int x = 0; x < numSensori; x++)
                     {
-                        //array.Add(new List<double>()); // una lista per ogni sensore
+                        //array.Add(new List<double>()); // Una lista per ogni sensore
                         t[x] = 5 + (52 * x);
                     }
                     bool part1 = socket.Poll(1000, SelectMode.SelectRead);
@@ -138,7 +150,8 @@ namespace Esame
                             {
                                 if (numSensori < 5)
                                 {
-                                    temp[0] = pacchetto[t[i] + 3]; // lettura inversa
+                                    // Lettura inversa
+                                    temp[0] = pacchetto[t[i] + 3];
                                     temp[1] = pacchetto[t[i] + 2];
                                     temp[2] = pacchetto[t[i] + 1];
                                     temp[3] = pacchetto[t[i]];
@@ -150,10 +163,12 @@ namespace Esame
                                     temp[2] = pacchetto[t[i] + 3];
                                     temp[3] = pacchetto[t[i] + 2];
                                 }
-                                float valore = BitConverter.ToSingle(temp, 0); // conversione
+                                // Conversione
+                                float valore = BitConverter.ToSingle(temp, 0);
                                 //array[i].Add(valore); // memorizzazione
                                 sample[i, tr] = valore;
-                                t[i] += 4; //passa al byte successivo
+                                // Passa al byte successivo
+                                t[i] += 4;
                             }
                         }
                         samples.insertElement(sample);
@@ -166,6 +181,11 @@ namespace Esame
                                  flag = false;
                                  Thread thread = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
                                  thread.Start(samples.getWindow(samples.Count(), windowSize));
+
+                                 // Aspetto che il thread che gestisce il grafico abbia iniziato a elaborare i dati
+                                 while (!ElaboraDati.graphAck)
+                                 { }
+                                 // ... ora posso proseguire ...
                             }
                         }
                         else
@@ -176,6 +196,11 @@ namespace Esame
                                 samplesSize = 0;
                                 Thread thread = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
                                 thread.Start(samples.getWindow(samples.Count(), windowSize));
+
+                                // Aspetto che il thread che gestisce il grafico abbia iniziato a elaborare i dati
+                                while (!ElaboraDati.graphAck)
+                                { }
+                                // ... ora posso proseguire ...
                             }
                         }
                         
@@ -189,14 +214,6 @@ namespace Esame
                             t[x] = 5 + (52 * x);
                         }
 
-                        /*for (int j = 0; j < numSensori; j++)
-                        {
-                            for (int tr = 0; tr < 13; tr++)
-                            {
-                                Form1.info.AppendText(array[j][tr] + "; ");
-                            }
-                            array[j].RemoveRange(0, 13); // cancellazione dati
-                        }*/
                         if (numSensori < 5) // lettura pacchetto seguente
                         {
                             pacchetto = bin.ReadBytes(byteToRead + 4);
@@ -222,6 +239,14 @@ namespace Esame
                         Thread t2 = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
                         t2.Start(samples.getWindow(samples.Count(), windowSize / 2 + samplesSize));
                     }
+
+                    // Aspetto che il thread che gestisce il grafico abbia iniziato a elaborare i dati
+                    ElaboraDati.graphAck = false;
+                    while (!ElaboraDati.graphAck)
+                    { }
+
+                    // Informo il thread del grafico che non avrà più nessun dato da elaborare
+                    ElaboraDati.datiFiniti = true;
 
                     // Pulisco buffer
                     samples.Clear();
