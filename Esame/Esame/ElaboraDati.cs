@@ -113,25 +113,26 @@ namespace Esame
             return valori;
         }
 
-        public List<float> deviazioneStandard(List<float> _value)
+        public static List<float> deviazioneStandard(List<float> _value)
         {
             List<float> dev_stand=new List<float>();
+            List<float> value_mean;
             int K= 10;//Range di elementi per calcolare la deviazione standard mobile
             //ricavo i valori mediati tramite una media mobile(smmothing)
-            _value = smoothing(_value);
+            value_mean = smoothing(_value);
             //Effettuo una semplice media
             float mean=0,summary=0,sd=0;
             int j, h, f;
 
-            for (int i = 0; i < _value.Count(); i++)
-                summary += _value[i];
-            mean = summary / _value.Count();
+            for (int i = 0; i < value_mean.Count(); i++)
+                summary += value_mean[i];
+            mean = summary / value_mean.Count();
             /////////////////////////////////////////////
 
             for (int i = 0; i < _value.Count(); i++)
             {
 
-                summary = _value[i];
+                summary = (float)Math.Pow( (_value[i] - mean) , 2);
                
                 if (i < K && (_value.Count() - i - 1) >= K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori ma davanti si
                 {

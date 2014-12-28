@@ -30,6 +30,7 @@ namespace Esame
         List<float> modgiro;
         List<float> smoothacc;
         List<float> smoothgir;
+        List<float> dev;
         private List<AngoloEulero[]> AngoliEulero;
         public Form1()
         {
@@ -177,6 +178,16 @@ namespace Esame
                     infoSample.AppendText(elem + " - ");
                 }
               
+            }
+            if (sd.Checked == true)
+            {
+                dev = ElaboraDati.deviazioneStandard(modacc);
+                infoSample.AppendText("\r\nDeviazioni standard: \r\n");
+                foreach (float elem in dev)
+                {
+                    infoSample.AppendText(elem + " - ");
+                }
+            
             }
             if (graficoAngoloTheta.Checked == true) 
             {
