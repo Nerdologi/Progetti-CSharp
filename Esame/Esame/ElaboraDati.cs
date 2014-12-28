@@ -254,5 +254,27 @@ namespace Esame
             fG2.Show();
             fG2.CreateGraph(modgiro, "Segmentazione", "tempo", "MODGIRO");
         }
+
+        public static void CalcoloGirata() 
+        {
+        }
+
+        //in linea teorica per lo studio della girata ci basiamo sul sensore del bacino
+        //nell' algoritmo fisso dunque come numero dal sensore qeullo 
+        //qeullo che si trova sul bacino
+        public static List<float>  FunzioneOrientamento(List<float[,]> samples)
+        {
+            int sensoreBacino = 2;
+            List <float >angoliTheta = new List<float>();
+            for (int i = 0; i < samples.Count; i++) { 
+                float x = samples[i][sensoreBacino, 6];
+                float y = samples[i][sensoreBacino, 7];
+                float z = samples[i][sensoreBacino, 8];
+                angoliTheta.Add((float)Math.Atan(x / z));
+            }
+
+            return angoliTheta;
+        }
+    
     }
 }

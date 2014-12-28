@@ -17,6 +17,7 @@ namespace Esame
         //in base alla velocità di campionamento
         //se campiono a 50 Hz in 10s avrò 500 campioni = > buffer size > 500
         public static Buffer samples = new Buffer(750);
+        public static List<float[,]> samplesList;
         private static int windowSize = 500;
         private static int samplesSize = 0;
         private static bool flag = true;
@@ -117,6 +118,7 @@ namespace Esame
 
 
                     //List<List<double>> array = new List<List<double>>(); // salvataggio dati
+                    samplesList = new List<float[,]>();
                     int[] t = new int[maxSensori];
                     for (int x = 0; x < numSensori; x++)
                     {
@@ -155,6 +157,7 @@ namespace Esame
                             }
                         }
                         samples.insertElement(sample);
+                        samplesList.Add(sample);
                         if (flag)
                         {
                             samplesSize++;

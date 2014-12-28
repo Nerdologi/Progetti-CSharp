@@ -24,6 +24,7 @@ namespace Esame
         private CheckBox smoothing;
         private CheckBox modaccRI;
         private CheckBox sd;
+        private CheckBox graficoAngoloTheta;
         private Server server;
         List<float> modacc;
         List<float> modgiro;
@@ -43,6 +44,7 @@ namespace Esame
             smoothing = this.checkBox3;
             modaccRI = this.checkBox4;
             sd = this.checkBox5;
+            graficoAngoloTheta = this.checkBox6;
             infoSample.Enabled = false;
             showSample.Enabled = false;
             numSample.Enabled = false;
@@ -52,6 +54,7 @@ namespace Esame
             smoothing.Enabled = false;
             modaccRI.Enabled = false;
             sd.Enabled = false;
+            graficoAngoloTheta.Enabled = false;
 
             server = new Server();
         }
@@ -63,7 +66,7 @@ namespace Esame
             infoSample.Enabled = true;
             showSample.Enabled = true;
             numSample.Enabled = true;
-            //numSample.Maximum = (Server.samples.Count - 1);
+           
             numSensor.Enabled = true;
             numSensor.Maximum = 4;
             eulerAngles.Enabled = true;
@@ -71,41 +74,43 @@ namespace Esame
             smoothing.Enabled = true;
             modaccRI.Enabled = true;
             sd.Enabled = true;
+            graficoAngoloTheta.Enabled = true;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            numSample.Maximum = (Server.samplesList.Count - 1);
             infoSample.Clear();
             infoSample.AppendText("acc1: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 0] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 0] + "\r\n");
             infoSample.AppendText("acc2: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 1] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 1] + "\r\n");
             infoSample.AppendText("acc3: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 2] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 2] + "\r\n");
             infoSample.AppendText("gyr1: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 3] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 3] + "\r\n");
             infoSample.AppendText("gyr2: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 4] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 4] + "\r\n");
             infoSample.AppendText("gyr3: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 5] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 5] + "\r\n");
             infoSample.AppendText("mag1: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 6] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 6] + "\r\n");
             infoSample.AppendText("mag2: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 7] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 7] + "\r\n");
             infoSample.AppendText("mag3: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 8] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 8] + "\r\n");
             infoSample.AppendText("q0: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 9] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 9] + "\r\n");
             infoSample.AppendText("q1: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 10] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 10] + "\r\n");
             infoSample.AppendText("q2: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 11] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 11] + "\r\n");
             infoSample.AppendText("q3: ");
-            infoSample.AppendText(Server.samples.GetElementAtIndex((int)numSample.Value)[(int)numSensor.Value, 12] + "\r\n");
+            infoSample.AppendText(Server.samplesList[(int)numSample.Value][(int)numSensor.Value, 12] + "\r\n");
             if (eulerAngles.Checked == true)
             {
-                /*List<AngoloEulero[]> 
-                AngoliEulero = ElaboraDati.angoliEulero(Server.samples);
+                List<AngoloEulero[]> 
+                AngoliEulero = ElaboraDati.angoliEulero(Server.samplesList);
                 infoSample.AppendText("yaw: ");
                 infoSample.AppendText(AngoliEulero[(int)numSample.Value][(int)numSensor.Value].getYaw() + "\r\n");
                 infoSample.AppendText("pitch: ");
@@ -116,8 +121,8 @@ namespace Esame
             }
             if (modulation.Checked == true)
             {
-                modacc = ElaboraDati.modulation(Server.samples, (int)numSensor.Value, 0);
-                modgiro = ElaboraDati.modulation(Server.samples, (int)numSensor.Value, 1);
+                modacc = ElaboraDati.modulation(Server.samplesList, (int)numSensor.Value, 0);
+                modgiro = ElaboraDati.modulation(Server.samplesList, (int)numSensor.Value, 1);
                 infoSample.AppendText("\r\nmodacc: ");
                 foreach (float elem in modacc)
                 {
@@ -156,26 +161,32 @@ namespace Esame
             }
             if (modaccRI.Checked == true)
             {
-                modacc = ElaboraDati.modulation(Server.samples, (int)numSensor.Value, 0);
+                modacc = ElaboraDati.modulation(Server.samplesList, (int)numSensor.Value, 0);
                 /* Fino ad ora le varie informazioni sono state salvate in List dato che
                  * non lavoriamo su finestre di dati, ma sull' insieme di campioni
                  * e non  possiamo sapere a priori quanti sono e dunque abbaimo bisogno di 
                  * strutture dati dinamiche. Dalla documentazione la funzione RIfun accetta in input
                  * un array e dunque ho dovuto trasfomare la List in array in modo che la signature della 
                  * funzione sia esattamente uguale a quella della documentazione
-                 *
+                 */
                 float[] modaccArray = modacc.ToArray();
                 float[] modaccRIArray = ElaboraDati.RIfun(modaccArray);
                 infoSample.AppendText("\r\nFI of modacc: ");
                 foreach (float elem in modaccRIArray)
                 {
                     infoSample.AppendText(elem + " - ");
-                }*/
+                }
               
+            }
+            if (graficoAngoloTheta.Checked == true) 
+            {
+                FormGraph fG3 = new FormGraph();
+                fG3.Show();
+                fG3.CreateGraph(ElaboraDati.FunzioneOrientamento(Server.samplesList), "", "tempo", "Angolo Theta");
             }
         
       }
-
+        
        // public List<AngoloEulero[]> AngoliEulero { get; set; }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
@@ -190,8 +201,6 @@ namespace Esame
                 checkBox2.Checked = true;
 
         }
-
-
     }
    
 }
