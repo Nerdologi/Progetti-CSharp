@@ -45,10 +45,19 @@ namespace Esame
             myPane.XAxis.Scale.MajorUnit = DateUnit.Millisecond;
         }
 
-        public void DrawGraph(List<float> data)
+        /* Accetta in ingresso due parametri:
+         * - data, sono i punti da rappresentare sul grafico
+         * - category, che può assumere i valori "modacc" o "modgiro"
+         * Il secondo parametro serve per sapere quale dei thread sta elaborando
+         * i dati, per informare i server di avvenuta ricezione dei dati
+         * aggiornati.
+         */
+        public void DrawGraph(List<float> data, string category)
         {
-            // Informo il server che ho iniziato ad elaborare i dati aggiornati
-            ElaboraDati.graphAck = true;
+            if (category == "modacc")
+                this.Text = "Grafico Modulo Accelerometro";
+            else if (category == "modgiro")
+                this.Text = "Grafico Modulo Giroscopio";
 
             // Creo la lista di punti
             PointPairList list1 = new PointPairList();

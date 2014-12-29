@@ -32,6 +32,7 @@ namespace Esame
         List<float> smoothgir;
         List<float> dev;
         private List<AngoloEulero[]> AngoliEulero;
+
         public Form1()
         {
             InitializeComponent();
@@ -213,7 +214,6 @@ namespace Esame
         {
             if (this.checkBox5.Checked == true)
                 checkBox2.Checked = true;
-
         }
     }
    

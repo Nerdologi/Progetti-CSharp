@@ -40,12 +40,12 @@ namespace Esame
                      * già stato elaborato qualche dato in una sessione 
                      * precedente, senza chiudere però il programma
                      */
-                    if (ElaboraDati.ModaccGraphThread != null)
+                    if (ElaboraDati.GraphThread != null)
                     {
-                        ElaboraDati.ModaccGraphThreadStarted = false;
-                        ElaboraDati.ModaccGraphThread.Abort();
+                        ElaboraDati.GraphThreadStarted = false;
+                        ElaboraDati.GraphThread.Abort();
                     }
-                    ElaboraDati.ModaccGraphThread = new Thread(ElaboraDati.DisegnaSulGrafico);
+                    ElaboraDati.GraphThread = new Thread(ElaboraDati.DisegnaSulGrafico);
 
                     Form1.info.AppendText("Waiting for a connection at LOCALHOST... \r\n");
                     Socket socket = this.listener.AcceptSocket();
@@ -179,10 +179,11 @@ namespace Esame
                              if (samplesSize == windowSize) { 
                                  samplesSize = 0;
                                  flag = false;
+                                 ElaboraDati.graphAck = false;
                                  Thread thread = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
                                  thread.Start(samples.getWindow(samples.Count(), windowSize));
 
-                                 // Aspetto che il thread che gestisce il grafico abbia iniziato a elaborare i dati
+                                 // Aspetto che i threads che gestiscono i grafici, abbiano iniziato a elaborare i dati
                                  while (!ElaboraDati.graphAck)
                                  { }
                                  // ... ora posso proseguire ...
@@ -194,16 +195,16 @@ namespace Esame
                             if (samplesSize >= windowSize/2 )
                             {
                                 samplesSize = 0;
+                                ElaboraDati.graphAck = false;
                                 Thread thread = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
                                 thread.Start(samples.getWindow(samples.Count(), windowSize));
 
-                                // Aspetto che il thread che gestisce il grafico abbia iniziato a elaborare i dati
+                                // Aspetto che i threads che gestiscono i grafici, abbiano iniziato a elaborare i dati
                                 while (!ElaboraDati.graphAck)
                                 { }
                                 // ... ora posso proseguire ...
                             }
                         }
-                        
                         
                         if (Form1.info.InvokeRequired)
                         {
@@ -231,27 +232,39 @@ namespace Esame
 
                     if (flag)
                     {
+                        ElaboraDati.graphAck = false;
                         Thread t2 = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
                         t2.Start(samples.getWindow(samples.Count(), samplesSize));
                     }
                     else
                     {
+                        ElaboraDati.graphAck = false;
                         Thread t2 = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
                         t2.Start(samples.getWindow(samples.Count(), windowSize / 2 + samplesSize));
                     }
 
-                    // Aspetto che il thread che gestisce il grafico abbia iniziato a elaborare i dati
+                    // Aspetto che i threads che gestiscono i grafici, abbiano iniziato a elaborare i dati
+                    while (!ElaboraDati.graphAck)
+                    { }
+                    // ... ora posso proseguire ...
+
+                    // Informo i threads che gestiscono i grafici che non avranno più nessun dato da elaborare
+                    ElaboraDati.datiFiniti = true;
+
+                    // Attendo avvenuta ricezione di "dati finiti" da entrambi i Threads
                     ElaboraDati.graphAck = false;
                     while (!ElaboraDati.graphAck)
                     { }
-
-                    // Informo il thread del grafico che non avrà più nessun dato da elaborare
-                    ElaboraDati.datiFiniti = true;
+                    // ... ora posso proseguire ...
 
                     // Pulisco buffer
                     samples.Clear();
                     flag = true;
                     samplesSize = 0;
+
+                    // Inizializzo per eventuale invio di nuovi pacchetti
+                    ElaboraDati.datiAggiornati = false;
+                    ElaboraDati.datiFiniti = false;
                 }
             }
             catch (Exception e)

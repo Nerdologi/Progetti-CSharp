@@ -9,9 +9,10 @@ namespace Esame
 {
     class ElaboraDati
     {
-        public static bool ModaccGraphThreadStarted = false;
-        public static Thread ModaccGraphThread = null;
+        public static bool GraphThreadStarted = false;
+        public static Thread GraphThread = null;
         static FormGraph fGAcc;
+        static FormGraph fGGiro;
         public static bool datiAggiornati = false;
         public static bool datiFiniti = false;
         public static bool graphAck = false;
@@ -209,15 +210,15 @@ namespace Esame
         }
         public static List<AngoloEulero[]> angoliEulero(List<float[,]> campioni)
         {
-
             List<AngoloEulero[]> angoliEulero = new List<AngoloEulero[]>();
             for (int i = 0; i < campioni.Count; i++)
             {
-                //un angolo di eulero per ogni sensore (nel nostro caso sono 5)
-                //nel caso di un numero di sensori variabile bisogna pescare il numero di
-                //sensori dalla classe Server
+                /* Un angolo di eulero per ogni sensore (nel nostro caso sono 5)
+                 * nel caso di un numero di sensori variabile bisogna pescare il numero di
+                 * sensori dalla classe Server
+                 */
                 angoliEulero.Add(new AngoloEulero[5]);
-                //itero i sensori del campione che sto considerando
+                // Itero i sensori del campione che sto considerando
                 for (int numSensore = 0; numSensore < 5; numSensore++)
                 {
                     float q0 = campioni[i][numSensore, 9];
@@ -236,7 +237,6 @@ namespace Esame
 
         public static void FunzioneCheElaboraIDati(Object obj)
         {
-            ElaboraDati.graphAck = false;
             List<float[,]> window = (List<float[,]>)obj;
             if (Form1.info.InvokeRequired)
             {
@@ -245,16 +245,14 @@ namespace Esame
 
             modacc = modulation(window, 0, 0);
             modgiro = modulation(window, 0, 1);
-
             ElaboraDati.datiAggiornati = true;
             
             /* Se non è mai stato fatto partire il thread che gestisce lo faccio partire
              * Viene chiamato il metodo DisegnaSulGrafico() che automaticamente
              * inizializza la form dove verrà visualizzato il grafico se è il "primo avvio"
              */
-            
-            if (!ModaccGraphThreadStarted)
-                ModaccGraphThread.Start();
+            if (!GraphThreadStarted)
+                GraphThread.Start();
         }
 
         /* Viene chiamata solo al primo avvio del thread che gestisce il grafico
@@ -265,17 +263,25 @@ namespace Esame
             fGAcc = new FormGraph();
             fGAcc.InitGraph("Segmentazione", "tempo", "MODACC");
             fGAcc.Show();
+
+            fGGiro = new FormGraph();
+            fGGiro.InitGraph("Segmentazione", "tempo", "MODGIRO");
+            fGGiro.Show();
         }
 
         // Questa fz. viene chiamata quando si lancia il thread che gestisce il grafico
         public static void DisegnaSulGrafico()
         {
-            if (!ModaccGraphThreadStarted)
+            if (!GraphThreadStarted)
             {
                 InizializzaGrafico();
-                ModaccGraphThreadStarted = true;
+                GraphThreadStarted = true;
             }
-            fGAcc.DrawGraph(modacc);
+            fGAcc.DrawGraph(modacc, "modacc");
+            fGGiro.DrawGraph(modgiro, "modgiro");
+
+            // Informo il server che ho elaborato i dati aggiornati
+            ElaboraDati.graphAck = true;
 
             // Aspetto che mi vengano inviati nuovi dati
             ElaboraDati.datiAggiornati = false;
@@ -286,10 +292,11 @@ namespace Esame
                 DisegnaSulGrafico();
             else
             {
-                // Inizializzo per eventuale invio di nuovi pacchetti
-                datiAggiornati = false;
-                datiFiniti = false;
-
+                // Mi assicuro che il server stia aspettando la mia risposta
+                Thread.Sleep(1000);
+                ElaboraDati.graphAck = true;
+                
+                // Avvio un ciclo infinito sul form del grafico per tenerlo aperto
                 Application.Run();
             }
         }
