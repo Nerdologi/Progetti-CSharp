@@ -47,7 +47,7 @@ namespace Esame
 
         /* Accetta in ingresso due parametri:
          * - data, sono i punti da rappresentare sul grafico
-         * - category, che può assumere i valori "modacc" o "modgiro"
+         * - category, che può assumere i valori "modacc" , "modgiro" o "theta"
          * Il secondo parametro serve per sapere quale dei thread sta elaborando
          * i dati, per informare i server di avvenuta ricezione dei dati
          * aggiornati.
@@ -58,6 +58,10 @@ namespace Esame
                 this.Text = "Grafico Modulo Accelerometro";
             else if (category == "modgiro")
                 this.Text = "Grafico Modulo Giroscopio";
+            else if (category == "theta")
+                this.Text = "Grafico Angolo Theta";
+            else if (category == "thetaNoDiscontinuita")
+                this.Text = "Grafico Angolo Theta Senza Discontinuità";
 
             // Creo la lista di punti
             PointPairList list1 = new PointPairList();

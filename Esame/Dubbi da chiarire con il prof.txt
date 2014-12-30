@@ -1,0 +1,3 @@
+- Come mai il primo invio di di campioni è sporco?
+- La finestra di campioni è determinata dal numero di campioni o dal tempo?
+- Per lo studio della girata su quale sensore (numero) bisogna basarsi e su quali angoli va calcolata l' arcontangente?

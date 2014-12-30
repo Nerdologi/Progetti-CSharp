@@ -13,11 +13,17 @@ namespace Esame
         public static Thread GraphThread = null;
         static FormGraph fGAcc;
         static FormGraph fGGiro;
+        static FormGraph fGTheta;
+        static FormGraph fgThetaNoDiscontinuita;
         public static bool datiAggiornati = false;
         public static bool datiFiniti = false;
         public static bool graphAck = false;
         static List<float> modacc;
         static List<float> modgiro;
+        static List<float> theta;
+        static List<float> thetaNoDiscontinuita;
+        //potrebbe essere una variablile condivisa da più thread?
+        public static float segno = 0;
 
         /*
          * modulation accetta come parametri i campioni, il numero del sensore (0..5), e 
@@ -208,6 +214,7 @@ namespace Esame
             }
             return RI;  
         }
+        
         public static List<AngoloEulero[]> angoliEulero(List<float[,]> campioni)
         {
             List<AngoloEulero[]> angoliEulero = new List<AngoloEulero[]>();
@@ -245,6 +252,15 @@ namespace Esame
 
             modacc = modulation(window, 0, 0);
             modgiro = modulation(window, 0, 1);
+            theta = new List<float>();
+            thetaNoDiscontinuita = new List<float>();
+            List<float[]> temp = FunzioneOrientamento(window);
+            for (int i = 0; i < temp.Count; i++)
+            {
+                theta.Add(temp[i][0]);
+                thetaNoDiscontinuita.Add(temp[i][1]);
+            }
+            CalcoloGirata(thetaNoDiscontinuita);
             ElaboraDati.datiAggiornati = true;
             
             /* Se non è mai stato fatto partire il thread che gestisce lo faccio partire
@@ -267,6 +283,14 @@ namespace Esame
             fGGiro = new FormGraph();
             fGGiro.InitGraph("Segmentazione", "tempo", "MODGIRO");
             fGGiro.Show();
+
+            fGTheta = new FormGraph();
+            fGTheta.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
+            fGTheta.Show();
+
+            fgThetaNoDiscontinuita = new FormGraph();
+            fgThetaNoDiscontinuita.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
+            fgThetaNoDiscontinuita .Show();
         }
 
         // Questa fz. viene chiamata quando si lancia il thread che gestisce il grafico
@@ -279,6 +303,9 @@ namespace Esame
             }
             fGAcc.DrawGraph(modacc, "modacc");
             fGGiro.DrawGraph(modgiro, "modgiro");
+            fGTheta.DrawGraph(theta, "theta");
+            fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
+
 
             // Informo il server che ho elaborato i dati aggiornati
             ElaboraDati.graphAck = true;
@@ -301,25 +328,67 @@ namespace Esame
             }
         }
 
-        public static void CalcoloGirata() 
+        public static void CalcoloGirata(List<float> angoliTheta) 
         {
+            List<float> angoliThetaGradi = new List<float>();
+            foreach (float angolo in angoliTheta)
+            {
+                angoliThetaGradi.Add((float)(angolo*180/Math.PI));
+            }
+            angoliThetaGradi = smoothing(angoliThetaGradi);
+            float variazioneGlobale = 0;
+            float variazioneLocale = 0;
+            for (int i = 1; i < angoliThetaGradi.Count; i++)
+            {
+                variazioneLocale = variazioneLocale + (angoliThetaGradi[i] - angoliThetaGradi[i-1]);
+                if (variazioneLocale > 7 || variazioneGlobale < -7)
+                {
+                    if (variazioneLocale > variazioneGlobale)
+                        variazioneGlobale = variazioneLocale;
+                    else if (variazioneLocale > (variazioneGlobale + 2) || variazioneLocale < (variazioneGlobale - 2))
+                    {
+                        string direzione;
+                        if (variazioneGlobale > 0)
+                            direzione = "destra";
+                        else
+                            direzione = "sinistra";
+                        if (Form1.info.InvokeRequired)
+                        {
+                            Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText("\r\n\r\nGirata verso " + direzione  + " di " + variazioneGlobale + " gradi\r\n\r\n"); }));
+                        }
+                        variazioneLocale = 0;
+                        variazioneGlobale = 0;
+                    }
+                }
+            }
         }
 
         /* In linea teorica per lo studio della girata ci basiamo sul sensore del bacino
          * nell' algoritmo fisso dunque come numero dal sensore qeullo 
          * qeullo che si trova sul bacino
          */
-        public static List<float>  FunzioneOrientamento(List<float[,]> samples)
+        public static List<float[]>  FunzioneOrientamento(List<float[,]> samples)
         {
             int sensoreBacino = 2;
-            List <float >angoliTheta = new List<float>();
+            List <float[]> angoliTheta = new List<float[]>();
             for (int i = 0; i < samples.Count; i++) { 
                 float x = samples[i][sensoreBacino, 6];
                 float y = samples[i][sensoreBacino, 7];
                 float z = samples[i][sensoreBacino, 8];
-                angoliTheta.Add((float)Math.Atan(x / z));
+                float angoloTheta = (float)Math.Atan(z / x);
+                if (angoliTheta.Count > 0)
+                {
+                    if ((angoloTheta > 1.5 && angoliTheta[i - 1][0] < -1.5))
+                        segno = segno - (float)Math.PI;
+                    else if (angoloTheta < -1.5 && angoliTheta[i - 1][0] > 1.5) 
+                        segno = segno + (float)Math.PI;
+                            
+                }
+                float[] temp = new float[2];
+                temp[0] = angoloTheta;
+                temp[1] = angoloTheta + segno;
+                angoliTheta.Add(temp);
             }
-
             return angoliTheta;
         }
     
