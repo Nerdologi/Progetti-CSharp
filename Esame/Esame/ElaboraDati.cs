@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
+using System.IO;
 
 namespace Esame
 {
@@ -22,6 +23,8 @@ namespace Esame
         static List<float> modgiro;
         static List<float> theta;
         static List<float> thetaNoDiscontinuita;
+        public static DateTime timezero;
+        public static int windowNumber = 0;
         //potrebbe essere una variablile condivisa da più thread?
         public static float segno = 0;
 
@@ -269,6 +272,7 @@ namespace Esame
              */
             if (!GraphThreadStarted)
                 GraphThread.Start();
+            windowNumber++;
         }
 
         /* Viene chiamata solo al primo avvio del thread che gestisce il grafico
@@ -276,7 +280,7 @@ namespace Esame
          */
         public static void InizializzaGrafico()
         {
-            fGAcc = new FormGraph();
+            /*fGAcc = new FormGraph();
             fGAcc.InitGraph("Segmentazione", "tempo", "MODACC");
             fGAcc.Show();
 
@@ -286,7 +290,7 @@ namespace Esame
 
             fGTheta = new FormGraph();
             fGTheta.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
-            fGTheta.Show();
+            fGTheta.Show();*/
 
             fgThetaNoDiscontinuita = new FormGraph();
             fgThetaNoDiscontinuita.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
@@ -301,9 +305,9 @@ namespace Esame
                 InizializzaGrafico();
                 GraphThreadStarted = true;
             }
-            fGAcc.DrawGraph(modacc, "modacc");
-            fGGiro.DrawGraph(modgiro, "modgiro");
-            fGTheta.DrawGraph(theta, "theta");
+            //fGAcc.DrawGraph(modacc, "modacc");
+            //fGGiro.DrawGraph(modgiro, "modgiro");
+            //fGTheta.DrawGraph(theta, "theta");
             fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
 
 
@@ -330,10 +334,14 @@ namespace Esame
 
         public static void CalcoloGirata(List<float> angoliTheta) 
         {
+            
             List<float> angoliThetaGradi = new List<float>();
+            DateTime timeStart = new DateTime();
+            DateTime timeEnd = new DateTime();
+            bool start = true;
             foreach (float angolo in angoliTheta)
             {
-                angoliThetaGradi.Add((float)(angolo*180/Math.PI));
+                angoliThetaGradi.Add((float)/*(angolo*180/Math.PI)*/angolo);
             }
             angoliThetaGradi = smoothing(angoliThetaGradi);
             float variazioneGlobale = 0;
@@ -341,20 +349,54 @@ namespace Esame
             for (int i = 1; i < angoliThetaGradi.Count; i++)
             {
                 variazioneLocale = variazioneLocale + (angoliThetaGradi[i] - angoliThetaGradi[i-1]);
-                if (variazioneLocale > 7 || variazioneGlobale < -7)
+                if (variazioneLocale > 6)
                 {
-                    if (variazioneLocale > variazioneGlobale)
-                        variazioneGlobale = variazioneLocale;
-                    else if (variazioneLocale > (variazioneGlobale + 2) || variazioneLocale < (variazioneGlobale - 2))
+                    if (start == true)
                     {
+                        timeStart = timezero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        start = false;
+                    }
+                    if (variazioneLocale >= variazioneGlobale)
+                        variazioneGlobale = variazioneLocale;
+                    else if (variazioneLocale < (variazioneGlobale))
+                    {
+                        start = true;
                         string direzione;
                         if (variazioneGlobale > 0)
                             direzione = "destra";
                         else
                             direzione = "sinistra";
-                        if (Form1.info.InvokeRequired)
+                        timeEnd = timezero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        using (StreamWriter sw = File.AppendText(Server.path))
                         {
-                            Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText("\r\n\r\nGirata verso " + direzione  + " di " + variazioneGlobale + " gradi\r\n\r\n"); }));
+                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso " + direzione + " di " + variazioneGlobale + " gradi\"");
+                        }
+                        variazioneLocale = 0;
+                        variazioneGlobale = 0;
+                    }
+                }
+                else if (variazioneLocale < -6)
+                {
+                    if (start == true)
+                    {
+                        timeStart = timezero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        start = false;
+                    }
+                    if (variazioneLocale <= variazioneGlobale)
+                        variazioneGlobale = variazioneLocale;
+                    else if (variazioneLocale > (variazioneGlobale))
+                    {
+                        start = true;
+                        string direzione;
+                        if (variazioneGlobale > 0)
+                            direzione = "destra";
+                        else
+                            direzione = "sinistra";
+                        using (StreamWriter sw = File.AppendText(Server.path))
+                        timeEnd = timezero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        using (StreamWriter sw = File.AppendText(Server.path))
+                        {
+                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso " + direzione + " di " + variazioneGlobale + " gradi\"");
                         }
                         variazioneLocale = 0;
                         variazioneGlobale = 0;
@@ -386,7 +428,7 @@ namespace Esame
                 }
                 float[] temp = new float[2];
                 temp[0] = angoloTheta;
-                temp[1] = angoloTheta + segno;
+                temp[1] = (angoloTheta +segno) * (float)(180 / Math.PI);
                 angoliTheta.Add(temp);
             }
             return angoliTheta;

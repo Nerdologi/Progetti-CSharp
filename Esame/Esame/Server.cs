@@ -21,7 +21,11 @@ namespace Esame
         public static List<float[,]> samplesList;
         private static int windowSize = 500;
         private static int samplesSize = 0;
+        //indica se siamo alla prima finestra di dati
         private static bool flag = true;
+        //serve per salvare il tempo zero quando acquisisco il primo campione
+        private static bool start = true;
+        public static string path = @".\Eventi.txt";
         
         public Server()
         {
@@ -46,7 +50,12 @@ namespace Esame
                         ElaboraDati.GraphThread.Abort();
                     }
                     ElaboraDati.GraphThread = new Thread(ElaboraDati.DisegnaSulGrafico);
-
+                    start = true;
+                    ElaboraDati.windowNumber = 0;
+                    if (!File.Exists(path))
+                        File.Create(path);
+                    //cancellazione contenuto file Eventi.txt
+                    File.WriteAllText(path, string.Empty);
                     Form1.info.AppendText("Waiting for a connection at LOCALHOST... \r\n");
                     Socket socket = this.listener.AcceptSocket();
                     Thread t1 = new Thread(new ParameterizedThreadStart(Server.readFromSocket));
@@ -171,6 +180,12 @@ namespace Esame
                                 t[i] += 4;
                             }
                         }
+                        if (start)
+                        {
+                            ElaboraDati.timezero = DateTime.Now;
+                            start = false;
+                        }
+                        
                         samples.insertElement(sample);
                         samplesList.Add(sample);
                         if (flag)
