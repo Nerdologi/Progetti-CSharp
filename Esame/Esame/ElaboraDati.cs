@@ -71,63 +71,70 @@ namespace Esame
         {
             List<float> valori = new List<float>();
             float mean = 0;
-            int K = 10;//Fisso a 10 la variabile K che sarà il mio range per costruire la media mobile per ogni i-esimo campione
-            float summary=0;
-            int j,h,f;
             for (int i = 0; i < module.Count(); i++)
             {
-                
-                summary = module[i];
-                mean = 0;
-                if (i < K && (module.Count() - i - 1) >= K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori ma davanti si
-                {
-                    for (j = i - 1; j >= 0; j--)
-                        summary += module[j];
-                    for (h = i + 1; h <= i + K; h++)
-                        summary += module[h];
-                    mean = summary / ((K + i) + 1);
-                }
-                else
-                if(i >= K && (module.Count() - i - 1) < K)//Ipotizzo che io abbia dietro K valori ma davanti no
-                {
-                    for (j = i - 1; j >= (i - K); j--)
-                        summary += module[j];
-                    for (h = i + 1; h < module.Count(); h++)
-                        summary += module[h];
-                    mean = summary / (K + (module.Count() - i) );
-                }
-                else
-                if (i < K && (module.Count() - i - 1) < K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori e nemmeno davanti
-                {
-                    for (j = i - 1; j >= 0; j--)
-                        summary += module[j];
-                    for (h = i + 1; h < module.Count(); h++)
-                        summary += module[h];
-                    mean = summary / ((h + i) + 1);
-                }
-                    ////CASISTICA GENERALE (Ho dieci valori dietro e dieci valori davanti per cui posso effettuare una semplice media mobile)
-                else
-                {    
-                     f=0;
-                     j = i - 1;
-                     h = i + 1;
-                    while (f < K)
-                    {
-                        summary += module[j]; 
-                        summary += module[h];
-                        j--;
-                        h++;
-                        f++;
-                    }
-                    mean = summary / (2 * K + 1);
 
-                  }
-                //FINE CASISTICA GENERALE
+                mean = mean_mobile(i, module);            
                 valori.Add(mean);
             }
             return valori;
         }
+        public static float mean_mobile(int i,List<float> value_mean)
+        {
+            float mean=0, summary=0;
+            int K = 10;//Fisso a 10 la variabile K che sarà il mio range per costruire la media mobile per ogni i-esimo campione
+            int j, h, f;
+            ///////////////
+            summary = value_mean[i];
+            mean = 0;
+            if (i < K && (value_mean.Count() - i - 1) >= K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori ma davanti si
+            {
+                for (j = i - 1; j >= 0; j--)
+                    summary += value_mean[j];
+                for (h = i + 1; h <= i + K; h++)
+                    summary += value_mean[h];
+                mean = summary / ((K + i) + 1);
+            }
+            else
+                if (i >= K && (value_mean.Count() - i - 1) < K)//Ipotizzo che io abbia dietro K valori ma davanti no
+                {
+                    for (j = i - 1; j >= (i - K); j--)
+                        summary += value_mean[j];
+                    for (h = i + 1; h < value_mean.Count(); h++)
+                        summary += value_mean[h];
+                    mean = summary / (K + (value_mean.Count() - i));
+                }
+                else
+                    if (i < K && (value_mean.Count() - i - 1) < K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori e nemmeno davanti
+                    {
+                        for (j = i - 1; j >= 0; j--)
+                            summary += value_mean[j];
+                        for (h = i + 1; h < value_mean.Count(); h++)
+                            summary += value_mean[h];
+                        mean = summary / ((h + i) + 1);
+                    }
+                    ////CASISTICA GENERALE (Ho dieci valori dietro e dieci valori davanti per cui posso effettuare una semplice media mobile)
+                    else
+                    {
+                        f = 0;
+                        j = i - 1;
+                        h = i + 1;
+                        while (f < K)
+                        {
+                            summary += value_mean[j];
+                            summary += value_mean[h];
+                            j--;
+                            h++;
+                            f++;
+                        }
+                        mean = summary / (2 * K + 1);
 
+                    }
+
+            ////////////
+            return mean;
+         
+    }
         public static List<float> deviazioneStandard(List<float> _value)
         {
             List<float> dev_stand=new List<float>();
@@ -139,40 +146,38 @@ namespace Esame
             float mean=0,summary=0,sd=0;
             int j, h, f;
 
-            for (int i = 0; i < value_mean.Count(); i++)
-                summary += value_mean[i];
-            mean = summary / value_mean.Count();
+           
             /////////////////////////////////////////////
 
-            for (int i = 0; i < _value.Count(); i++)
+            for (int i = 0; i < value_mean.Count(); i++)
             {
-
-                summary = (float)Math.Pow( (_value[i] - mean) , 2);
+                mean = mean_mobile(i, value_mean);
+                summary = (float)Math.Pow( (value_mean[i] - mean) , 2);
                
-                if (i < K && (_value.Count() - i - 1) >= K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori ma davanti si
+                if (i < K && (value_mean.Count() - i - 1) >= K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori ma davanti si
                 {
                     for (j = i - 1; j >= 0; j--)
-                        summary += (float)Math.Pow( (_value[j] - mean) , 2);
+                        summary += (float)Math.Pow( (value_mean[j] - mean) , 2);
                     for (h = i + 1; h <= i + K; h++)
-                        summary += (float)Math.Pow( (_value[h] - mean), 2);
+                        summary += (float)Math.Pow( (value_mean[h] - mean), 2);
                     sd =(float) Math.Sqrt( summary / ((K + i) + 1) );
                 }
                 else
-                    if (i >= K && (_value.Count() - i - 1) < K)//Ipotizzo che io abbia dietro K valori ma davanti no
+                    if (i >= K && (value_mean.Count() - i - 1) < K)//Ipotizzo che io abbia dietro K valori ma davanti no
                     {
                         for (j = i - 1; j >= (i - K); j--)
-                            summary += (float)Math.Pow( (_value[j] - mean) , 2);
-                        for (h = i + 1; h < _value.Count(); h++)
-                            summary += (float)Math.Pow((_value[h] - mean), 2);
-                        sd =(float)Math.Sqrt( summary / (K + (_value.Count() - i)));
+                            summary += (float)Math.Pow( (value_mean[j] - mean) , 2);
+                        for (h = i + 1; h < value_mean.Count(); h++)
+                            summary += (float)Math.Pow((value_mean[h] - mean), 2);
+                        sd =(float)Math.Sqrt( summary / (K + (value_mean.Count() - i)));
                     }
                     else
-                        if (i < K && (_value.Count() - i - 1) < K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori e nemmeno davanti
+                        if (i < K && (value_mean.Count() - i - 1) < K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori e nemmeno davanti
                         {
                             for (j = i - 1; j >= 0; j--)
-                                summary += (float)Math.Pow((_value[j] - mean), 2);
-                            for (h = i + 1; h < _value.Count(); h++)
-                                summary += (float)Math.Pow((_value[h] - mean), 2);
+                                summary += (float)Math.Pow((value_mean[j] - mean), 2);
+                            for (h = i + 1; h < value_mean.Count(); h++)
+                                summary += (float)Math.Pow((value_mean[h] - mean), 2);
                             sd =(float)Math.Sqrt( summary / ((h + i) + 1) );
                         }
                         // CASISTICA GENERALE (Ho dieci valori dietro e dieci valori davanti per cui posso effettuare una semplice media mobile)
@@ -183,8 +188,8 @@ namespace Esame
                             h = i + 1;
                             while (f < K)
                             {
-                                summary += (float)Math.Pow((_value[j] - mean), 2);
-                                summary += (float)Math.Pow((_value[h] - mean), 2);
+                                summary += (float)Math.Pow((value_mean[j] - mean), 2);
+                                summary += (float)Math.Pow((value_mean[h] - mean), 2);
                                 j--;
                                 h++;
                                 f++;
