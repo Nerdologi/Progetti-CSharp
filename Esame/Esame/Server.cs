@@ -184,6 +184,10 @@ namespace Esame
                         {
                             ElaboraDati.timeZero = DateTime.Now;
                             start = false;
+                            using (StreamWriter sw = File.AppendText(Server.path))
+                            {
+                                sw.WriteLine("\r\n\"" + "TEMPO ZERO: " + ElaboraDati.timeZero + " " + "\"");
+                            }
                         }
                         
                         samples.insertElement(sample);

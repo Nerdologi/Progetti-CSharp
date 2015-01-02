@@ -23,6 +23,7 @@ namespace Esame
         static List<float> modgiro;
         static List<float> theta;
         static List<float> thetaNoDiscontinuita;
+        static List<float> SD;
         public static DateTime timeZero;
         public static int windowNumber = 0;
         //potrebbe essere una variablile condivisa da più thread?
@@ -269,6 +270,7 @@ namespace Esame
                 thetaNoDiscontinuita.Add(temp[i][1]);
             }
             CalcoloGirata(thetaNoDiscontinuita);
+            CalcolaMoto(SD);
             //serve solo per scopi di debug in modo da vedere sul grafico l' agnolo theta smussato e verficare ad occhio se le girate sono rilevate correttamente
             thetaNoDiscontinuita = smoothing(thetaNoDiscontinuita);
             ElaboraDati.datiAggiornati = true;
@@ -337,6 +339,84 @@ namespace Esame
                 // Avvio un ciclo infinito sul form del grafico per tenerlo aperto
                 Application.Run();
             }
+        }
+
+        public static void CalcolaMoto(List<float> SD)
+        {
+            DateTime timeStart = new DateTime();
+            DateTime timeEnd = new DateTime();
+            bool start = true;
+            string stato;
+            float precedente = 0;
+            for (int i = 0; i < SD.Count(); i++)
+            {
+                if (i == 0)
+                    precedente = SD[i];
+                if (SD[i] >= 1 && precedente >= 1)
+                {
+                    if (start == true)
+                    {
+                        timeStart = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        start = false;
+                    }
+                    if (i == SD.Count() - 1)
+                    {
+                        timeEnd = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        stato = "In moto";
+                        using (StreamWriter sw = File.AppendText(Server.path))
+                        {
+                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                        }
+                    }
+                    precedente = SD[i];
+                }
+                else if (SD[i] < 1 && precedente >= 1)
+                {
+                    precedente = SD[i];
+                    start = true;
+                    timeEnd = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                    stato = "In moto";
+                    using (StreamWriter sw = File.AppendText(Server.path))
+                    {
+                        sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                    }
+
+                }
+                else if (SD[i] < 1 && precedente < 1)
+                {
+                    if (start == true)
+                    {
+                        timeStart = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        start = false;
+                    }
+                    if (i == SD.Count() - 1)
+                    {
+                        timeEnd = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        stato = "Non in moto";
+                        using (StreamWriter sw = File.AppendText(Server.path))
+                        {
+                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                        }
+                    }
+                    precedente = SD[i];
+
+                }
+                else if (SD[i] >= 1 && precedente < 1)
+                {
+                    precedente = SD[i];
+                    start = true;
+                    timeEnd = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                    stato = "Non in moto";
+                    using (StreamWriter sw = File.AppendText(Server.path))
+                    {
+                        sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                    }
+                }
+
+
+
+            }
+
         }
 
         public static void CalcoloGirata(List<float> angoliTheta) 
