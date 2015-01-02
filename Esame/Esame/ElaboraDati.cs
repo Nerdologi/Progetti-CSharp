@@ -270,6 +270,7 @@ namespace Esame
                 thetaNoDiscontinuita.Add(temp[i][1]);
             }
             CalcoloGirata(thetaNoDiscontinuita);
+            SD = deviazioneStandard(modacc);
             CalcolaMoto(SD);
             //serve solo per scopi di debug in modo da vedere sul grafico l' agnolo theta smussato e verficare ad occhio se le girate sono rilevate correttamente
             thetaNoDiscontinuita = smoothing(thetaNoDiscontinuita);
