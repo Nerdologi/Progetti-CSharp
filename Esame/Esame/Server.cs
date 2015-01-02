@@ -182,7 +182,7 @@ namespace Esame
                         }
                         if (start)
                         {
-                            ElaboraDati.timezero = DateTime.Now;
+                            ElaboraDati.timeZero = DateTime.Now;
                             start = false;
                         }
                         

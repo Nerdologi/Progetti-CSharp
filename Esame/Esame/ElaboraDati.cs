@@ -23,7 +23,7 @@ namespace Esame
         static List<float> modgiro;
         static List<float> theta;
         static List<float> thetaNoDiscontinuita;
-        public static DateTime timezero;
+        public static DateTime timeZero;
         public static int windowNumber = 0;
         //potrebbe essere una variablile condivisa da più thread?
         public static float segno = 0;
@@ -269,6 +269,8 @@ namespace Esame
                 thetaNoDiscontinuita.Add(temp[i][1]);
             }
             CalcoloGirata(thetaNoDiscontinuita);
+            //serve solo per scopi di debug in modo da vedere sul grafico l' agnolo theta smussato e verficare ad occhio se le girate sono rilevate correttamente
+            thetaNoDiscontinuita = smoothing(thetaNoDiscontinuita);
             ElaboraDati.datiAggiornati = true;
             
             /* Se non è mai stato fatto partire il thread che gestisce lo faccio partire
@@ -343,7 +345,13 @@ namespace Esame
             List<float> angoliThetaGradi = new List<float>();
             DateTime timeStart = new DateTime();
             DateTime timeEnd = new DateTime();
+            DateTime precedentWindowTimeEnd = new DateTime(1993,11,13);
+            DateTime windowTimeEnd = new DateTime();
+            //queste variabili cambieranno in base alla frequanza di campionamento
+            int windowOverlapTime = 5000;
+            int sampleTime = 20;
             bool start = true;
+           
             foreach (float angolo in angoliTheta)
             {
                 angoliThetaGradi.Add((float)/*(angolo*180/Math.PI)*/angolo);
@@ -358,23 +366,28 @@ namespace Esame
                 {
                     if (start == true)
                     {
-                        timeStart = timezero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        timeStart = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
                         start = false;
                     }
                     if (variazioneLocale >= variazioneGlobale)
                         variazioneGlobale = variazioneLocale;
-                    else if (variazioneLocale < (variazioneGlobale))
+                    else if (variazioneLocale < variazioneGlobale)
                     {
                         start = true;
-                        string direzione;
-                        if (variazioneGlobale > 0)
-                            direzione = "destra";
-                        else
-                            direzione = "sinistra";
-                        timeEnd = timezero.AddMilliseconds(windowNumber * 5000 + (i * 20));
-                        using (StreamWriter sw = File.AppendText(Server.path))
-                        {
-                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso " + direzione + " di " + variazioneGlobale + " gradi\"");
+                        timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        if (windowNumber > 0)
+                            precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber* windowOverlapTime + windowOverlapTime);
+                        windowTimeEnd = timeZero.AddMilliseconds(windowNumber*windowOverlapTime + windowOverlapTime* 2);
+                        /* se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
+                         * se l' evento finisce con la fine della finestra molto probabilmente lo leggerò completamente con la finestra successiva e dunque
+                         * non lo considero. ATTENZIONE questa condizione può creare problemi, valutare se modificarla o eliminarla
+                         */
+                        if (timeEnd > precedentWindowTimeEnd && timeEnd != windowTimeEnd){
+                            string info = "\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso destra di " + variazioneGlobale + " gradi\"";
+                            using (StreamWriter sw = File.AppendText(Server.path))
+                            {
+                                sw.WriteLine("\r\n" + info );
+                            }
                         }
                         variazioneLocale = 0;
                         variazioneGlobale = 0;
@@ -384,24 +397,25 @@ namespace Esame
                 {
                     if (start == true)
                     {
-                        timeStart = timezero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        timeStart = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
                         start = false;
                     }
                     if (variazioneLocale <= variazioneGlobale)
                         variazioneGlobale = variazioneLocale;
-                    else if (variazioneLocale > (variazioneGlobale))
+                    else if (variazioneLocale > variazioneGlobale)
                     {
                         start = true;
-                        string direzione;
-                        if (variazioneGlobale > 0)
-                            direzione = "destra";
-                        else
-                            direzione = "sinistra";
-                        using (StreamWriter sw = File.AppendText(Server.path))
-                        timeEnd = timezero.AddMilliseconds(windowNumber * 5000 + (i * 20));
-                        using (StreamWriter sw = File.AppendText(Server.path))
+                        timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        if (windowNumber > 0)
+                            precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber* windowOverlapTime + windowOverlapTime);
+                        //se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
+                        if (timeEnd > precedentWindowTimeEnd)
                         {
-                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso " + direzione + " di " + variazioneGlobale + " gradi\"");
+                            string info = "\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso sinistra di " + variazioneGlobale + " gradi\"";
+                            using (StreamWriter sw = File.AppendText(Server.path))
+                            {
+                                sw.WriteLine("\r\n" + info);
+                            }
                         }
                         variazioneLocale = 0;
                         variazioneGlobale = 0;
@@ -411,12 +425,12 @@ namespace Esame
         }
 
         /* In linea teorica per lo studio della girata ci basiamo sul sensore del bacino
-         * nell' algoritmo fisso dunque come numero dal sensore qeullo 
-         * qeullo che si trova sul bacino
+         * nell' algoritmo fisso dunque come numero del sensore quello 
+         * che si trova sul bacino
          */
         public static List<float[]>  FunzioneOrientamento(List<float[,]> samples)
         {
-            int sensoreBacino = 2;
+            int sensoreBacino = 0;
             List <float[]> angoliTheta = new List<float[]>();
             for (int i = 0; i < samples.Count; i++) { 
                 float x = samples[i][sensoreBacino, 6];

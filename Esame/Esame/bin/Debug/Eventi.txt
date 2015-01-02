@@ -1,36 +1,14 @@
 
-"17.35.57 17.35.58 girata verso destra di 90,05495 gradi"
+"16.52.07 16.52.08 girata verso sinistra di -39,02496 gradi"
 
-"17.35.58 17.35.59 girata verso sinistra di -28,76546 gradi"
+"16.52.09 16.52.09 girata verso destra di 7,685947 gradi"
 
-"17.35.59 17.35.59 girata verso destra di 26,77444 gradi"
+"16.52.12 16.52.13 girata verso destra di 10,0097 gradi"
 
-"17.35.59 17.36.00 girata verso sinistra di -39,23765 gradi"
+"16.52.13 16.52.14 girata verso sinistra di -48,93779 gradi"
 
-"17.36.00 17.36.00 girata verso destra di 37,69656 gradi"
+"16.52.16 16.52.16 girata verso destra di 8,515699 gradi"
 
-"17.36.01 17.36.01 girata verso sinistra di -36,91594 gradi"
+"16.52.17 16.52.17 girata verso sinistra di -9,668291 gradi"
 
-"17.36.01 17.36.02 girata verso destra di 33,63041 gradi"
-
-"17.36.02 17.36.02 girata verso sinistra di -26,82451 gradi"
-
-"17.36.02 17.36.04 girata verso destra di 67,2032 gradi"
-
-"17.36.05 17.36.05 girata verso sinistra di -9,597504 gradi"
-
-"17.36.01 17.36.01 girata verso sinistra di -6,81813 gradi"
-
-"17.36.01 17.36.02 girata verso destra di 33,63041 gradi"
-
-"17.36.02 17.36.02 girata verso sinistra di -26,82451 gradi"
-
-"17.36.02 17.36.04 girata verso destra di 67,2032 gradi"
-
-"17.36.05 17.36.05 girata verso sinistra di -9,597504 gradi"
-
-"17.36.06 17.36.06 girata verso sinistra di -6,660721 gradi"
-
-"17.36.07 17.36.07 girata verso destra di 9,886353 gradi"
-
-"17.36.08 17.36.10 girata verso sinistra di -114,716 gradi"
+"16.52.17 16.52.20 girata verso destra di 68,16251 gradi"
