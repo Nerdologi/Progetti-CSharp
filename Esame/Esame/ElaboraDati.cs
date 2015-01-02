@@ -290,21 +290,21 @@ namespace Esame
          */
         public static void InizializzaGrafico()
         {
-            /*fGAcc = new FormGraph();
+            fGAcc = new FormGraph();
             fGAcc.InitGraph("Segmentazione", "tempo", "MODACC");
             fGAcc.Show();
 
-            fGGiro = new FormGraph();
+            /*fGGiro = new FormGraph();
             fGGiro.InitGraph("Segmentazione", "tempo", "MODGIRO");
             fGGiro.Show();
 
             fGTheta = new FormGraph();
             fGTheta.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
-            fGTheta.Show();*/
+            fGTheta.Show();
 
             fgThetaNoDiscontinuita = new FormGraph();
             fgThetaNoDiscontinuita.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
-            fgThetaNoDiscontinuita .Show();
+            fgThetaNoDiscontinuita .Show();*/
         }
 
         // Questa fz. viene chiamata quando si lancia il thread che gestisce il grafico
@@ -315,10 +315,10 @@ namespace Esame
                 InizializzaGrafico();
                 GraphThreadStarted = true;
             }
-            //fGAcc.DrawGraph(modacc, "modacc");
+            fGAcc.DrawGraph(modacc, "modacc");
             //fGGiro.DrawGraph(modgiro, "modgiro");
             //fGTheta.DrawGraph(theta, "theta");
-            fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
+            //fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
 
 
             // Informo il server che ho elaborato i dati aggiornati

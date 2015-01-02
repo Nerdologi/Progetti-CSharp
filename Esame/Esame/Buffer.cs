@@ -11,6 +11,9 @@ public class Buffer
         buffer = new List<float[,]>(size);
         head = 0;
         capacity = size;
+        float[,] vuoto = new float[5, 13];
+        for (int i = 0; i < size; i++)
+            buffer.Insert(head, vuoto);
     }
 
     public float[,] GetElementAtIndex(int index)
@@ -24,7 +27,7 @@ public class Buffer
         {
             head = 0;
         }
-        buffer.Insert(head, value);
+        buffer[head] = value;
         head++;
     }
 

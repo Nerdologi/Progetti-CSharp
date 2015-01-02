@@ -16,6 +16,7 @@ namespace Esame
         private GraphPane myPane;
         private int numFinestra;
         private LineItem myCurve;
+        private List<Color> lc = new List<Color>(5);
 
         public FormGraph()
         {
@@ -25,6 +26,12 @@ namespace Esame
         // Costruisce grafico
         public void InitGraph(string _title, string _XAxisTitle, string _YAxisTitle)
         {
+            lc.Add(Color.Red);
+            lc.Add(Color.Blue);
+            lc.Add(Color.GreenYellow);
+            lc.Add(Color.HotPink);
+            lc.Add(Color.Black);
+
             // Ottengo riferimento al pannello
             zgc = zedGraphControl1;
             myPane = zedGraphControl1.GraphPane;
@@ -77,10 +84,11 @@ namespace Esame
 
             // Creo la curva da visualizzare, di colore rosso
             myCurve = myPane.AddCurve("",
-                  list1, Color.Red, SymbolType.None);
+                  list1, lc[numFinestra - 1], SymbolType.None);
 
             // Risetto gli assi
             zgc.AxisChange();
+            // Forza la ri-scrittura dei dati sul grafico
             zgc.Invalidate();
             // Ricarico grafico
             zedGraphControl1.Refresh();
