@@ -81,8 +81,10 @@ namespace Esame
             }
 
             myPane.XAxis.Scale.Max = (inizio + 2)*20;
+            myPane.YAxis.Scale.Max = (data.Max() + 1);
+            myPane.YAxis.Scale.Min = (data.Min() - 1);
 
-            // Creo la curva da visualizzare, di colore rosso
+            // Creo la curva da visualizzare
             myCurve = myPane.AddCurve("",
                   list1, lc[numFinestra - 1], SymbolType.None);
 
