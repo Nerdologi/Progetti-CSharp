@@ -112,7 +112,7 @@ namespace Esame
             if (eulerAngles.Checked == true)
             {
                 List<AngoloEulero[]> 
-                AngoliEulero = ElaboraDati.angoliEulero(Server.samplesList);
+                AngoliEulero = ElaboraDati.AngoliEulero(Server.samplesList);
                 infoSample.AppendText("yaw: ");
                 infoSample.AppendText(AngoliEulero[(int)numSample.Value][(int)numSensor.Value].getYaw() + "\r\n");
                 infoSample.AppendText("pitch: ");
@@ -123,8 +123,8 @@ namespace Esame
             }
             if (modulation.Checked == true)
             {
-                modacc = ElaboraDati.modulation(Server.samplesList, (int)numSensor.Value, 0);
-                modgiro = ElaboraDati.modulation(Server.samplesList, (int)numSensor.Value, 1);
+                modacc = ElaboraDati.Modulation(Server.samplesList, (int)numSensor.Value, 0);
+                modgiro = ElaboraDati.Modulation(Server.samplesList, (int)numSensor.Value, 1);
                 infoSample.AppendText("\r\nmodacc: ");
                 foreach (float elem in modacc)
                 {
@@ -149,8 +149,8 @@ namespace Esame
             }
             if (smoothing.Checked == true)
             {
-                smoothacc = ElaboraDati.smoothing(modacc);
-                smoothgir = ElaboraDati.smoothing(modgiro);
+                smoothacc = ElaboraDati.Smoothing(modacc);
+                smoothgir = ElaboraDati.Smoothing(modgiro);
                 infoSample.AppendText("\r\nsmoothacc: ");
                 foreach (float elem in smoothacc)
                 {
@@ -164,7 +164,7 @@ namespace Esame
             }
             if (modaccRI.Checked == true)
             {
-                modacc = ElaboraDati.modulation(Server.samplesList, (int)numSensor.Value, 0);
+                modacc = ElaboraDati.Modulation(Server.samplesList, (int)numSensor.Value, 0);
                 /* Fino ad ora le varie informazioni sono state salvate in List dato che
                  * non lavoriamo su finestre di dati, ma sull' insieme di campioni
                  * e non  possiamo sapere a priori quanti sono e dunque abbaimo bisogno di 
@@ -183,7 +183,7 @@ namespace Esame
             }
             if (sd.Checked == true)
             {
-                dev = ElaboraDati.deviazioneStandard(modacc);
+                dev = ElaboraDati.DeviazioneStandard(modacc);
                 infoSample.AppendText("\r\nDeviazioni standard: \r\n");
                 foreach (float elem in dev)
                 {

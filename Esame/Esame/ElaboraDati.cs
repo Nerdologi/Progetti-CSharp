@@ -36,7 +36,7 @@ namespace Esame
          *  - 1 per modulare il giroscopio
          * ritorna un array monodimensionale
          * */
-        public static List<float> modulation(List<float[,]> samples, int _S, int _type)
+        public static List<float> Modulation(List<float[,]> samples, int _S, int _type)
         {
             float a0, a1, a2;
             float g0, g1, g2;
@@ -64,23 +64,23 @@ namespace Esame
                     valori.Add((float)Math.Sqrt(g0 + g1 + g2));
                 }
             }
-
             return valori;         
         }
 
-        public static List<float> smoothing(List<float> module)
+        public static List<float> Smoothing(List<float> module)
         {
             List<float> valori = new List<float>();
             float mean = 0;
             for (int i = 0; i < module.Count(); i++)
             {
 
-                mean = mean_mobile(i, module);            
+                mean = MobileMean(i, module);            
                 valori.Add(mean);
             }
             return valori;
         }
-        public static float mean_mobile(int i,List<float> value_mean)
+
+        public static float MobileMean(int i,List<float> value_mean)
         {
             float mean=0, summary=0;
             int K = 10;//Fisso a 10 la variabile K che sarà il mio range per costruire la media mobile per ogni i-esimo campione
@@ -131,28 +131,24 @@ namespace Esame
                         mean = summary / (2 * K + 1);
 
                     }
-
             ////////////
-            return mean;
-         
-    }
-        public static List<float> deviazioneStandard(List<float> _value)
+            return mean; 
+        }
+
+        public static List<float> DeviazioneStandard(List<float> _value)
         {
             List<float> dev_stand=new List<float>();
             List<float> value_mean;
             int K= 10;//Range di elementi per calcolare la deviazione standard mobile
             //ricavo i valori mediati tramite una media mobile(smmothing)
-            value_mean = smoothing(_value);
+            value_mean = _value;// smoothing(_value);
             //Effettuo una semplice media
             float mean=0,summary=0,sd=0;
             int j, h, f;
 
-           
-            /////////////////////////////////////////////
-
             for (int i = 0; i < value_mean.Count(); i++)
             {
-                mean = mean_mobile(i, value_mean);
+                mean = MobileMean(i, value_mean);
                 summary = (float)Math.Pow( (value_mean[i] - mean) , 2);
                
                 if (i < K && (value_mean.Count() - i - 1) >= K)//Ipotizzo che io non abbia dietro all'i-esimo valore K valori ma davanti si
@@ -201,22 +197,22 @@ namespace Esame
                 //FINE CASISTICA GENERALE
                 dev_stand.Add(sd);
             }
-
-            return dev_stand;
-            }
+            return Smoothing(dev_stand);
+        }
 
         /*
-         *La funzione prende un vettore di valori in ingresso e 
-         *restituisce il vettore monodimensionale RI[]. 
-         *L' elemento RI[i] rappresenta il Rapporto Incrementale
-         *della funzione nel punto i.
+         * La funzione prende un vettore di valori in ingresso e 
+         * restituisce il vettore monodimensionale RI[]. 
+         * L' elemento RI[i] rappresenta il Rapporto Incrementale
+         * della funzione nel punto i.
          */ 
         public static float[] RIfun(float[] input) 
         {
             float[] RI = new float [input.Length -1];
             //l' elemento i+1 non esiste se scorro l' array fino all' elemento length
             //dunque mi fermo a length -1
-            for (int i = 1; i < (input.Length - 1); i++) {
+            for (int i = 1; i < (input.Length - 1); i++) 
+            {
                 float deltaF = input[i + 1] - input[i];
                 float deltaX = (i + 1) - i;
                 RI[i] = deltaF / deltaX;
@@ -224,7 +220,7 @@ namespace Esame
             return RI;  
         }
         
-        public static List<AngoloEulero[]> angoliEulero(List<float[,]> campioni)
+        public static List<AngoloEulero[]> AngoliEulero(List<float[,]> campioni)
         {
             List<AngoloEulero[]> angoliEulero = new List<AngoloEulero[]>();
             for (int i = 0; i < campioni.Count; i++)
@@ -247,7 +243,6 @@ namespace Esame
                     angoliEulero[i][numSensore] = new AngoloEulero(yaw, pitch, roll);
                 }
             }
-
             return angoliEulero;
         }
 
@@ -259,8 +254,8 @@ namespace Esame
                 Form1.info.Invoke(new MethodInvoker(delegate { Form1.info.AppendText("\r\n\r\nTHREAD CHE LAVORA SU UNA FINSTRA DI " + window.Count + " CAMPIONI\r\n\r\n"); }));
             }
 
-            modacc = modulation(window, 0, 0);
-            modgiro = modulation(window, 0, 1);
+            modacc = Modulation(window, 0, 0);
+            modgiro = Modulation(window, 0, 1);
             theta = new List<float>();
             thetaNoDiscontinuita = new List<float>();
             List<float[]> temp = FunzioneOrientamento(window);
@@ -270,10 +265,10 @@ namespace Esame
                 thetaNoDiscontinuita.Add(temp[i][1]);
             }
             CalcoloGirata(thetaNoDiscontinuita);
-            SD = deviazioneStandard(modacc);
+            SD = DeviazioneStandard(modacc);
             CalcolaMoto(SD);
             //serve solo per scopi di debug in modo da vedere sul grafico l' agnolo theta smussato e verficare ad occhio se le girate sono rilevate correttamente
-            thetaNoDiscontinuita = smoothing(thetaNoDiscontinuita);
+            thetaNoDiscontinuita = Smoothing(thetaNoDiscontinuita);
             ElaboraDati.datiAggiornati = true;
             
             /* Se non è mai stato fatto partire il thread che gestisce lo faccio partire
@@ -413,16 +408,11 @@ namespace Esame
                         sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
                     }
                 }
-
-
-
             }
-
         }
 
         public static void CalcoloGirata(List<float> angoliTheta) 
         {
-            
             List<float> angoliThetaGradi = new List<float>();
             DateTime timeStart = new DateTime();
             DateTime timeEnd = new DateTime();
@@ -437,7 +427,7 @@ namespace Esame
             {
                 angoliThetaGradi.Add((float)/*(angolo*180/Math.PI)*/angolo);
             }
-            angoliThetaGradi = smoothing(angoliThetaGradi);
+            angoliThetaGradi = Smoothing(angoliThetaGradi);
             float variazioneGlobale = 0;
             float variazioneLocale = 0;
             for (int i = 1; i < angoliThetaGradi.Count; i++)
@@ -533,6 +523,5 @@ namespace Esame
             }
             return angoliTheta;
         }
-    
     }
 }

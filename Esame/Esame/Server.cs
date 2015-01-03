@@ -58,7 +58,7 @@ namespace Esame
                     File.WriteAllText(path, string.Empty);
                     Form1.info.AppendText("Waiting for a connection at LOCALHOST... \r\n");
                     Socket socket = this.listener.AcceptSocket();
-                    Thread t1 = new Thread(new ParameterizedThreadStart(Server.readFromSocket));
+                    Thread t1 = new Thread(new ParameterizedThreadStart(Server.ReadFromSocket));
                     t1.Start(socket);
                 }
             }
@@ -68,7 +68,7 @@ namespace Esame
             }
         }
 
-        public static void  readFromSocket (Object obj)
+        public static void  ReadFromSocket (Object obj)
         {
             try
             {
@@ -190,7 +190,7 @@ namespace Esame
                             }
                         }
                         
-                        samples.insertElement(sample);
+                        samples.InsertElement(sample);
                         samplesList.Add(sample);
                         if (flag)
                         {
@@ -200,7 +200,7 @@ namespace Esame
                                  flag = false;
                                  ElaboraDati.graphAck = false;
                                  Thread thread = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
-                                 thread.Start(samples.getWindow(samples.Count(), windowSize));
+                                 thread.Start(samples.GetWindow(samples.Count(), windowSize));
 
                                  // Aspetto che i threads che gestiscono i grafici, abbiano iniziato a elaborare i dati
                                  while (!ElaboraDati.graphAck)
@@ -216,7 +216,7 @@ namespace Esame
                                 samplesSize = 0;
                                 ElaboraDati.graphAck = false;
                                 Thread thread = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
-                                thread.Start(samples.getWindow(samples.Count(), windowSize));
+                                thread.Start(samples.GetWindow(samples.Count(), windowSize));
 
                                 // Aspetto che i threads che gestiscono i grafici, abbiano iniziato a elaborare i dati
                                 while (!ElaboraDati.graphAck)
@@ -253,13 +253,13 @@ namespace Esame
                     {
                         ElaboraDati.graphAck = false;
                         Thread t2 = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
-                        t2.Start(samples.getWindow(samples.Count(), samplesSize));
+                        t2.Start(samples.GetWindow(samples.Count(), samplesSize));
                     }
                     else
                     {
                         ElaboraDati.graphAck = false;
                         Thread t2 = new Thread(new ParameterizedThreadStart(ElaboraDati.FunzioneCheElaboraIDati));
-                        t2.Start(samples.getWindow(samples.Count(), windowSize / 2 + samplesSize));
+                        t2.Start(samples.GetWindow(samples.Count(), windowSize / 2 + samplesSize));
                     }
 
                     // Aspetto che i threads che gestiscono i grafici, abbiano iniziato a elaborare i dati

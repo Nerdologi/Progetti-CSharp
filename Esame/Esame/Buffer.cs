@@ -7,7 +7,8 @@ public class Buffer
     private int head;
     private int capacity;
 
-    public Buffer(int size) {
+    public Buffer(int size) 
+    {
         buffer = new List<float[,]>(size);
         head = 0;
         capacity = size;
@@ -21,7 +22,7 @@ public class Buffer
         return buffer[index];  
     }
 
-    public void insertElement(float[,] value)
+    public void InsertElement(float[,] value)
     {
         if (head >= this.capacity)
         {
@@ -44,7 +45,7 @@ public class Buffer
     /*la funzione permette di estrarre dal Buffer la finestra di campioni
      * che devono essere analizzati 
      */
-    public List<float[,]> getWindow(int index, int windowSize)
+    public List<float[,]> GetWindow(int index, int windowSize)
     {
         List<float[,]> window = new List<float[,]>();
         if (index - windowSize < 0)
@@ -75,5 +76,4 @@ public class Buffer
         buffer.Clear();
         head = 0;
     }
-
 }
