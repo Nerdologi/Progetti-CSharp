@@ -32,6 +32,10 @@ namespace Esame
         static List<float> roll;
         public static DateTime timeZero;
         public static int windowNumber = 0;
+        public static DateTime timeStartLastEventMoto;
+        public static DateTime timeEndLastEventMoto;
+        public static string stateLastEventMoto;
+        
         //potrebbe essere una variablile condivisa da più thread?
         public static float segno = 0;
 
@@ -273,7 +277,7 @@ namespace Esame
             CalcoloGirata(thetaNoDiscontinuita);
             SD = DeviazioneStandard(modacc);
             CalcolaMoto(SD);
-            //serve solo per scopi di debug in modo da vedere sul grafico l' agnolo theta smussato e verficare ad occhio se le girate sono rilevate correttamente
+            //serve solo per scopi di debug in modo da vedere sul grafico l' angolo theta smussato e verficare ad occhio se le girate sono rilevate correttamente
             thetaNoDiscontinuita = Smoothing(thetaNoDiscontinuita);
 
             // dead reckoning debug 
@@ -378,6 +382,10 @@ namespace Esame
             bool start = true;
             string stato;
             float precedente = 0;
+            int windowOverlapTime = 5000;
+            int sampleTime = 20;
+            DateTime precedentWindowTimeEnd = new DateTime(1993, 11, 13);
+            DateTime windowTimeEnd = new DateTime();
             for (int i = 0; i < SD.Count(); i++)
             {
                 if (i == 0)
@@ -386,17 +394,35 @@ namespace Esame
                 {
                     if (start == true)
                     {
-                        timeStart = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        timeStart = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
                         start = false;
                     }
                     if (i == SD.Count() - 1)
                     {
-                        timeEnd = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
-                        stato = "In moto";
-                        using (StreamWriter sw = File.AppendText(Server.path))
+                       timeEndLastEventMoto  = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                       stateLastEventMoto = "In moto";
+                       timeStartLastEventMoto = timeStart; 
+                        /*using (StreamWriter sw = File.AppendText(Server.path))
                         {
                             sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
-                        }
+                        }*/
+                      /*  timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        stato = "In moto";
+                        if (windowNumber > 0)
+                            precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime);
+                        windowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime * 2);
+                        /* se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
+                         * se l' evento finisce con la fine della finestra molto probabilmente lo leggerò completamente con la finestra successiva e dunque
+                         * non lo considero. ATTENZIONE questa condizione può creare problemi, valutare se modificarla o eliminarla
+                         */
+                      /*  if (timeEnd > precedentWindowTimeEnd && timeEnd != windowTimeEnd)
+                        {
+                           // string info = "\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso destra di " + variazioneGlobale + " gradi\"";
+                            using (StreamWriter sw = File.AppendText(Server.path))
+                            {
+                                sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                            }
+                        }*/
                     }
                     precedente = SD[i];
                 }
@@ -404,11 +430,28 @@ namespace Esame
                 {
                     precedente = SD[i];
                     start = true;
-                    timeEnd = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                    /*timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
                     stato = "In moto";
                     using (StreamWriter sw = File.AppendText(Server.path))
                     {
                         sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                    }*/
+                    timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                    stato = "In moto";
+                    if (windowNumber > 0)
+                        precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime);
+                    windowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime * 2);
+                    /* se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
+                     * se l' evento finisce con la fine della finestra molto probabilmente lo leggerò completamente con la finestra successiva e dunque
+                     * non lo considero. ATTENZIONE questa condizione può creare problemi, valutare se modificarla o eliminarla
+                     */
+                    if (timeEnd > precedentWindowTimeEnd && timeEnd != windowTimeEnd)
+                    {
+                        // string info = "\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso destra di " + variazioneGlobale + " gradi\"";
+                        using (StreamWriter sw = File.AppendText(Server.path))
+                        {
+                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                        }
                     }
 
                 }
@@ -416,17 +459,35 @@ namespace Esame
                 {
                     if (start == true)
                     {
-                        timeStart = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        timeStart = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
                         start = false;
                     }
                     if (i == SD.Count() - 1)
                     {
-                        timeEnd = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
-                        stato = "Non in moto";
-                        using (StreamWriter sw = File.AppendText(Server.path))
+                        timeEndLastEventMoto = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        stateLastEventMoto = "Non in moto";
+                        timeStartLastEventMoto = timeStart;
+                       /* using (StreamWriter sw = File.AppendText(Server.path))
                         {
                             sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
-                        }
+                        }*/
+                      /*  timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        stato = "Non in moto";
+                        if (windowNumber > 0)
+                            precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime);
+                        windowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime * 2);
+                        /* se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
+                         * se l' evento finisce con la fine della finestra molto probabilmente lo leggerò completamente con la finestra successiva e dunque
+                         * non lo considero. ATTENZIONE questa condizione può creare problemi, valutare se modificarla o eliminarla
+                         */
+                       /* if (timeEnd > precedentWindowTimeEnd && timeEnd != windowTimeEnd)
+                        {
+                            // string info = "\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso destra di " + variazioneGlobale + " gradi\"";
+                            using (StreamWriter sw = File.AppendText(Server.path))
+                            {
+                                sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                            }
+                        }*/
                     }
                     precedente = SD[i];
 
@@ -435,11 +496,28 @@ namespace Esame
                 {
                     precedente = SD[i];
                     start = true;
-                    timeEnd = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                   /* timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
                     stato = "Non in moto";
                     using (StreamWriter sw = File.AppendText(Server.path))
                     {
                         sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                    }*/
+                    timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                    stato = "Non moto";
+                    if (windowNumber > 0)
+                        precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime);
+                    windowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime * 2);
+                    /* se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
+                     * se l' evento finisce con la fine della finestra molto probabilmente lo leggerò completamente con la finestra successiva e dunque
+                     * non lo considero. ATTENZIONE questa condizione può creare problemi, valutare se modificarla o eliminarla
+                     */
+                    if (timeEnd > precedentWindowTimeEnd && timeEnd != windowTimeEnd)
+                    {
+                        // string info = "\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso destra di " + variazioneGlobale + " gradi\"";
+                        using (StreamWriter sw = File.AppendText(Server.path))
+                        {
+                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                        }
                     }
                 }
             }
@@ -502,7 +580,7 @@ namespace Esame
                 {
                     if (start == true)
                     {
-                        timeStart = timeZero.AddMilliseconds(windowNumber * 5000 + (i * 20));
+                        timeStart = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
                         start = false;
                     }
                     if (variazioneLocale <= variazioneGlobale)

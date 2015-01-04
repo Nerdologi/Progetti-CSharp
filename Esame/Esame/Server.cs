@@ -275,7 +275,11 @@ namespace Esame
                     while (!ElaboraDati.graphAck)
                     { }
                     // ... ora posso proseguire ...
-
+                    //Scrivo l'vento dell'ultima finestra del moto
+                   using (StreamWriter sw = File.AppendText(Server.path))
+                    {
+                        sw.WriteLine("\r\n\"" + ElaboraDati.timeStartLastEventMoto.ToString("T") + " " + ElaboraDati.timeEndLastEventMoto.ToString("T") + " " + ElaboraDati.stateLastEventMoto + "\"");
+                    }
                     // Pulisco buffer
                     samples.Clear();
                     flag = true;
