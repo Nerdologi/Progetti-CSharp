@@ -54,7 +54,7 @@ namespace Esame
 
         /* Accetta in ingresso due parametri:
          * - data, sono i punti da rappresentare sul grafico
-         * - category, che può assumere i valori "modacc" , "modgiro" o "theta"
+         * - category, che può assumere i valori "modacc" , "modgiro", "theta", "thetaNoDiscontinuita", "yaw", "pitch" o "roll"
          * Il secondo parametro serve per sapere quale dei thread sta elaborando
          * i dati, per informare i server di avvenuta ricezione dei dati
          * aggiornati.
@@ -69,6 +69,12 @@ namespace Esame
                 this.Text = "Grafico Angolo Theta";
             else if (category == "thetaNoDiscontinuita")
                 this.Text = "Grafico Angolo Theta Senza Discontinuità";
+            else if (category == "yaw")
+                this.Text = "Grafico Angolo Eulero Yaw";
+            else if (category == "pitch")
+                this.Text = "Grafico Angolo Eulero Pitch";
+            else if (category == "roll")
+                this.Text = "Grafico Angolo Eulero Roll";
 
             // Creo la lista di punti
             PointPairList list1 = new PointPairList();

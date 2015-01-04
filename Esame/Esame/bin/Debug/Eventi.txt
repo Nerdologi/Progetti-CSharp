@@ -1,54 +1,54 @@
 
-"TEMPO ZERO: 03/01/15 15:50:21 "
+"TEMPO ZERO: 04/01/2015 15.11.42 "
 
-"15:50:22 15:50:24 girata verso sinistra di -39,02496 gradi"
+"15.11.43 15.11.45 girata verso sinistra di -39,02496 gradi"
 
-"15:50:24 15:50:24 girata verso destra di 7,685947 gradi"
+"15.11.46 15.11.46 girata verso destra di 7,685947 gradi"
 
-"15:50:27 15:50:28 girata verso destra di 10,0097 gradi"
+"15.11.49 15.11.49 girata verso destra di 10,0097 gradi"
 
-"15:50:28 15:50:29 girata verso sinistra di -48,93779 gradi"
+"15.11.49 15.11.50 girata verso sinistra di -48,93779 gradi"
 
-"15:50:21 15:50:22 Non in moto"
+"15.11.42 15.11.44 Non in moto"
 
-"15:50:22 15:50:23 In moto"
+"15.11.44 15.11.44 In moto"
 
-"15:50:23 15:50:23 Non in moto"
+"15.11.44 15.11.45 Non in moto"
 
-"15:50:23 15:50:27 In moto"
+"15.11.45 15.11.48 In moto"
 
-"15:50:27 15:50:27 Non in moto"
+"15.11.48 15.11.49 Non in moto"
 
-"15:50:27 15:50:28 In moto"
+"15.11.49 15.11.49 In moto"
 
-"15:50:28 15:50:28 Non in moto"
+"15.11.49 15.11.49 Non in moto"
 
-"15:50:28 15:50:28 In moto"
+"15.11.49 15.11.50 In moto"
 
-"15:50:28 15:50:29 Non in moto"
+"15.11.50 15.11.50 Non in moto"
 
-"15:50:29 15:50:31 In moto"
+"15.11.50 15.11.52 In moto"
 
-"15:50:31 15:50:31 girata verso destra di 8,515699 gradi"
+"15.11.52 15.11.53 girata verso destra di 8,515699 gradi"
 
-"15:50:32 15:50:32 girata verso sinistra di -9,668291 gradi"
+"15.11.53 15.11.54 girata verso sinistra di -9,668291 gradi"
 
-"15:50:33 15:50:35 girata verso destra di 68,16251 gradi"
+"15.11.54 15.11.56 girata verso destra di 68,16251 gradi"
 
-"15:50:26 15:50:26 Non in moto"
+"15.11.47 15.11.47 Non in moto"
 
-"15:50:26 15:50:27 In moto"
+"15.11.47 15.11.48 In moto"
 
-"15:50:27 15:50:27 Non in moto"
+"15.11.48 15.11.49 Non in moto"
 
-"15:50:27 15:50:28 In moto"
+"15.11.49 15.11.49 In moto"
 
-"15:50:28 15:50:28 Non in moto"
+"15.11.49 15.11.49 Non in moto"
 
-"15:50:28 15:50:28 In moto"
+"15.11.49 15.11.50 In moto"
 
-"15:50:28 15:50:29 Non in moto"
+"15.11.50 15.11.50 Non in moto"
 
-"15:50:29 15:50:33 In moto"
+"15.11.50 15.11.55 In moto"
 
-"15:50:33 15:50:35 Non in moto"
+"15.11.55 15.11.57 Non in moto"

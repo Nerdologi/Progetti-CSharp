@@ -16,6 +16,9 @@ namespace Esame
         static FormGraph fGGiro;
         static FormGraph fGTheta;
         static FormGraph fgThetaNoDiscontinuita;
+        static FormGraph fgYaw;
+        static FormGraph fgPitch;
+        static FormGraph fgRoll;
         public static bool datiAggiornati = false;
         public static bool datiFiniti = false;
         public static bool graphAck = false;
@@ -24,6 +27,9 @@ namespace Esame
         static List<float> theta;
         static List<float> thetaNoDiscontinuita;
         static List<float> SD;
+        static List<float> yaw;
+        static List<float> pitch;
+        static List<float> roll;
         public static DateTime timeZero;
         public static int windowNumber = 0;
         //potrebbe essere una variablile condivisa da più thread?
@@ -269,6 +275,20 @@ namespace Esame
             CalcolaMoto(SD);
             //serve solo per scopi di debug in modo da vedere sul grafico l' agnolo theta smussato e verficare ad occhio se le girate sono rilevate correttamente
             thetaNoDiscontinuita = Smoothing(thetaNoDiscontinuita);
+
+            // dead reckoning debug 
+            List<AngoloEulero[]> tempAngoliEulero = AngoliEulero(window);
+            yaw = new List<float>();
+            pitch = new List<float>();
+            roll = new List<float>();
+            //prendo tutti gli angoli di eulero per il sensore sul bacino
+            foreach (AngoloEulero[] angolo in tempAngoliEulero)
+            {
+                yaw.Add(angolo[0].getYaw());
+                pitch.Add(angolo[0].getPitch());
+                roll.Add(angolo[0].getRoll());
+            }
+
             ElaboraDati.datiAggiornati = true;
             
             /* Se non è mai stato fatto partire il thread che gestisce lo faccio partire
@@ -285,11 +305,11 @@ namespace Esame
          */
         public static void InizializzaGrafico()
         {
-            fGAcc = new FormGraph();
+            /*fGAcc = new FormGraph();
             fGAcc.InitGraph("Segmentazione", "tempo", "MODACC");
             fGAcc.Show();
 
-            /*fGGiro = new FormGraph();
+            fGGiro = new FormGraph();
             fGGiro.InitGraph("Segmentazione", "tempo", "MODGIRO");
             fGGiro.Show();
 
@@ -300,6 +320,18 @@ namespace Esame
             fgThetaNoDiscontinuita = new FormGraph();
             fgThetaNoDiscontinuita.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
             fgThetaNoDiscontinuita .Show();*/
+
+            fgYaw = new FormGraph();
+            fgYaw.InitGraph("Segmentazione", "tempo", "Angolo eulero yaw sensore bacino");
+            fgYaw.Show();
+            
+            fgPitch = new FormGraph();
+            fgPitch.InitGraph("Segmentazione", "tempo", "Angolo eulero pitch sensore bacino");
+            fgPitch.Show();
+            
+            fgRoll = new FormGraph();
+            fgRoll.InitGraph("Segmentazione", "tempo", "Angolo eulero roll sensore bacino");
+            fgRoll.Show();
         }
 
         // Questa fz. viene chiamata quando si lancia il thread che gestisce il grafico
@@ -310,11 +342,13 @@ namespace Esame
                 InizializzaGrafico();
                 GraphThreadStarted = true;
             }
-            fGAcc.DrawGraph(modacc, "modacc");
+            //fGAcc.DrawGraph(modacc, "modacc");
             //fGGiro.DrawGraph(modgiro, "modgiro");
             //fGTheta.DrawGraph(theta, "theta");
             //fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
-
+            fgYaw.DrawGraph(yaw, "yaw");
+            fgPitch.DrawGraph(pitch, "pitch");
+            fgRoll.DrawGraph(roll, "roll");
 
             // Informo il server che ho elaborato i dati aggiornati
             ElaboraDati.graphAck = true;
