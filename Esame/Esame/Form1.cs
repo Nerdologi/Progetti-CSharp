@@ -25,6 +25,7 @@ namespace Esame
         private CheckBox modaccRI;
         private CheckBox sd;
         private CheckBox graficoAngoloTheta;
+        private CheckBox Yvalue;
         private Server server;
         List<float> modacc;
         List<float> modgiro;
@@ -46,6 +47,7 @@ namespace Esame
             smoothing = this.checkBox3;
             modaccRI = this.checkBox4;
             sd = this.checkBox5;
+            Yvalue = this.checkBox7;
             graficoAngoloTheta = this.checkBox6;
             infoSample.Enabled = false;
             showSample.Enabled = false;
@@ -57,6 +59,7 @@ namespace Esame
             modaccRI.Enabled = false;
             sd.Enabled = false;
             graficoAngoloTheta.Enabled = false;
+            Yvalue.Enabled = false;
 
             server = new Server();
         }
@@ -77,6 +80,7 @@ namespace Esame
             modaccRI.Enabled = true;
             sd.Enabled = true;
             graficoAngoloTheta.Enabled = true;
+            Yvalue.Enabled = true;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -191,6 +195,13 @@ namespace Esame
                 }
             
             }
+            if (Yvalue.Checked == true)
+            {
+                infoSample.AppendText("\r\n" + " Valori Y del bacino: " +"\r\n");
+                for(int i=0;i < Server.samplesList.Count();i++)
+                infoSample.AppendText(Server.samplesList[i][0, 1] + "\r\n");
+                
+            }
             /*
             if (graficoAngoloTheta.Checked == true) 
             {
@@ -215,6 +226,8 @@ namespace Esame
             if (this.checkBox5.Checked == true)
                 checkBox2.Checked = true;
         }
+
+       
     }
    
 }

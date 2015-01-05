@@ -277,6 +277,7 @@ namespace Esame
             CalcoloGirata(thetaNoDiscontinuita);
             SD = DeviazioneStandard(modacc);
             CalcolaMoto(SD);
+            CalcoloInclinazione(window);
             //serve solo per scopi di debug in modo da vedere sul grafico l' angolo theta smussato e verficare ad occhio se le girate sono rilevate correttamente
             thetaNoDiscontinuita = Smoothing(thetaNoDiscontinuita);
 
@@ -580,6 +581,11 @@ namespace Esame
                 angoliTheta.Add(temp);
             }
             return angoliTheta;
+        }
+
+        public static void CalcoloInclinazione(List<float[,]> window) { 
+            
+        
         }
     }
 }
