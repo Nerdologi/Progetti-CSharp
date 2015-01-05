@@ -385,7 +385,6 @@ namespace Esame
             int windowOverlapTime = 5000;
             int sampleTime = 20;
             DateTime precedentWindowTimeEnd = new DateTime(1993, 11, 13);
-            DateTime windowTimeEnd = new DateTime();
             for (int i = 0; i < SD.Count(); i++)
             {
                 if (i == 0)
@@ -402,27 +401,6 @@ namespace Esame
                        timeEndLastEventMoto  = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
                        stateLastEventMoto = "In moto";
                        timeStartLastEventMoto = timeStart; 
-                        /*using (StreamWriter sw = File.AppendText(Server.path))
-                        {
-                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
-                        }*/
-                      /*  timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
-                        stato = "In moto";
-                        if (windowNumber > 0)
-                            precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime);
-                        windowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime * 2);
-                        /* se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
-                         * se l' evento finisce con la fine della finestra molto probabilmente lo leggerò completamente con la finestra successiva e dunque
-                         * non lo considero. ATTENZIONE questa condizione può creare problemi, valutare se modificarla o eliminarla
-                         */
-                      /*  if (timeEnd > precedentWindowTimeEnd && timeEnd != windowTimeEnd)
-                        {
-                           // string info = "\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso destra di " + variazioneGlobale + " gradi\"";
-                            using (StreamWriter sw = File.AppendText(Server.path))
-                            {
-                                sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
-                            }
-                        }*/
                     }
                     precedente = SD[i];
                 }
@@ -430,30 +408,24 @@ namespace Esame
                 {
                     precedente = SD[i];
                     start = true;
-                    /*timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
-                    stato = "In moto";
-                    using (StreamWriter sw = File.AppendText(Server.path))
-                    {
-                        sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
-                    }*/
                     timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
                     stato = "In moto";
                     if (windowNumber > 0)
                         precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime);
-                    windowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime * 2);
-                    /* se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
-                     * se l' evento finisce con la fine della finestra molto probabilmente lo leggerò completamente con la finestra successiva e dunque
-                     * non lo considero. ATTENZIONE questa condizione può creare problemi, valutare se modificarla o eliminarla
-                     */
-                    if (timeEnd > precedentWindowTimeEnd && timeEnd != windowTimeEnd)
+                    // se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
+                    if (timeEnd > precedentWindowTimeEnd && i != SD.Count() - 1)
                     {
-                        // string info = "\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso destra di " + variazioneGlobale + " gradi\"";
                         using (StreamWriter sw = File.AppendText(Server.path))
                         {
                             sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
                         }
                     }
-
+                    else if (i == SD.Count() - 1)
+                    {
+                        timeEndLastEventMoto = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        stateLastEventMoto = "In moto";
+                        timeStartLastEventMoto = timeStart;
+                    }
                 }
                 else if (SD[i] < 1 && precedente < 1)
                 {
@@ -467,27 +439,6 @@ namespace Esame
                         timeEndLastEventMoto = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
                         stateLastEventMoto = "Non in moto";
                         timeStartLastEventMoto = timeStart;
-                       /* using (StreamWriter sw = File.AppendText(Server.path))
-                        {
-                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
-                        }*/
-                      /*  timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
-                        stato = "Non in moto";
-                        if (windowNumber > 0)
-                            precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime);
-                        windowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime * 2);
-                        /* se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
-                         * se l' evento finisce con la fine della finestra molto probabilmente lo leggerò completamente con la finestra successiva e dunque
-                         * non lo considero. ATTENZIONE questa condizione può creare problemi, valutare se modificarla o eliminarla
-                         */
-                       /* if (timeEnd > precedentWindowTimeEnd && timeEnd != windowTimeEnd)
-                        {
-                            // string info = "\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso destra di " + variazioneGlobale + " gradi\"";
-                            using (StreamWriter sw = File.AppendText(Server.path))
-                            {
-                                sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
-                            }
-                        }*/
                     }
                     precedente = SD[i];
 
@@ -496,28 +447,23 @@ namespace Esame
                 {
                     precedente = SD[i];
                     start = true;
-                   /* timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
-                    stato = "Non in moto";
-                    using (StreamWriter sw = File.AppendText(Server.path))
-                    {
-                        sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
-                    }*/
                     timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
-                    stato = "Non moto";
+                    stato = "Non in moto";
                     if (windowNumber > 0)
                         precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime);
-                    windowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime * 2);
-                    /* se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
-                     * se l' evento finisce con la fine della finestra molto probabilmente lo leggerò completamente con la finestra successiva e dunque
-                     * non lo considero. ATTENZIONE questa condizione può creare problemi, valutare se modificarla o eliminarla
-                     */
-                    if (timeEnd > precedentWindowTimeEnd && timeEnd != windowTimeEnd)
+                    // se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
+                    if (timeEnd > precedentWindowTimeEnd && i != SD.Count() - 1)
                     {
-                        // string info = "\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " girata verso destra di " + variazioneGlobale + " gradi\"";
                         using (StreamWriter sw = File.AppendText(Server.path))
                         {
                             sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
                         }
+                    }
+                    else if (i == SD.Count() - 1)
+                    {
+                        timeEndLastEventMoto = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        stateLastEventMoto = "Non in moto";
+                        timeStartLastEventMoto = timeStart;
                     }
                 }
             }
