@@ -26,6 +26,7 @@ namespace Esame
         //serve per salvare il tempo zero quando acquisisco il primo campione
         private static bool start = true;
         public static string path = @".\Eventi.txt";
+        public static string path1 = @".\Samples.txt";
         
         public Server()
         {
@@ -275,11 +276,38 @@ namespace Esame
                     while (!ElaboraDati.graphAck)
                     { }
                     // ... ora posso proseguire ...
-                    //Scrivo l'vento dell'ultima finestra del moto
+                    //Scrivo l'evento dell'ultima finestra del moto
                    using (StreamWriter sw = File.AppendText(Server.path))
                     {
                         sw.WriteLine("\r\n\"" + ElaboraDati.timeStartLastEventMoto.ToString("T") + " " + ElaboraDati.timeEndLastEventMoto.ToString("T") + " " + ElaboraDati.stateLastEventMoto + "\"");
                     }
+                    //Crea un file .csv con tutti i campioni
+                   string filePath = @".\Samples.csv";  
+	               string delimiter = ";";  
+	               int numSample=samplesList.Count();
+                   int position=14*5,f=0;
+	               string[][] output = new string[numSample][];
+                     for (int i = 0; i < samplesList.Count(); i++) {
+                         output[i] = new String[position];
+                         f = 0;
+                         for (int j = 0; j < 5; j++) {
+
+                             for (int h = 0; h < 13; h++) {
+                                 output[i][f] = Convert.ToString(samplesList[i][j, h]);
+                                 f++;
+                             }
+                             output[i][f] = ";;";
+                             f++;
+                         }
+
+                     }
+                     
+	            int length = output.GetLength(0);  
+	            StringBuilder sb = new StringBuilder();  
+	            for (int index = 0; index < length; index++)  
+	                sb.AppendLine(string.Join(delimiter, output[index]));  
+	 
+	            File.WriteAllText(filePath, sb.ToString());
                     // Pulisco buffer
                     samples.Clear();
                     flag = true;

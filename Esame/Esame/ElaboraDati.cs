@@ -310,7 +310,7 @@ namespace Esame
          */
         public static void InizializzaGrafico()
         {
-            /*fGAcc = new FormGraph();
+            fGAcc = new FormGraph();
             fGAcc.InitGraph("Segmentazione", "tempo", "MODACC");
             fGAcc.Show();
 
@@ -324,7 +324,7 @@ namespace Esame
 
             fgThetaNoDiscontinuita = new FormGraph();
             fgThetaNoDiscontinuita.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
-            fgThetaNoDiscontinuita .Show();*/
+            fgThetaNoDiscontinuita .Show();
 
             fgYaw = new FormGraph();
             fgYaw.InitGraph("Segmentazione", "tempo", "Angolo eulero yaw sensore bacino");
@@ -347,10 +347,10 @@ namespace Esame
                 InizializzaGrafico();
                 GraphThreadStarted = true;
             }
-            //fGAcc.DrawGraph(modacc, "modacc");
-            //fGGiro.DrawGraph(modgiro, "modgiro");
-            //fGTheta.DrawGraph(theta, "theta");
-            //fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
+            fGAcc.DrawGraph(modacc, "modacc");
+            fGGiro.DrawGraph(modgiro, "modgiro");
+            fGTheta.DrawGraph(theta, "theta");
+            fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
             fgYaw.DrawGraph(yaw, "yaw");
             fgPitch.DrawGraph(pitch, "pitch");
             fgRoll.DrawGraph(roll, "roll");
@@ -586,6 +586,10 @@ namespace Esame
         public static void CalcoloInclinazione(List<float[,]> window) { 
             
         
+        }
+
+        public static void WriteSampleToFile(List<float[,]> samples){
+            
         }
     }
 }
