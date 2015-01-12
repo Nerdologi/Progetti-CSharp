@@ -15,6 +15,7 @@ namespace Esame
         private ZedGraphControl zgc;
         private GraphPane myPane;
         private int numFinestra;
+        private int numColore;
         private LineItem myCurve;
         private List<Color> lc = new List<Color>(5);
 
@@ -31,11 +32,11 @@ namespace Esame
             lc.Add(Color.GreenYellow);
             lc.Add(Color.HotPink);
             lc.Add(Color.Black);
-
             // Ottengo riferimento al pannello
             zgc = zedGraphControl1;
             myPane = zedGraphControl1.GraphPane;
             numFinestra = 0;
+            numColore++;
 
             // Cancello eventuali linee presenti sul grafico
             myPane.CurveList.Clear();
@@ -54,7 +55,8 @@ namespace Esame
 
         /* Accetta in ingresso due parametri:
          * - data, sono i punti da rappresentare sul grafico
-         * - category, che può assumere i valori "modacc" , "modgiro", "theta", "thetaNoDiscontinuita", "yaw", "pitch" o "roll"
+         * - category, che può assumere i valori "modacc" , "modgiro", "theta", "thetaNoDiscontinuita", "yaw", "yawNoDiscontinuita",
+         * "pitch", "pitchNoDiscontinuita", "roll" o "rollNoDiscontinuita"
          * Il secondo parametro serve per sapere quale dei thread sta elaborando
          * i dati, per informare i server di avvenuta ricezione dei dati
          * aggiornati.
@@ -71,15 +73,22 @@ namespace Esame
                 this.Text = "Grafico Angolo Theta Senza Discontinuità";
             else if (category == "yaw")
                 this.Text = "Grafico Angolo Eulero Yaw";
+            else if (category == "yawNoDiscontinuita")
+                this.Text = "Grafico Angolo Eulero Yaw Senza Discontinuità";
             else if (category == "pitch")
                 this.Text = "Grafico Angolo Eulero Pitch";
+            else if (category == "pitchNoDiscontinuita")
+                this.Text = "Grafico Angolo Eulero Pitch Senza Discontinuità";
             else if (category == "roll")
                 this.Text = "Grafico Angolo Eulero Roll";
+            else if (category == "rollNoDiscontinuita")
+                this.Text = "Grafico Angolo Eulero Roll Senza Discontinuità";
 
             // Creo la lista di punti
             PointPairList list1 = new PointPairList();
             int inizio = numFinestra * 250;
             numFinestra++;
+            numColore++;
             for (int i = 0; i < data.Count; ++i)
             {
                 list1.Add((float)inizio*20, data[i]);
@@ -90,9 +99,11 @@ namespace Esame
             myPane.YAxis.Scale.Max = (data.Max() + 1);
             myPane.YAxis.Scale.Min = (data.Min() - 1);
 
+            if (numColore >= lc.Count)
+                numColore = 0;
             // Creo la curva da visualizzare
             myCurve = myPane.AddCurve("",
-                  list1, lc[numFinestra - 1], SymbolType.None);
+                  list1, lc[numColore], SymbolType.None);
 
             // Risetto gli assi
             zgc.AxisChange();
@@ -100,6 +111,11 @@ namespace Esame
             zgc.Invalidate();
             // Ricarico grafico
             zedGraphControl1.Refresh();
+        }
+
+        private void zedGraphControl1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

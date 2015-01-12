@@ -1,38 +1,180 @@
 
-"TEMPO ZERO: 05/01/2015 10.37.40 "
+"TEMPO ZERO: 12/01/2015 14.50.14 "
 
-"10.37.43 10.37.45 girata verso sinistra di -33,04925 gradi"
+"14.50.15 14.50.15 girata verso sinistra di -8,219168 gradi"
 
-"10.37.45 10.37.45 girata verso destra di 10,15605 gradi"
+"14.50.18 14.50.19 girata verso destra di 6,102486 gradi"
 
-"10.37.46 10.37.46 girata verso sinistra di -7,539085 gradi"
+"14.50.20 14.50.21 girata verso sinistra di -10,85666 gradi"
 
-"10.37.46 10.37.46 girata verso destra di 6,790842 gradi"
+"14.50.14 14.50.18 In moto"
 
-"10.37.48 10.37.49 girata verso sinistra di -47,58677 gradi"
+"14.50.18 14.50.18 Non in moto"
 
-"10.37.50 10.37.50 girata verso destra di 11,95829 gradi"
+"14.50.18 14.50.19 In moto"
 
-"10.37.40 10.37.43 Non in moto"
+"14.50.24 14.50.25 girata verso sinistra di -6,781535 gradi"
 
-"10.37.43 10.37.44 In moto"
+"14.50.27 14.50.27 girata verso sinistra di -6,2213 gradi"
 
-"10.37.44 10.37.44 Non in moto"
+"14.50.29 14.50.29 girata verso destra di 7,747205 gradi"
 
-"10.37.44 10.37.48 In moto"
+"14.50.19 14.50.25 Non in moto"
 
-"10.37.48 10.37.49 Non in moto"
+"14.50.31 14.50.32 girata verso destra di 12,25131 gradi"
 
-"10.37.53 10.37.54 girata verso destra di 46,73498 gradi"
+"14.50.33 14.50.34 girata verso sinistra di -13,86293 gradi"
 
-"10.37.54 10.37.54 girata verso sinistra di -12,5819 gradi"
+"14.50.25 14.50.31 In moto"
 
-"10.37.50 10.37.53 In moto"
+"14.50.31 14.50.33 Non in moto"
 
-"10.37.53 10.37.54 Non in moto"
+"14.50.35 14.50.35 girata verso destra di 8,856104 gradi"
 
-"10.37.54 10.37.54 In moto"
+"14.50.37 14.50.37 girata verso sinistra di -7,624722 gradi"
 
-"10.37.55 10.37.56 girata verso destra di 29,23444 gradi"
+"14.50.33 14.50.38 In moto"
 
-"10.37.54 10.37.57 Non in moto"
+"14.50.38 14.50.39 girata verso destra di 15,79457 gradi"
+
+"14.50.40 14.50.41 girata verso sinistra di -20,03851 gradi"
+
+"14.50.43 14.50.43 girata verso destra di 6,321541 gradi"
+
+"14.50.38 14.50.40 Non in moto"
+
+"14.50.44 14.50.45 girata verso destra di 26,07145 gradi"
+
+"14.50.45 14.50.46 girata verso destra di 41,9896 gradi"
+
+"14.50.49 14.50.49 girata verso sinistra di -6,286335 gradi"
+
+"14.50.40 14.50.46 In moto"
+
+"14.50.46 14.50.46 Non in moto"
+
+"14.50.46 14.50.47 In moto"
+
+"14.50.47 14.50.49 Non in moto"
+
+"14.50.50 14.50.50 girata verso sinistra di -12,72436 gradi"
+
+"14.50.50 14.50.51 girata verso destra di 11,2352 gradi"
+
+"14.50.51 14.50.52 girata verso sinistra di -7,29105 gradi"
+
+"14.50.53 14.50.54 girata verso destra di 14,10149 gradi"
+
+"14.50.56 14.50.56 girata verso sinistra di -11,34915 gradi"
+
+"14.50.57 14.50.58 girata verso destra di 12,4121 gradi"
+
+"14.50.49 14.50.59 In moto"
+
+"14.50.59 14.50.59 girata verso destra di 6,511055 gradi"
+
+"14.51.01 14.51.02 girata verso sinistra di -26,92717 gradi"
+
+"14.51.02 14.51.02 girata verso destra di 6,388901 gradi"
+
+"14.51.03 14.51.03 girata verso destra di 8,387627 gradi"
+
+"14.51.03 14.51.03 girata verso sinistra di -10,41417 gradi"
+
+"14.50.59 14.51.00 Non in moto"
+
+"14.51.00 14.51.01 In moto"
+
+"14.51.01 14.51.01 Non in moto"
+
+"14.51.01 14.51.03 In moto"
+
+"14.51.03 14.51.03 Non in moto"
+
+"14.51.03 14.51.04 In moto"
+
+"14.51.04 14.51.05 girata verso destra di 8,932602 gradi"
+
+"14.51.05 14.51.05 girata verso destra di 9,499435 gradi"
+
+"14.51.07 14.51.07 girata verso destra di 6,974033 gradi"
+
+"14.51.08 14.51.08 girata verso destra di 11,62918 gradi"
+
+"14.51.03 14.51.07 In moto"
+
+"14.51.07 14.51.07 Non in moto"
+
+"14.51.08 14.51.08 In moto"
+
+"14.51.08 14.51.10 girata verso sinistra di -23,22329 gradi"
+
+"14.51.10 14.51.10 girata verso destra di 6,384079 gradi"
+
+"14.51.11 14.51.11 girata verso sinistra di -10,11265 gradi"
+
+"14.51.12 14.51.12 girata verso destra di 6,816826 gradi"
+
+"14.51.12 14.51.13 girata verso sinistra di -8,576244 gradi"
+
+"14.51.13 14.51.13 girata verso destra di 8,949703 gradi"
+
+"14.51.15 14.51.15 girata verso sinistra di -7,539948 gradi"
+
+"14.51.15 14.51.16 girata verso destra di 27,4615 gradi"
+
+"14.51.18 14.51.19 girata verso sinistra di -22,18159 gradi"
+
+"14.51.09 14.51.16 In moto"
+
+"14.51.16 14.51.18 Non in moto"
+
+"14.51.19 14.51.19 girata verso destra di 6,581142 gradi"
+
+"14.51.21 14.51.21 girata verso sinistra di -10,594 gradi"
+
+"14.51.22 14.51.22 girata verso sinistra di -8,308676 gradi"
+
+"14.51.23 14.51.23 girata verso destra di 10,00558 gradi"
+
+"14.51.24 14.51.24 girata verso sinistra di -7,099049 gradi"
+
+"14.51.25 14.51.25 girata verso destra di 12,45703 gradi"
+
+"14.51.26 14.51.27 girata verso sinistra di -18,69472 gradi"
+
+"14.51.19 14.51.25 In moto"
+
+"14.51.25 14.51.26 Non in moto"
+
+"14.51.26 14.51.26 In moto"
+
+"14.51.26 14.51.27 Non in moto"
+
+"14.51.31 14.51.31 girata verso sinistra di -15,91195 gradi"
+
+"14.51.32 14.51.32 girata verso destra di 6,380342 gradi"
+
+"14.51.32 14.51.33 girata verso sinistra di -9,254783 gradi"
+
+"14.51.34 14.51.35 girata verso destra di 9,691154 gradi"
+
+"14.51.36 14.51.38 girata verso sinistra di -15,60362 gradi"
+
+"14.51.38 14.51.39 girata verso destra di 6,472754 gradi"
+
+"14.51.29 14.51.35 In moto"
+
+"14.51.35 14.51.35 Non in moto"
+
+"14.51.35 14.51.36 In moto"
+
+"14.51.36 14.51.38 Non in moto"
+
+"14.51.41 14.51.41 girata verso sinistra di -6,58443 gradi"
+
+"14.51.44 14.51.45 girata verso destra di 6,841303 gradi"
+
+"14.51.39 14.51.45 In moto"
+
+"14.51.45 14.51.47 Non in moto"

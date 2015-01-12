@@ -17,8 +17,11 @@ namespace Esame
         static FormGraph fGTheta;
         static FormGraph fgThetaNoDiscontinuita;
         static FormGraph fgYaw;
+        static FormGraph fgYawNoDiscontinuita;
         static FormGraph fgPitch;
+        static FormGraph fgPitchNoDiscontinuita;
         static FormGraph fgRoll;
+        static FormGraph fgRollNoDiscontinuita;
         public static bool datiAggiornati = false;
         public static bool datiFiniti = false;
         public static bool graphAck = false;
@@ -28,16 +31,22 @@ namespace Esame
         static List<float> thetaNoDiscontinuita;
         static List<float> SD;
         static List<float> yaw;
+        static List<float> yawNoDiscontinuita;
         static List<float> pitch;
+        static List<float> pitchNoDiscontinuita;
         static List<float> roll;
+        static List<float> rollNoDiscontinuita;
         public static DateTime timeZero;
         public static int windowNumber = 0;
         public static DateTime timeStartLastEventMoto;
         public static DateTime timeEndLastEventMoto;
         public static string stateLastEventMoto;
         
-        //potrebbe essere una variablile condivisa da più thread?
-        public static float segno = 0;
+        //potrebbero essere variablili condivise da più thread?
+        public static float segnoAngoloTheta = 0;
+        public static float segnoAngoloYaw = 0;
+        public static float segnoAngoloPitch = 0;
+        public static float segnoAngoloRoll = 0;
 
         /*
          * modulation accetta come parametri i campioni, il numero del sensore (0..5), e 
@@ -247,8 +256,11 @@ namespace Esame
                     float q1 = campioni[i][numSensore, 10];
                     float q2 = campioni[i][numSensore, 11];
                     float q3 = campioni[i][numSensore, 12];
+                    //atan R -> (-pigreco/2, +pigreco/2)
                     float yaw = (float)Math.Atan(((2 * q2 * q3) + (2 * q0 * q1)) / ((2 * q0 * q0) + (2 * q3 * q3) - 1));
+                    //arcsin [-1, 1] -> [-pigreco/2, +pigreco/2]
                     float pitch = (float)Math.Asin(((2 * q1 * q3) - (2 * q0 * q2)));
+                    //atan R -> (-pigreco/2, +pigreco/2)
                     float roll = (float)Math.Atan(((2 * q1 * q2) + (2 * q0 * q3)) / ((2 * q0 * q0) + (2 * q1 * q1) - 1));
                     angoliEulero[i][numSensore] = new AngoloEulero(yaw, pitch, roll);
                 }
@@ -293,6 +305,9 @@ namespace Esame
                 pitch.Add(angolo[0].getPitch());
                 roll.Add(angolo[0].getRoll());
             }
+            yawNoDiscontinuita = EliminaDiscontinuitaYaw(yaw);
+            pitchNoDiscontinuita = EliminaDiscontinuitaPitch(pitch);
+            rollNoDiscontinuita = EliminaDiscontinuitaRoll(roll);
 
             ElaboraDati.datiAggiornati = true;
             
@@ -310,7 +325,7 @@ namespace Esame
          */
         public static void InizializzaGrafico()
         {
-            fGAcc = new FormGraph();
+            /*fGAcc = new FormGraph();
             fGAcc.InitGraph("Segmentazione", "tempo", "MODACC");
             fGAcc.Show();
 
@@ -324,19 +339,31 @@ namespace Esame
 
             fgThetaNoDiscontinuita = new FormGraph();
             fgThetaNoDiscontinuita.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
-            fgThetaNoDiscontinuita .Show();
+            fgThetaNoDiscontinuita .Show();*/
 
             fgYaw = new FormGraph();
             fgYaw.InitGraph("Segmentazione", "tempo", "Angolo eulero yaw sensore bacino");
             fgYaw.Show();
+
+            fgYawNoDiscontinuita = new FormGraph();
+            fgYawNoDiscontinuita.InitGraph("Segmentazione", "tempo", "Angolo eulero yaw sensore bacino");
+            fgYawNoDiscontinuita.Show();
             
             fgPitch = new FormGraph();
             fgPitch.InitGraph("Segmentazione", "tempo", "Angolo eulero pitch sensore bacino");
             fgPitch.Show();
-            
+
+            fgPitchNoDiscontinuita = new FormGraph();
+            fgPitchNoDiscontinuita.InitGraph("Segmentazione", "tempo", "Angolo eulero pitch sensore bacino");
+            fgPitchNoDiscontinuita.Show();
+
             fgRoll = new FormGraph();
             fgRoll.InitGraph("Segmentazione", "tempo", "Angolo eulero roll sensore bacino");
             fgRoll.Show();
+
+            fgRollNoDiscontinuita = new FormGraph();
+            fgRollNoDiscontinuita.InitGraph("Segmentazione", "tempo", "Angolo eulero roll sensore bacino");
+            fgRollNoDiscontinuita.Show();
         }
 
         // Questa fz. viene chiamata quando si lancia il thread che gestisce il grafico
@@ -347,13 +374,16 @@ namespace Esame
                 InizializzaGrafico();
                 GraphThreadStarted = true;
             }
-            fGAcc.DrawGraph(modacc, "modacc");
+            /*fGAcc.DrawGraph(modacc, "modacc");
             fGGiro.DrawGraph(modgiro, "modgiro");
             fGTheta.DrawGraph(theta, "theta");
-            fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
+            fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");*/
             fgYaw.DrawGraph(yaw, "yaw");
+            fgYawNoDiscontinuita.DrawGraph(yawNoDiscontinuita, "yawNoDiscontinuita");
             fgPitch.DrawGraph(pitch, "pitch");
+            fgPitchNoDiscontinuita.DrawGraph(pitchNoDiscontinuita, "pitchNoDiscontinuita");
             fgRoll.DrawGraph(roll, "roll");
+            fgRollNoDiscontinuita.DrawGraph(rollNoDiscontinuita, "rollNoDiscontinuita");
 
             // Informo il server che ho elaborato i dati aggiornati
             ElaboraDati.graphAck = true;
@@ -560,6 +590,7 @@ namespace Esame
          */
         public static List<float[]>  FunzioneOrientamento(List<float[,]> samples)
         {
+            float segnoCritico = 0;
             int sensoreBacino = 0;
             List <float[]> angoliTheta = new List<float[]>();
             for (int i = 0; i < samples.Count; i++) { 
@@ -567,29 +598,129 @@ namespace Esame
                 float y = samples[i][sensoreBacino, 7];
                 float z = samples[i][sensoreBacino, 8];
                 float angoloTheta = (float)Math.Atan(z / x);
+                //ATTENZIONE CHE CON HZ DIVERSI DA 50 IL VALORE PER IL CONTROLLO NON è PIU 250
+                /* In sostanza memorizzo il segno (variabile che mi permette di memorizzare quando raggiungo 
+                 * i +pigreco/2 e i - pigreco/2 in modo da "reagire" di conseguenza)
+                 * da cui dovrà partire la finestra successiva
+                 */
+                if (i == 250)
+                    segnoCritico = segnoAngoloTheta;
                 if (angoliTheta.Count > 0)
                 {
-                    if ((angoloTheta > 1.5 && angoliTheta[i - 1][0] < -1.5))
-                        segno = segno - (float)Math.PI;
-                    else if (angoloTheta < -1.5 && angoliTheta[i - 1][0] > 1.5) 
-                        segno = segno + (float)Math.PI;
+                    if ((angoloTheta > 1.4 && angoliTheta[i - 1][0] < -1.4))
+                        segnoAngoloTheta = segnoAngoloTheta - (float)Math.PI;
+                    else if (angoloTheta < -1.4 && angoliTheta[i - 1][0] > 1.4)
+                        segnoAngoloTheta = segnoAngoloTheta + (float)Math.PI;
                             
                 }
                 float[] temp = new float[2];
                 temp[0] = angoloTheta;
-                temp[1] = (angoloTheta +segno) * (float)(180 / Math.PI);
+                temp[1] = (angoloTheta + segnoAngoloTheta) * (float)(180 / Math.PI);
                 angoliTheta.Add(temp);
             }
+            segnoAngoloTheta = segnoCritico;
             return angoliTheta;
+        }
+
+        public static List<float> EliminaDiscontinuitaYaw(List<float> angoliYaw)
+        {
+            List<float[]> angoliYawNoDiscontinuita = new List<float[]>();
+            float segnoCritico = 0;
+            for (int i = 0; i < angoliYaw.Count; i++)
+            {
+                //ATTENZIONE CHE CON HZ DIVERSI DA 50 IL VALORE PER IL CONTROLLO NON è PIU 250
+                if (i == 250)
+                    segnoCritico = segnoAngoloYaw;
+                if (angoliYawNoDiscontinuita.Count > 0)
+                {
+                    if ((angoliYaw[i] > 1.4 && angoliYawNoDiscontinuita[i - 1][0] < -1.4))
+                        segnoAngoloYaw = segnoAngoloYaw - (float)Math.PI;
+                    else if (angoliYaw[i] < -1.4 && angoliYawNoDiscontinuita[i - 1][0] > 1.4)
+                        segnoAngoloYaw = segnoAngoloYaw + (float)Math.PI;
+
+                }
+                float[] temp = new float[2];
+                temp[0] = angoliYaw[i];
+                //temp[1] = (angoliYaw[i] + segnoAngoloYaw) * (float)(180 / Math.PI);
+                temp[1] = (angoliYaw[i] + segnoAngoloYaw);
+                angoliYawNoDiscontinuita.Add(temp);
+            }
+            List<float> returnList = new List<float>();
+            for (int i = 0; i < angoliYawNoDiscontinuita.Count; i++)
+            { 
+                returnList.Add(angoliYawNoDiscontinuita[i][1]);
+            }
+            segnoAngoloYaw = segnoCritico;
+            return returnList;
+        }
+
+        public static List<float> EliminaDiscontinuitaPitch(List<float> angoliPitch)
+        {
+            float segnoCritico = 0;
+            List<float[]> angoliPitchNoDiscontinuita = new List<float[]>();
+            for (int i = 0; i < angoliPitch.Count; i++)
+            {
+                //ATTENZIONE CHE CON HZ DIVERSI DA 50 IL VALORE PER IL CONTROLLO NON è PIU 250
+                if (i == 250)
+                    segnoCritico = segnoAngoloPitch;
+                if (angoliPitchNoDiscontinuita.Count > 0)
+                {
+                    if ((angoliPitch[i] > 1.4 && angoliPitchNoDiscontinuita[i - 1][0] < -1.4))
+                        segnoAngoloPitch = segnoAngoloPitch - (float)Math.PI;
+                    else if (angoliPitch[i] < -1.4 && angoliPitchNoDiscontinuita[i - 1][0] > 1.4)
+                        segnoAngoloPitch = segnoAngoloPitch + (float)Math.PI;
+
+                }
+                float[] temp = new float[2];
+                temp[0] = angoliPitch[i];
+                //temp[1] = (angoliPitch[i] + segnoAngoloPitch) * (float)(180 / Math.PI);
+                temp[1] = (angoliPitch[i] + segnoAngoloPitch);
+                angoliPitchNoDiscontinuita.Add(temp);
+            }
+            List<float> returnList = new List<float>();
+            for (int i = 0; i < angoliPitchNoDiscontinuita.Count; i++)
+            { 
+                returnList.Add(angoliPitchNoDiscontinuita[i][1]);
+            }
+            segnoAngoloPitch = segnoCritico;
+            return returnList;
+        }
+
+        public static List<float> EliminaDiscontinuitaRoll(List<float> angoliRoll)
+        {
+            float segnoCritico = 0;
+            List<float[]> angoliRollNoDiscontinuita = new List<float[]>();
+            for (int i = 0; i < angoliRoll.Count; i++)
+            {
+                //ATTENZIONE CHE CON HZ DIVERSI DA 50 IL VALORE PER IL CONTROLLO NON è PIU 250
+                if (i == 250)
+                    segnoCritico = segnoAngoloRoll;
+                if (angoliRollNoDiscontinuita.Count > 0)
+                {
+                    if ((angoliRoll[i] > 1.4 && angoliRollNoDiscontinuita[i - 1][0] < -1.4))
+                        segnoAngoloRoll = segnoAngoloRoll - (float)Math.PI;
+                    else if (angoliRoll[i] < -1.4 && angoliRollNoDiscontinuita[i - 1][0] > 1.4)
+                        segnoAngoloRoll = segnoAngoloRoll + (float)Math.PI;
+
+                }
+                float[] temp = new float[2];
+                temp[0] = angoliRoll[i];
+                //temp[1] = (angoliRoll[i] + segnoAngoloRoll) * (float)(180 / Math.PI);
+                temp[1] = (angoliRoll[i] + segnoAngoloRoll);
+                angoliRollNoDiscontinuita.Add(temp);
+            }
+            List<float> returnList = new List<float>();
+            for (int i = 0; i < angoliRollNoDiscontinuita.Count; i++)
+            {
+                returnList.Add(angoliRollNoDiscontinuita[i][1]);
+            }
+            segnoAngoloRoll = segnoCritico;
+            return returnList;
         }
 
         public static void CalcoloInclinazione(List<float[,]> window) { 
             
         
-        }
-
-        public static void WriteSampleToFile(List<float[,]> samples){
-            
         }
     }
 }
