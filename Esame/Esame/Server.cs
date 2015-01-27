@@ -281,6 +281,11 @@ namespace Esame
                     {
                         sw.WriteLine("\r\n\"" + ElaboraDati.timeStartLastEventMoto.ToString("T") + " " + ElaboraDati.timeEndLastEventMoto.ToString("T") + " " + ElaboraDati.stateLastEventMoto + "\"");
                     }
+                   //Scrivo l'evento dell'ultima finestra dell'inclinazione
+                   using (StreamWriter sw = File.AppendText(Server.path))
+                   {
+                       sw.WriteLine("\r\n\"" + ElaboraDati.timeStartLastEventInclinazione.ToString("T") + " " + ElaboraDati.timeEndLastEventInclinazione.ToString("T") + " " + ElaboraDati.stateLastEventInclinazione + "\"");
+                   }
                     //Crea un file .csv con tutti i campioni
                    string filePath = @".\Samples.csv";  
 	               string delimiter = ";";  

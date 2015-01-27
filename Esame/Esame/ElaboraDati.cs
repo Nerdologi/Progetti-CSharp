@@ -36,11 +36,19 @@ namespace Esame
         static List<float> pitchNoDiscontinuita;
         static List<float> roll;
         static List<float> rollNoDiscontinuita;
+        static List<float> samplesBacinoY;
         public static DateTime timeZero;
         public static int windowNumber = 0;
         public static DateTime timeStartLastEventMoto;
         public static DateTime timeEndLastEventMoto;
         public static string stateLastEventMoto;
+        //parametri per Lay Sit Stand
+        public static float soglia_sdraiato = (float)6.0;
+        public static float soglia_seduto = (float)1.9;
+        public static DateTime timeStartLastEventInclinazione;
+        public static DateTime timeEndLastEventInclinazione;
+        public static string stateLastEventInclinazione;
+        public static bool eventAllWindow = false;
         
         //potrebbero essere variablili condivise da più thread?
         public static float segnoAngoloTheta = 0;
@@ -303,7 +311,9 @@ namespace Esame
             CalcoloGirata(thetaNoDiscontinuita);
             SD = DeviazioneStandard(modacc);
             CalcolaMoto(SD);
-            CalcoloInclinazione(window);
+            samplesBacinoY = extractionSamplesBacinoY(window);
+            samplesBacinoY = Smoothing(samplesBacinoY);
+            CalcoloInclinazione(samplesBacinoY);
             //serve solo per scopi di debug in modo da vedere sul grafico l' angolo theta smussato e verficare ad occhio se le girate sono rilevate correttamente
             thetaNoDiscontinuita = Smoothing(thetaNoDiscontinuita);
 
@@ -355,7 +365,7 @@ namespace Esame
             fgThetaNoDiscontinuita.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
             fgThetaNoDiscontinuita .Show();*/
 
-            fgYaw = new FormGraph();
+           /* fgYaw = new FormGraph();
             fgYaw.InitGraph("Segmentazione", "tempo", "Angolo eulero yaw sensore bacino");
             fgYaw.Show();
 
@@ -377,7 +387,7 @@ namespace Esame
 
             fgRollNoDiscontinuita = new FormGraph();
             fgRollNoDiscontinuita.InitGraph("Segmentazione", "tempo", "Angolo eulero roll sensore bacino");
-            fgRollNoDiscontinuita.Show();
+            fgRollNoDiscontinuita.Show();*/
         }
 
         // Questa fz. viene chiamata quando si lancia il thread che gestisce il grafico
@@ -392,12 +402,12 @@ namespace Esame
             fGGiro.DrawGraph(modgiro, "modgiro");
             fGTheta.DrawGraph(theta, "theta");
             fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");*/
-            fgYaw.DrawGraph(yaw, "yaw");
+         /*   fgYaw.DrawGraph(yaw, "yaw");
             fgYawNoDiscontinuita.DrawGraph(yawNoDiscontinuita, "yawNoDiscontinuita");
             fgPitch.DrawGraph(pitch, "pitch");
             fgPitchNoDiscontinuita.DrawGraph(pitchNoDiscontinuita, "pitchNoDiscontinuita");
             fgRoll.DrawGraph(roll, "roll");
-            fgRollNoDiscontinuita.DrawGraph(rollNoDiscontinuita, "rollNoDiscontinuita");
+            fgRollNoDiscontinuita.DrawGraph(rollNoDiscontinuita, "rollNoDiscontinuita");*/
 
             // Informo il server che ho elaborato i dati aggiornati
             ElaboraDati.graphAck = true;
@@ -732,9 +742,208 @@ namespace Esame
             return returnList;
         }
 
-        public static void CalcoloInclinazione(List<float[,]> window) { 
-            
-        
+        public static List<float> extractionSamplesBacinoY(List<float[,]> samples){
+            List<float> valuesY=new List<float>();
+             for (int i = 0; i < samples.Count; i++)                
+                    valuesY.Add(samples[i][0, 1]);
+
+            return valuesY;
         }
-    }
-}
+
+        public static bool Lay(float i) {
+            //float soglia_sdraiato=6.0;
+            if (i > soglia_sdraiato)
+                return true;
+            else
+                return false;
+        }
+        public static bool Sit(float i) { 
+            //soglia_seduto=1.5
+            if (i < soglia_sdraiato && i > soglia_seduto)
+                return true;
+            else
+                return false;
+        }
+        public static bool Stand(float i)
+        {
+            //soglia_seduto=1.5
+            if ( i < soglia_seduto)
+                return true;
+            else
+                return false;
+        }
+        public static void CalcoloInclinazione(List<float> samples) {
+
+            DateTime timeStart = new DateTime();
+            DateTime timeEnd = new DateTime();
+            bool start = true;
+            string stato;
+            float precedente = 0;
+            int windowOverlapTime = 5000;
+            int sampleTime = 20;
+            DateTime precedentWindowTimeEnd = new DateTime(1993, 11, 13);
+            int jPiedi = 0, jSeduto = 0, jSdraiato = 0;
+            for (int i = 0; i < samples.Count(); i++)
+            {
+                if (i == 0)
+                    precedente = samples[i];
+                if (Lay(samples[i]) && Lay(precedente))
+                {
+                    if (start == true)
+                    {
+                        timeStart = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        start = false;
+                    }
+                    if (i == samples.Count() - 1)
+                    {
+                        timeEndLastEventInclinazione = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        stateLastEventInclinazione = "Sdraiato";
+                        timeStartLastEventInclinazione = timeStart;
+                    }
+                    precedente = samples[i];
+                }
+                else if (Sit(samples[i])  && Lay(precedente))
+                {
+                    precedente = samples[i];
+                    start = true;
+                    timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                    stato = "Sdraiato";
+                    if (windowNumber > 0)
+                        precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime);
+                    // se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
+                    if (timeEnd > precedentWindowTimeEnd && i != samples.Count() - 1)
+                    {
+                        using (StreamWriter sw = File.AppendText(Server.path))
+                        {
+                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                        }
+                    }
+                    else if (i == samples.Count() - 1)
+                    {
+                        timeEndLastEventInclinazione = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        stateLastEventInclinazione = "Sdraiato";
+                        timeStartLastEventInclinazione = timeStart;
+                    }
+                }
+                else if (Sit(samples[i]) && Sit(precedente))
+                {
+                    if (start == true)
+                    {
+                        timeStart = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        start = false;
+                    }
+                    if (i == samples.Count() - 1)
+                    {
+                        timeEndLastEventInclinazione = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        stateLastEventInclinazione = "Seduto";
+                        timeStartLastEventInclinazione = timeStart;
+                    }
+                    precedente = samples[i];
+
+                }
+                else if (Lay(samples[i]) && Sit(precedente))
+                {
+                    precedente = samples[i];
+                    start = true;
+                    timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                    stato = "Seduto";
+                    if (windowNumber > 0)
+                        precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime);
+                    // se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
+                    if (timeEnd > precedentWindowTimeEnd && i != samples.Count() - 1)
+                    {
+                        using (StreamWriter sw = File.AppendText(Server.path))
+                        {
+                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                        }
+                    }
+                    else if (i == samples.Count() - 1)
+                    {
+                        timeEndLastEventInclinazione = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        stateLastEventInclinazione = "Seduto";
+                        timeStartLastEventInclinazione = timeStart;
+                    }
+                }
+               else if (Stand(samples[i]) && Stand(precedente))
+                {
+                    if (start == true)
+                    {
+                        timeStart = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        start = false;
+                    }
+                    if (i == samples.Count() - 1)
+                    {
+                        timeEndLastEventInclinazione = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        stateLastEventInclinazione = " In Piedi";
+                        timeStartLastEventInclinazione = timeStart;
+                    }
+                    else
+                        jPiedi++;
+                    precedente = samples[i];
+                }
+                else if (Sit(samples[i]) && Stand(precedente))
+                {
+                    precedente = samples[i];
+                    start = true;
+                    timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                    stato = "In Piedi";
+                    if (windowNumber > 0)
+                        precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime);
+                    // se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
+                    if ((timeEnd > precedentWindowTimeEnd && i != samples.Count() - 1) || eventAllWindow==true)
+                    {
+                        eventAllWindow = false;
+                        using (StreamWriter sw = File.AppendText(Server.path))
+                        {
+                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                        }
+                    }
+                    else if (i == samples.Count() - 1)
+                    {
+                        timeEndLastEventInclinazione = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        stateLastEventInclinazione = "In Piedi";
+                        timeStartLastEventInclinazione = timeStart;
+                    }
+                }
+                else if (Stand(samples[i]) && Sit(precedente))
+                {
+                    precedente = samples[i];
+                    start = true;
+                    timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                    stato = "Seduto";
+                    if (windowNumber > 0)
+                        precedentWindowTimeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + windowOverlapTime);
+                    // se l' evento rilevato finisce prima della conclusione della finestra precedente, questo evento è già stato letto e non lo considero
+                    if (timeEnd > precedentWindowTimeEnd && i != samples.Count() - 1)
+                    {
+                        using (StreamWriter sw = File.AppendText(Server.path))
+                        {
+                            sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                        }
+                    }
+                    if (i == samples.Count() - 1)
+                    {
+                        timeEndLastEventInclinazione = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (i * sampleTime));
+                        stateLastEventInclinazione = "Seduto";
+                        timeStartLastEventInclinazione = timeStart;
+                    }
+                    precedente = samples[i];
+
+                }
+            }
+           if (jPiedi == samples.Count() - 1 && windowNumber > 0 && windowNumber < 3) {
+                stato = "In Piedi";
+                /*timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (samples.Count() * sampleTime));
+                    using (StreamWriter sw = File.AppendText(Server.path))
+                    {
+                        sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
+                    }*/
+                eventAllWindow = true;
+            
+            }
+
+        }
+
+    }//fine classe
+
+}//fine namespace

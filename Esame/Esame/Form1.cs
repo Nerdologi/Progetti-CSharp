@@ -197,9 +197,13 @@ namespace Esame
             }
             if (Yvalue.Checked == true)
             {
-                infoSample.AppendText("\r\n" + " Valori Y del bacino: " +"\r\n");
+                infoSample.AppendText("\r\n" + " Valori Y del smussati: " +"\r\n");
+                List<float> smussati = new List<float>();
+                for (int i = 0; i < Server.samplesList.Count(); i++)
+                    smussati.Add(Server.samplesList[i][0, 1]);
+                smussati=ElaboraDati.Smoothing(smussati);
                 for(int i=0;i < Server.samplesList.Count();i++)
-                infoSample.AppendText(Server.samplesList[i][0, 1] + "\r\n");
+                infoSample.AppendText(smussati[i] + "\r\n");
                 
             }
             /*

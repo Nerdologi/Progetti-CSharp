@@ -194,11 +194,10 @@
             this.checkBox7.AutoSize = true;
             this.checkBox7.Location = new System.Drawing.Point(483, 122);
             this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(97, 17);
+            this.checkBox7.Size = new System.Drawing.Size(105, 17);
             this.checkBox7.TabIndex = 15;
-            this.checkBox7.Text = "Valori Y bacino";
+            this.checkBox7.Text = "Valori Y smussati";
             this.checkBox7.UseVisualStyleBackColor = true;
-           
             // 
             // Form1
             // 
