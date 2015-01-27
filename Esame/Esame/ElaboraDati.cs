@@ -22,6 +22,8 @@ namespace Esame
         static FormGraph fgPitchNoDiscontinuita;
         static FormGraph fgRoll;
         static FormGraph fgRollNoDiscontinuita;
+        static FormGraph fgDeadReckoning;
+        static FormGraph fgSD;
         public static bool datiAggiornati = false;
         public static bool datiFiniti = false;
         public static bool graphAck = false;
@@ -37,6 +39,7 @@ namespace Esame
         static List<float> roll;
         static List<float> rollNoDiscontinuita;
         static List<float> samplesBacinoY;
+        static List<float[]> deadReckoning;
         public static DateTime timeZero;
         public static int windowNumber = 0;
         public static DateTime timeStartLastEventMoto;
@@ -332,7 +335,7 @@ namespace Esame
             yawNoDiscontinuita = EliminaDiscontinuitaYaw(yaw);
             pitchNoDiscontinuita = EliminaDiscontinuitaPitch(pitch);
             rollNoDiscontinuita = EliminaDiscontinuitaRoll(roll);
-
+            deadReckoning = DeadReckoning(SD, yawNoDiscontinuita);
             ElaboraDati.datiAggiornati = true;
             
             /* Se non è mai stato fatto partire il thread che gestisce lo faccio partire
@@ -363,17 +366,25 @@ namespace Esame
 
             fgThetaNoDiscontinuita = new FormGraph();
             fgThetaNoDiscontinuita.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
-            fgThetaNoDiscontinuita .Show();*/
+            fgThetaNoDiscontinuita .Show();
 
            /* fgYaw = new FormGraph();
             fgYaw.InitGraph("Segmentazione", "tempo", "Angolo eulero yaw sensore bacino");
-            fgYaw.Show();
+            fgYaw.Show();*/
 
             fgYawNoDiscontinuita = new FormGraph();
             fgYawNoDiscontinuita.InitGraph("Segmentazione", "tempo", "Angolo eulero yaw sensore bacino");
             fgYawNoDiscontinuita.Show();
+
+            fgDeadReckoning = new FormGraph();
+            fgDeadReckoning.InitGraph("Dead Reckoning", "", "");
+            fgDeadReckoning.Show();
+
+            fgSD = new FormGraph();
+            fgSD.InitGraph("Deviazione Standard", "tempo", "Deviazione standard");
+            fgSD.Show();
             
-            fgPitch = new FormGraph();
+            /*fgPitch = new FormGraph();
             fgPitch.InitGraph("Segmentazione", "tempo", "Angolo eulero pitch sensore bacino");
             fgPitch.Show();
 
@@ -398,12 +409,14 @@ namespace Esame
                 InizializzaGrafico();
                 GraphThreadStarted = true;
             }
-            /*fGAcc.DrawGraph(modacc, "modacc");
+            fGAcc.DrawGraph(modacc, "modacc");
             fGGiro.DrawGraph(modgiro, "modgiro");
             fGTheta.DrawGraph(theta, "theta");
-            fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");*/
-         /*   fgYaw.DrawGraph(yaw, "yaw");
+            fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
+            fgYaw.DrawGraph(yaw, "yaw");*/
             fgYawNoDiscontinuita.DrawGraph(yawNoDiscontinuita, "yawNoDiscontinuita");
+            fgDeadReckoning.DrawGraphDR(deadReckoning, "deadReckoning");
+            fgSD.DrawGraph(SD, "deviazioneStandard");
             fgPitch.DrawGraph(pitch, "pitch");
             fgPitchNoDiscontinuita.DrawGraph(pitchNoDiscontinuita, "pitchNoDiscontinuita");
             fgRoll.DrawGraph(roll, "roll");
@@ -944,6 +957,93 @@ namespace Esame
 
         }
 
+        // Angoli di Yaw senza discontinuità
+        public static List<float[]> DeadReckoning(List<float> SD, List<float>yaw)
+        {
+            List<float> yawNoDisconituinitaSmooted = Smoothing(yaw);
+            List<float[]> coordinateDR = new List<float[]>();
+            // Queste variabili cambieranno in base alla frequanza di campionamento
+            int windowOverlapTime = 5000;
+            float sampleTime = (float)0.020;
+            bool start = true;
+            float variazioneGlobale = 0;
+            float variazioneLocale = 0;
+            float velocita = 1;
+            int x = 0;
+
+            for (int i = 0; i<yawNoDisconituinitaSmooted.Count; i++)
+            {
+                yawNoDisconituinitaSmooted[i] = yawNoDisconituinitaSmooted[i] * (float)(180 / Math.PI);
+            }
+
+            coordinateDR.Add(new float[2] { 0, 0 });
+            for (int i = 1; i < yawNoDisconituinitaSmooted.Count; i++)
+            {
+                x++;
+                variazioneLocale = variazioneLocale + (yawNoDisconituinitaSmooted[i] - yawNoDisconituinitaSmooted[i - 1]);
+                if (variazioneLocale > 6)
+                {
+                    if (start == true)
+                    {
+                        float distanza = velocita * x * sampleTime;
+                        coordinateDR.Add(new float[2] { coordinateDR.Last()[0] + 0, coordinateDR.Last()[1] + distanza });
+                        start = false;
+                        x = 0;
+                    }
+                    if (variazioneLocale >= variazioneGlobale)
+                        variazioneGlobale = variazioneLocale;
+                    else if (variazioneLocale < variazioneGlobale)
+                    {
+                        start = true;
+                        float distanza = velocita * x * sampleTime;
+                        x = 0;
+                        // Link formule http://www.youmath.it/formulari/formulari-di-geometria-piana/765-bisettrice-mediana-altezza-asse-di-un-triangolo.html
+                        // triangolo isoscele dove i lati uguali sono la distanza, e la base è il lato da trovare
+                        double angoloBeta = 180 - variazioneGlobale - 90;
+                        //double lato = distanza * Math.Cos(angoloBeta) * 2;
+                        //double altezza = Math.Sqrt(Math.Pow((Math.Pow(distanza, 2) + Math.Pow(distanza, 2) + Math.Pow(lato, 2)), 2) - 2*(Math.Pow(distanza, 4) + Math.Pow(distanza, 4) + Math.Pow(lato, 4)))/(2*distanza);
+                        float altezza = (float)(distanza * Math.Cos(angoloBeta));
+                        float ascissa = (float)(coordinateDR.Last()[0] + altezza);
+                        float ordinata = (float)(Math.Sqrt(Math.Pow(distanza, 2) - Math.Pow(altezza, 2)) + coordinateDR.Last()[1]);
+                        coordinateDR.Add(new float[2] { ascissa, ordinata });
+                        variazioneLocale = 0;
+                        variazioneGlobale = 0;
+                    }
+                }
+                else if (variazioneLocale < -6)
+                {
+                    if (start == true)
+                    {
+                        float distanza = velocita * x * sampleTime;
+                        coordinateDR.Add(new float[2] { coordinateDR.Last()[0] + 0, coordinateDR.Last()[1] + distanza });
+                        start = false;
+                        x = 0;
+                    }
+                    if (variazioneLocale <= variazioneGlobale)
+                        variazioneGlobale = variazioneLocale;
+                    else if (variazioneLocale > variazioneGlobale)
+                    {
+                        start = true;
+                        float distanza = velocita * x * sampleTime;
+                        x = 0;
+                        // Link formule http://www.youmath.it/formulari/formulari-di-geometria-piana/765-bisettrice-mediana-altezza-asse-di-un-triangolo.html
+                        // triangolo isoscele dove i lati uguali sono la distanza, e la base è il lato da trovare
+                        double angoloBeta = 180 - variazioneGlobale - 90;
+                        //double lato = distanza * Math.Cos(angoloBeta) * 2;
+                        //double altezza = Math.Sqrt(Math.Pow((Math.Pow(distanza, 2) + Math.Pow(distanza, 2) + Math.Pow(lato, 2)), 2) - 2*(Math.Pow(distanza, 4) + Math.Pow(distanza, 4) + Math.Pow(lato, 4)))/(2*distanza);
+                        float altezza = (float)(distanza * Math.Cos(angoloBeta));
+                        float ascissa = (float)(coordinateDR.Last()[0] + altezza);
+                        float ordinata = (float)(Math.Sqrt(Math.Pow(distanza, 2) - Math.Pow(altezza, 2)) + coordinateDR.Last()[1]);
+                        coordinateDR.Add(new float[2] { ascissa, ordinata });
+                        variazioneLocale = 0;
+                        variazioneGlobale = 0;
+                    }
+                }
+            }
+            return coordinateDR;
+        }
+    }
+}
     }//fine classe
 
 }//fine namespace

@@ -56,7 +56,7 @@ namespace Esame
         /* Accetta in ingresso due parametri:
          * - data, sono i punti da rappresentare sul grafico
          * - category, che può assumere i valori "modacc" , "modgiro", "theta", "thetaNoDiscontinuita", "yaw", "yawNoDiscontinuita",
-         * "pitch", "pitchNoDiscontinuita", "roll" o "rollNoDiscontinuita"
+         * "pitch", "pitchNoDiscontinuita", "roll", "rollNoDiscontinuita", "deviazioneStandard"
          * Il secondo parametro serve per sapere quale dei thread sta elaborando
          * i dati, per informare i server di avvenuta ricezione dei dati
          * aggiornati.
@@ -83,6 +83,8 @@ namespace Esame
                 this.Text = "Grafico Angolo Eulero Roll";
             else if (category == "rollNoDiscontinuita")
                 this.Text = "Grafico Angolo Eulero Roll Senza Discontinuità";
+            else if (category == "deviazioneStandard")
+                this.Text = "Grafico Deviazione Standard";
 
             // Creo la lista di punti
             PointPairList list1 = new PointPairList();
@@ -98,6 +100,37 @@ namespace Esame
             myPane.XAxis.Scale.Max = (inizio + 2)*20;
             myPane.YAxis.Scale.Max = (data.Max() + 1);
             myPane.YAxis.Scale.Min = (data.Min() - 1);
+
+            if (numColore >= lc.Count)
+                numColore = 0;
+            // Creo la curva da visualizzare
+            myCurve = myPane.AddCurve("",
+                  list1, lc[numColore], SymbolType.None);
+
+            // Risetto gli assi
+            zgc.AxisChange();
+            // Forza la ri-scrittura dei dati sul grafico
+            zgc.Invalidate();
+            // Ricarico grafico
+            zedGraphControl1.Refresh();
+        }
+
+        public void DrawGraphDR(List<float[]> data, string category)
+        {
+            this.Text = "Grafico Dead Reckoning";
+
+            // Creo la lista di punti
+            PointPairList list1 = new PointPairList();
+            int inizio = numFinestra * 250;
+            numFinestra++;
+            numColore++;
+            for (int i = 0; i < data.Count; ++i)
+            {
+                list1.Add(data[i][0], data[i][1]);
+                inizio++;
+            }
+
+            myPane.XAxis.Scale.Max = (inizio + 2) * 20;
 
             if (numColore >= lc.Count)
                 numColore = 0;

@@ -23,7 +23,6 @@ C:\Users\Lorenzo\Documents\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.pdb
 \\psf\Home\Documents\Visual Studio 2010\Projects\ProjCondivisi\Esame\Esame\obj\x86\Debug\Esame.pdb
 \\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\bin\Debug\Esame.exe
 \\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\bin\Debug\Esame.pdb
-\\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\bin\Debug\ZedGraph.dll
 \\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\bin\Debug\ZedGraph.xml
 \\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\bin\Debug\de\ZedGraph.resources.dll
 \\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\bin\Debug\es\ZedGraph.resources.dll
