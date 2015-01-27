@@ -413,14 +413,14 @@ namespace Esame
             fGGiro.DrawGraph(modgiro, "modgiro");
             fGTheta.DrawGraph(theta, "theta");
             fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
-            fgYaw.DrawGraph(yaw, "yaw");*/
+            fgYaw.DrawGraph(yaw, "yaw");
             fgYawNoDiscontinuita.DrawGraph(yawNoDiscontinuita, "yawNoDiscontinuita");
             fgDeadReckoning.DrawGraphDR(deadReckoning, "deadReckoning");
             fgSD.DrawGraph(SD, "deviazioneStandard");
             fgPitch.DrawGraph(pitch, "pitch");
             fgPitchNoDiscontinuita.DrawGraph(pitchNoDiscontinuita, "pitchNoDiscontinuita");
             fgRoll.DrawGraph(roll, "roll");
-            fgRollNoDiscontinuita.DrawGraph(rollNoDiscontinuita, "rollNoDiscontinuita");*/
+            fgRollNoDiscontinuita.DrawGraph(rollNoDiscontinuita, "rollNoDiscontinuita");
 
             // Informo il server che ho elaborato i dati aggiornati
             ElaboraDati.graphAck = true;
@@ -647,8 +647,7 @@ namespace Esame
                     if ((angoloTheta > 1.4 && angoliTheta[i - 1][0] < -1.4))
                         segnoAngoloTheta = segnoAngoloTheta - (float)Math.PI;
                     else if (angoloTheta < -1.4 && angoliTheta[i - 1][0] > 1.4)
-                        segnoAngoloTheta = segnoAngoloTheta + (float)Math.PI;
-                            
+                        segnoAngoloTheta = segnoAngoloTheta + (float)Math.PI;           
                 }
                 float[] temp = new float[2];
                 temp[0] = angoloTheta;
@@ -674,7 +673,6 @@ namespace Esame
                         segnoAngoloYaw = segnoAngoloYaw - (float)Math.PI;
                     else if (angoliYaw[i] < -1.4 && angoliYawNoDiscontinuita[i - 1][0] > 1.4)
                         segnoAngoloYaw = segnoAngoloYaw + (float)Math.PI;
-
                 }
                 float[] temp = new float[2];
                 temp[0] = angoliYaw[i];
@@ -755,7 +753,8 @@ namespace Esame
             return returnList;
         }
 
-        public static List<float> extractionSamplesBacinoY(List<float[,]> samples){
+        public static List<float> extractionSamplesBacinoY(List<float[,]> samples)
+        {
             List<float> valuesY=new List<float>();
              for (int i = 0; i < samples.Count; i++)                
                     valuesY.Add(samples[i][0, 1]);
@@ -763,20 +762,24 @@ namespace Esame
             return valuesY;
         }
 
-        public static bool Lay(float i) {
+        public static bool Lay(float i) 
+        {
             //float soglia_sdraiato=6.0;
             if (i > soglia_sdraiato)
                 return true;
             else
                 return false;
         }
-        public static bool Sit(float i) { 
+
+        public static bool Sit(float i) 
+        { 
             //soglia_seduto=1.5
             if (i < soglia_sdraiato && i > soglia_seduto)
                 return true;
             else
                 return false;
         }
+
         public static bool Stand(float i)
         {
             //soglia_seduto=1.5
@@ -785,8 +788,9 @@ namespace Esame
             else
                 return false;
         }
-        public static void CalcoloInclinazione(List<float> samples) {
 
+        public static void CalcoloInclinazione(List<float> samples) 
+        {
             DateTime timeStart = new DateTime();
             DateTime timeEnd = new DateTime();
             bool start = true;
@@ -877,7 +881,7 @@ namespace Esame
                         timeStartLastEventInclinazione = timeStart;
                     }
                 }
-               else if (Stand(samples[i]) && Stand(precedente))
+                else if (Stand(samples[i]) && Stand(precedente))
                 {
                     if (start == true)
                     {
@@ -944,7 +948,8 @@ namespace Esame
 
                 }
             }
-           if (jPiedi == samples.Count() - 1 && windowNumber > 0 && windowNumber < 3) {
+           if (jPiedi == samples.Count() - 1 && windowNumber > 0 && windowNumber < 3) 
+           {
                 stato = "In Piedi";
                 /*timeEnd = timeZero.AddMilliseconds(windowNumber * windowOverlapTime + (samples.Count() * sampleTime));
                     using (StreamWriter sw = File.AppendText(Server.path))
@@ -952,9 +957,7 @@ namespace Esame
                         sw.WriteLine("\r\n\"" + timeStart.ToString("T") + " " + timeEnd.ToString("T") + " " + stato + "\"");
                     }*/
                 eventAllWindow = true;
-            
             }
-
         }
 
         // Angoli di Yaw senza discontinuità
@@ -1026,11 +1029,8 @@ namespace Esame
                         start = true;
                         float distanza = velocita * x * sampleTime;
                         x = 0;
-                        // Link formule http://www.youmath.it/formulari/formulari-di-geometria-piana/765-bisettrice-mediana-altezza-asse-di-un-triangolo.html
                         // triangolo isoscele dove i lati uguali sono la distanza, e la base è il lato da trovare
                         double angoloBeta = 180 - variazioneGlobale - 90;
-                        //double lato = distanza * Math.Cos(angoloBeta) * 2;
-                        //double altezza = Math.Sqrt(Math.Pow((Math.Pow(distanza, 2) + Math.Pow(distanza, 2) + Math.Pow(lato, 2)), 2) - 2*(Math.Pow(distanza, 4) + Math.Pow(distanza, 4) + Math.Pow(lato, 4)))/(2*distanza);
                         float altezza = (float)(distanza * Math.Cos(angoloBeta));
                         float ascissa = (float)(coordinateDR.Last()[0] + altezza);
                         float ordinata = (float)(Math.Sqrt(Math.Pow(distanza, 2) - Math.Pow(altezza, 2)) + coordinateDR.Last()[1]);
@@ -1044,6 +1044,3 @@ namespace Esame
         }
     }
 }
-    }//fine classe
-
-}//fine namespace
