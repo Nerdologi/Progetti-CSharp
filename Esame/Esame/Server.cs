@@ -17,7 +17,7 @@ namespace Esame
          * in base alla velocità di campionamento
          * se campiono a 50 Hz in 10s avrò 500 campioni = > buffer size > 500
          */
-        public static Buffer samples = new Buffer(750);
+        public static Buffer samples;
         public static List<float[,]> samplesList;
         private static int windowSize = 500;
         private static int samplesSize = 0;
@@ -58,6 +58,7 @@ namespace Esame
                     //cancellazione contenuto file Eventi.txt
                     File.WriteAllText(path, string.Empty);
                     Form1.info.AppendText("Waiting for a connection at LOCALHOST... \r\n");
+                    samples = new Buffer(750);
                     Socket socket = this.listener.AcceptSocket();
                     Thread t1 = new Thread(new ParameterizedThreadStart(Server.ReadFromSocket));
                     t1.Start(socket);

@@ -409,18 +409,18 @@ namespace Esame
                 InizializzaGrafico();
                 GraphThreadStarted = true;
             }
-            fGAcc.DrawGraph(modacc, "modacc");
+            /*fGAcc.DrawGraph(modacc, "modacc");
             fGGiro.DrawGraph(modgiro, "modgiro");
             fGTheta.DrawGraph(theta, "theta");
             fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
-            fgYaw.DrawGraph(yaw, "yaw");
+            fgYaw.DrawGraph(yaw, "yaw");*/
             fgYawNoDiscontinuita.DrawGraph(yawNoDiscontinuita, "yawNoDiscontinuita");
             fgDeadReckoning.DrawGraphDR(deadReckoning, "deadReckoning");
             fgSD.DrawGraph(SD, "deviazioneStandard");
-            fgPitch.DrawGraph(pitch, "pitch");
+            /*fgPitch.DrawGraph(pitch, "pitch");
             fgPitchNoDiscontinuita.DrawGraph(pitchNoDiscontinuita, "pitchNoDiscontinuita");
             fgRoll.DrawGraph(roll, "roll");
-            fgRollNoDiscontinuita.DrawGraph(rollNoDiscontinuita, "rollNoDiscontinuita");
+            fgRollNoDiscontinuita.DrawGraph(rollNoDiscontinuita, "rollNoDiscontinuita");*/
 
             // Informo il server che ho elaborato i dati aggiornati
             ElaboraDati.graphAck = true;
