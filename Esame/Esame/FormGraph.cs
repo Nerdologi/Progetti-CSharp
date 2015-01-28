@@ -46,20 +46,6 @@ namespace Esame
             // Cancello eventuali linee presenti sul grafico
             for (int i = 0; i < 4; i++)
                 myPanes[i].CurveList.Clear();
-
-            // Setto il titolo del grafico e le etichette degli assi cartesiani
-            /*myPane1.Title.Text = _title;
-            myPane1.XAxis.Title.Text = _XAxisTitle;
-            myPane1.YAxis.Title.Text = _YAxisTitle;*/
-
-            for (int i = 0; i < 4; i++)
-            {
-                myPanes[i].XAxis.Scale.Min = -40;
-                myPanes[i].XAxis.Scale.MinorStep = 100;
-                myPanes[i].XAxis.Scale.MajorStep = 500;
-                myPanes[i].XAxis.Scale.MinorUnit = DateUnit.Millisecond;
-                myPanes[i].XAxis.Scale.MajorUnit = DateUnit.Millisecond;
-            }
         }
 
         /* Accetta in ingresso due parametri:
@@ -95,10 +81,6 @@ namespace Esame
                     list1.Add((float)inizio * 20, data[k][i]);
                     inizio++;
                 }
-
-                myPanes[k].XAxis.Scale.Max = (inizio + 2) * 20;
-                myPanes[k].YAxis.Scale.Max = (data[k].Max() + 1);
-                myPanes[k].YAxis.Scale.Min = (data[k].Min() - 1);
 
                 if (numColore >= lc.Count)
                     numColore = 0;

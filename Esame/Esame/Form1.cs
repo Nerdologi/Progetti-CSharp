@@ -34,6 +34,7 @@ namespace Esame
         List<float> dev;
         private List<AngoloEulero[]> AngoliEulero;
         public static string[] graphs = new string[4];
+        public static bool visGraphDR = false;
 
         public Form1()
         {
@@ -71,6 +72,11 @@ namespace Esame
             {
                 for (int i = 0; i < 4; i++)
                     graphs[i] = GetGraphKey(checkedListBox1.CheckedIndices[i]);
+
+                if (checkBoxDR.Checked)
+                    visGraphDR = true;
+
+                server.StartListening();
                 
                 infoSample.Enabled = true;
                 showSample.Enabled = true;
@@ -90,8 +96,6 @@ namespace Esame
                 ElaboraDati.segnoAngoloYaw = 0;
                 ElaboraDati.segnoAngoloPitch = 0;
                 ElaboraDati.segnoAngoloRoll = 0;
-
-                server.StartListening();
             }
             else
                 MessageBox.Show("Seleziona 4 grafici che vuoi visualizzare!");

@@ -46,6 +46,7 @@
             this.checkBox7 = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.checkBoxDR = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.SuspendLayout();
@@ -224,18 +225,28 @@
             "Angolo Pitch",
             "Angolo Pitch senza discontinuità",
             "Angolo Roll",
-            "Angolo Roll senza discontinuità",
-            "Dead Reckoning"});
+            "Angolo Roll senza discontinuità"});
             this.checkedListBox1.Location = new System.Drawing.Point(311, 60);
             this.checkedListBox1.Name = "checkedListBox1";
             this.checkedListBox1.Size = new System.Drawing.Size(233, 184);
             this.checkedListBox1.TabIndex = 17;
+            // 
+            // checkBoxDR
+            // 
+            this.checkBoxDR.AutoSize = true;
+            this.checkBoxDR.Location = new System.Drawing.Point(311, 294);
+            this.checkBoxDR.Name = "checkBoxDR";
+            this.checkBoxDR.Size = new System.Drawing.Size(191, 17);
+            this.checkBoxDR.TabIndex = 18;
+            this.checkBoxDR.Text = "Visualizza grafico Dead Reckoning";
+            this.checkBoxDR.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(960, 455);
+            this.Controls.Add(this.checkBoxDR);
             this.Controls.Add(this.checkedListBox1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.checkBox7);
@@ -283,6 +294,7 @@
         private System.Windows.Forms.CheckBox checkBox7;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckedListBox checkedListBox1;
+        private System.Windows.Forms.CheckBox checkBoxDR;
     }
 }
 

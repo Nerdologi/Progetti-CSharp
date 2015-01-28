@@ -51,6 +51,7 @@ namespace Esame
                         ElaboraDati.GraphThread.Abort();
                     }
                     ElaboraDati.GraphThread = new Thread(ElaboraDati.DisegnaSulGrafico);
+
                     start = true;
                     ElaboraDati.windowNumber = 0;
                     if (!File.Exists(path))
@@ -278,25 +279,11 @@ namespace Esame
                     { }
                     // ... ora posso proseguire ...
 
-                    ElaboraDati.segnoAngoloTheta = 0;
-                    ElaboraDati.segnoAngoloYaw = 0;
-                    ElaboraDati.segnoAngoloPitch = 0;
-                    ElaboraDati.segnoAngoloRoll = 0;
-                    List<float> yaw = new List<float>();
-                    
-                    // Prendo tutti gli angoli di eulero per il sensore sul bacino
-                    foreach (AngoloEulero[] angolo in ElaboraDati.AngoliEulero(samplesList))
+                    if (Form1.visGraphDR)
                     {
-                        yaw.Add(angolo[0].getYaw());
+                        Thread gdrT = new Thread(ElaboraDati.DisegnaGraficoDR);
+                        gdrT.Start();
                     }
-
-                    List<float[]> coordinate = ElaboraDati.DeadReckoning(ElaboraDati.DeviazioneStandard(ElaboraDati.Modulation(samplesList, 0, 0)), ElaboraDati.EliminaDiscontinuitaYaw(yaw));
-                    FormGraphDR fgdr = new FormGraphDR();
-                    fgdr.InitGraph();
-                    fgdr.Show();
-                    fgdr.DrawGraph(coordinate);
-                    Application.Run();
-                    
 
                     //Scrivo l'evento dell'ultima finestra del moto
                    using (StreamWriter sw = File.AppendText(Server.path))

@@ -92,7 +92,6 @@ namespace Esame
             float mean = 0;
             for (int i = 0; i < module.Count(); i++)
             {
-
                 mean = MobileMean(i, module);            
                 valori.Add(mean);
             }
@@ -263,7 +262,6 @@ namespace Esame
                     //atan R -> (-pigreco/2, +pigreco/2)
                     float yaw = (float)Math.Atan(((2 * q1 * q2) + (2 * q0 * q3)) / ((2 * q0 * q0) + (2 * q1 * q1) - 1));
                     angoliEulero[i][numSensore] = new AngoloEulero(yaw, pitch, roll);
-
                 }
             }
             return angoliEulero;
@@ -312,7 +310,6 @@ namespace Esame
             yawNoDiscontinuita = EliminaDiscontinuitaYaw(yaw);
             pitchNoDiscontinuita = EliminaDiscontinuitaPitch(pitch);
             rollNoDiscontinuita = EliminaDiscontinuitaRoll(roll);
-            //deadReckoning = DeadReckoning(SD, yawNoDiscontinuita);
 
             for (int i = 0; i < yawNoDiscontinuita.Count; i++)
             {
@@ -996,6 +993,27 @@ namespace Esame
 
             coordinateDR.Add(new float[2] { coordinateDR.Last()[0] + ascissaDFinale, coordinateDR.Last()[1] + ordinataDFinale });
             return coordinateDR;
+        }
+
+        public static void DisegnaGraficoDR()
+        {
+            ElaboraDati.segnoAngoloTheta = 0;
+            ElaboraDati.segnoAngoloYaw = 0;
+            ElaboraDati.segnoAngoloPitch = 0;
+            ElaboraDati.segnoAngoloRoll = 0;
+            List<float> yaw = new List<float>();
+
+            // Prendo tutti gli angoli di eulero per il sensore sul bacino
+            foreach (AngoloEulero[] angolo in ElaboraDati.AngoliEulero(Server.samplesList))
+            {
+                yaw.Add(angolo[0].getYaw());
+            }
+            List<float[]> coordinate = DeadReckoning(DeviazioneStandard(ElaboraDati.Modulation(Server.samplesList, 0, 0)), EliminaDiscontinuitaYaw(yaw));
+            FormGraphDR fgdr = new FormGraphDR();
+            fgdr.InitGraph();
+            fgdr.Show();
+            fgdr.DrawGraph(coordinate);
+            Application.Run();
         }
     }
 }
