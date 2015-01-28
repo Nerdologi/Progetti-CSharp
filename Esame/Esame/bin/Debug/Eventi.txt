@@ -1,44 +1,44 @@
 
-"TEMPO ZERO: 27/01/2015 13.40.44 "
+"TEMPO ZERO: 27/01/15 16:40:07 "
 
-"13.40.46 13.40.48 girata verso sinistra di -33,04925 gradi"
+"16:40:10 16:40:11 girata verso destra di 33,04925 gradi"
 
-"13.40.48 13.40.48 girata verso destra di 10,15605 gradi"
+"16:40:12 16:40:12 girata verso sinistra di -10,15607 gradi"
 
-"13.40.49 13.40.49 girata verso sinistra di -7,539085 gradi"
+"16:40:12 16:40:12 girata verso destra di 7,539093 gradi"
 
-"13.40.49 13.40.50 girata verso destra di 6,790842 gradi"
+"16:40:13 16:40:13 girata verso sinistra di -6,790836 gradi"
 
-"13.40.51 13.40.52 girata verso sinistra di -47,58677 gradi"
+"16:40:15 16:40:16 girata verso destra di 47,58678 gradi"
 
-"13.40.53 13.40.53 girata verso destra di 11,95829 gradi"
+"16:40:16 16:40:17 girata verso sinistra di -11,95828 gradi"
 
-"13.40.44 13.40.46 Non in moto"
+"16:40:07 16:40:10 Non in moto"
 
-"13.40.46 13.40.47 In moto"
+"16:40:10 16:40:10 In moto"
 
-"13.40.47 13.40.48 Non in moto"
+"16:40:10 16:40:11 Non in moto"
 
-"13.40.48 13.40.51 In moto"
+"16:40:11 16:40:14 In moto"
 
-"13.40.51 13.40.53 Non in moto"
+"16:40:14 16:40:16 Non in moto"
 
-"13.40.44 13.40.46 Seduto"
+"16:40:07 16:40:10 Seduto"
 
-"13.40.56 13.40.57 girata verso destra di 46,73498 gradi"
+"16:40:20 16:40:20 girata verso sinistra di -46,73498 gradi"
 
-"13.40.57 13.40.58 girata verso sinistra di -12,5819 gradi"
+"16:40:21 16:40:21 girata verso destra di 12,5819 gradi"
 
-"13.40.53 13.40.56 In moto"
+"16:40:16 16:40:20 In moto"
 
-"13.40.56 13.40.57 Non in moto"
+"16:40:20 16:40:21 Non in moto"
 
-"13.40.57 13.40.57 In moto"
+"16:40:21 16:40:21 In moto"
 
-"13.40.58 13.41.00 girata verso destra di 29,23444 gradi"
+"16:40:21 16:40:23 girata verso sinistra di -29,23443 gradi"
 
-"13.40.54 13.40.59 In Piedi"
+"16:40:17 16:40:22 In Piedi"
 
-"13.40.57 13.41.00 Non in moto"
+"16:40:21 16:40:24 Non in moto"
 
-"13.40.59 13.41.00 Seduto"
+"16:40:22 16:40:24 Seduto"

@@ -286,7 +286,7 @@ namespace Esame
                     float pitch = (float)Math.Asin(((2 * q1 * q3) - (2 * q0 * q2)));
                     //atan R -> (-pigreco/2, +pigreco/2)
                     float yaw = (float)Math.Atan(((2 * q1 * q2) + (2 * q0 * q3)) / ((2 * q0 * q0) + (2 * q1 * q1) - 1));
-                    angoliEulero[i][numSensore] = new AngoloEulero(roll, pitch, roll);
+                    angoliEulero[i][numSensore] = new AngoloEulero(yaw, pitch, roll);
 
                 }
             }
@@ -332,11 +332,18 @@ namespace Esame
                 pitch.Add(angolo[0].getPitch());
                 roll.Add(angolo[0].getRoll());
             }
+
             yawNoDiscontinuita = EliminaDiscontinuitaYaw(yaw);
             pitchNoDiscontinuita = EliminaDiscontinuitaPitch(pitch);
             rollNoDiscontinuita = EliminaDiscontinuitaRoll(roll);
             deadReckoning = DeadReckoning(SD, yawNoDiscontinuita);
+
+            for (int i = 0; i < yawNoDiscontinuita.Count; i++)
+            {
+                yawNoDiscontinuita[i] = (float)(yawNoDiscontinuita[i] * 180 / Math.PI);
+            }
             ElaboraDati.datiAggiornati = true;
+
             
             /* Se non è mai stato fatto partire il thread che gestisce lo faccio partire
              * Viene chiamato il metodo DisegnaSulGrafico() che automaticamente
@@ -362,13 +369,13 @@ namespace Esame
 
             fGTheta = new FormGraph();
             fGTheta.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
-            fGTheta.Show();
+            fGTheta.Show();*/
 
-            fgThetaNoDiscontinuita = new FormGraph();
-            fgThetaNoDiscontinuita.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
-            fgThetaNoDiscontinuita .Show();
+            /*fgThetaNoDiscontinuita = new FormGraph();
+            fgThetaNoDiscontinuita.InitGraph("Segmentazione", "tempo", "ArcTan(magnx/magnz)");
+            fgThetaNoDiscontinuita .Show();*/
 
-           /* fgYaw = new FormGraph();
+            /*fgYaw = new FormGraph();
             fgYaw.InitGraph("Segmentazione", "tempo", "Angolo eulero yaw sensore bacino");
             fgYaw.Show();*/
 
@@ -386,17 +393,17 @@ namespace Esame
             
             /*fgPitch = new FormGraph();
             fgPitch.InitGraph("Segmentazione", "tempo", "Angolo eulero pitch sensore bacino");
-            fgPitch.Show();
+            fgPitch.Show();*/
 
-            fgPitchNoDiscontinuita = new FormGraph();
+            /*fgPitchNoDiscontinuita = new FormGraph();
             fgPitchNoDiscontinuita.InitGraph("Segmentazione", "tempo", "Angolo eulero pitch sensore bacino");
-            fgPitchNoDiscontinuita.Show();
+            fgPitchNoDiscontinuita.Show();*/
 
-            fgRoll = new FormGraph();
+            /*fgRoll = new FormGraph();
             fgRoll.InitGraph("Segmentazione", "tempo", "Angolo eulero roll sensore bacino");
-            fgRoll.Show();
+            fgRoll.Show();*/
 
-            fgRollNoDiscontinuita = new FormGraph();
+            /*fgRollNoDiscontinuita = new FormGraph();
             fgRollNoDiscontinuita.InitGraph("Segmentazione", "tempo", "Angolo eulero roll sensore bacino");
             fgRollNoDiscontinuita.Show();*/
         }
@@ -411,16 +418,16 @@ namespace Esame
             }
             /*fGAcc.DrawGraph(modacc, "modacc");
             fGGiro.DrawGraph(modgiro, "modgiro");
-            fGTheta.DrawGraph(theta, "theta");
-            fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
-            fgYaw.DrawGraph(yaw, "yaw");*/
+            fGTheta.DrawGraph(theta, "theta");*/
+            //fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
+            //fgYaw.DrawGraph(yaw, "yaw");
             fgYawNoDiscontinuita.DrawGraph(yawNoDiscontinuita, "yawNoDiscontinuita");
             fgDeadReckoning.DrawGraphDR(deadReckoning, "deadReckoning");
             fgSD.DrawGraph(SD, "deviazioneStandard");
-            /*fgPitch.DrawGraph(pitch, "pitch");
-            fgPitchNoDiscontinuita.DrawGraph(pitchNoDiscontinuita, "pitchNoDiscontinuita");
-            fgRoll.DrawGraph(roll, "roll");
-            fgRollNoDiscontinuita.DrawGraph(rollNoDiscontinuita, "rollNoDiscontinuita");*/
+            //fgPitch.DrawGraph(pitch, "pitch");
+            //fgPitchNoDiscontinuita.DrawGraph(pitchNoDiscontinuita, "pitchNoDiscontinuita");
+            //fgRoll.DrawGraph(roll, "roll");
+            //fgRollNoDiscontinuita.DrawGraph(rollNoDiscontinuita, "rollNoDiscontinuita");
 
             // Informo il server che ho elaborato i dati aggiornati
             ElaboraDati.graphAck = true;
@@ -634,7 +641,7 @@ namespace Esame
                 float x = samples[i][sensoreBacino, 6];
                 float y = samples[i][sensoreBacino, 7];
                 float z = samples[i][sensoreBacino, 8];
-                float angoloTheta = (float)Math.Atan(z / x);
+                float angoloTheta = (float)Math.Atan(x / z);
                 //ATTENZIONE CHE CON HZ DIVERSI DA 50 IL VALORE PER IL CONTROLLO NON è PIU 250
                 /* In sostanza memorizzo il segno (variabile che mi permette di memorizzare quando raggiungo 
                  * i +pigreco/2 e i - pigreco/2 in modo da "reagire" di conseguenza)
@@ -972,7 +979,9 @@ namespace Esame
             float variazioneGlobale = 0;
             float variazioneLocale = 0;
             float velocita = 1;
-            int x = 0;
+            int xTempGirata = 0;
+            int xTempoTotale = 0;
+            float yPrec = 0;
 
             for (int i = 0; i<yawNoDisconituinitaSmooted.Count; i++)
             {
@@ -982,63 +991,69 @@ namespace Esame
             coordinateDR.Add(new float[2] { 0, 0 });
             for (int i = 1; i < yawNoDisconituinitaSmooted.Count; i++)
             {
-                x++;
+                /*
+                xTempGirata++;
+                xTempoTotale++;
                 variazioneLocale = variazioneLocale + (yawNoDisconituinitaSmooted[i] - yawNoDisconituinitaSmooted[i - 1]);
-                if (variazioneLocale > 6)
+                if (Math.Abs(variazioneLocale) > 6)
                 {
                     if (start == true)
                     {
-                        float distanza = velocita * x * sampleTime;
-                        coordinateDR.Add(new float[2] { coordinateDR.Last()[0] + 0, coordinateDR.Last()[1] + distanza });
+                        yPrec = variazioneLocale;
                         start = false;
-                        x = 0;
+                        xTempGirata = 0;
                     }
-                    if (variazioneLocale >= variazioneGlobale)
+                    if (variazioneLocale >= (variazioneGlobale-2))
                         variazioneGlobale = variazioneLocale;
                     else if (variazioneLocale < variazioneGlobale)
                     {
                         start = true;
-                        float distanza = velocita * x * sampleTime;
-                        x = 0;
-                        // Link formule http://www.youmath.it/formulari/formulari-di-geometria-piana/765-bisettrice-mediana-altezza-asse-di-un-triangolo.html
-                        // triangolo isoscele dove i lati uguali sono la distanza, e la base è il lato da trovare
-                        double angoloBeta = 180 - variazioneGlobale - 90;
-                        //double lato = distanza * Math.Cos(angoloBeta) * 2;
-                        //double altezza = Math.Sqrt(Math.Pow((Math.Pow(distanza, 2) + Math.Pow(distanza, 2) + Math.Pow(lato, 2)), 2) - 2*(Math.Pow(distanza, 4) + Math.Pow(distanza, 4) + Math.Pow(lato, 4)))/(2*distanza);
-                        float altezza = (float)(distanza * Math.Cos(angoloBeta));
-                        float ascissa = (float)(coordinateDR.Last()[0] + altezza);
-                        float ordinata = (float)(Math.Sqrt(Math.Pow(distanza, 2) - Math.Pow(altezza, 2)) + coordinateDR.Last()[1]);
-                        coordinateDR.Add(new float[2] { ascissa, ordinata });
+                        if (variazioneGlobale - yPrec > 50)
+                        {
+                            /*float distanzaGirata = velocita * xTempGirata * sampleTime;
+                            // triangolo isoscele dove i lati uguali sono la distanza, e la base è il lato da trovare
+                            double angoloBeta = 180 - variazioneGlobale - 90;
+                            float altezzaG = (float)(distanzaGirata * Math.Cos(angoloBeta));
+                            float ascissaG = (float)(coordinateDR.Last()[0] + altezzaG);
+                            float ordinataG = (float)(Math.Sqrt(Math.Pow(distanzaGirata, 2) - Math.Pow(altezzaG, 2)) + coordinateDR.Last()[1]);
+
+                            float distanzaDritto = velocita * (xTempoTotale - xTempGirata) * sampleTime;
+                            float ascissaD = 0;
+                            if (coordinateDR.Count == 0)
+                                ascissaD = distanzaDritto;
+                            else
+                                ascissaD = (float)(coordinateDR.Last()[0] + distanzaDritto);
+                            float ordinataD = (float)(Math.Sqrt(Math.Pow(distanzaGirata, 2) - Math.Pow(altezzaD, 2)) + coordinateDR.Last()[1]);
+
+                            coordinateDR.Add(new float[2] { ascissaG, ordinataG });
+                            xTempGirata = 0; */
+
+                            /*float distanzaDritto = velocita * (xTempoTotale - xTempGirata) * sampleTime;
+                            float ascissaPrec = 0;
+                            float ordinataPrec = 0;
+                            if (coordinateDR.Count != 0)
+                            {
+                                ascissaPrec = coordinateDR.Last()[0];
+                                ordinataPrec = coordinateDR.Last()[1];
+                            }
+                            
+                            if (variazioneGlobale < 90)
+                            {
+                                coordinateDR.Add(new float[2] {ascissaPrec + distanzaDritto, ordinataPrec });   
+                            }
+                            else if (variazioneGlobale < 180)
+                            {
+                                coordinateDR.Add(new float[2] { ascissaPrec, ordinataPrec - distanzaDritto });
+                            }
+                            else if (variazioneGlobale < 270)
+                            {
+                                coordinateDR.Add(new float[2] { ascissaPrec - distanzaDritto , ordinataPrec });
+                            }
+                        }
                         variazioneLocale = 0;
                         variazioneGlobale = 0;
                     }
-                }
-                else if (variazioneLocale < -6)
-                {
-                    if (start == true)
-                    {
-                        float distanza = velocita * x * sampleTime;
-                        coordinateDR.Add(new float[2] { coordinateDR.Last()[0] + 0, coordinateDR.Last()[1] + distanza });
-                        start = false;
-                        x = 0;
-                    }
-                    if (variazioneLocale <= variazioneGlobale)
-                        variazioneGlobale = variazioneLocale;
-                    else if (variazioneLocale > variazioneGlobale)
-                    {
-                        start = true;
-                        float distanza = velocita * x * sampleTime;
-                        x = 0;
-                        // triangolo isoscele dove i lati uguali sono la distanza, e la base è il lato da trovare
-                        double angoloBeta = 180 - variazioneGlobale - 90;
-                        float altezza = (float)(distanza * Math.Cos(angoloBeta));
-                        float ascissa = (float)(coordinateDR.Last()[0] + altezza);
-                        float ordinata = (float)(Math.Sqrt(Math.Pow(distanza, 2) - Math.Pow(altezza, 2)) + coordinateDR.Last()[1]);
-                        coordinateDR.Add(new float[2] { ascissa, ordinata });
-                        variazioneLocale = 0;
-                        variazioneGlobale = 0;
-                    }
-                }
+                }*/
             }
             return coordinateDR;
         }
