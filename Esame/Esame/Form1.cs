@@ -33,6 +33,7 @@ namespace Esame
         List<float> smoothgir;
         List<float> dev;
         private List<AngoloEulero[]> AngoliEulero;
+        public static string[] graphs = new string[4];
 
         public Form1()
         {
@@ -66,21 +67,71 @@ namespace Esame
 
         private void startServer_Click(object sender, EventArgs e)
         {
-            server.StartListening();
-            
-            infoSample.Enabled = true;
-            showSample.Enabled = true;
-            numSample.Enabled = true;
-           
-            numSensor.Enabled = true;
-            numSensor.Maximum = 4;
-            eulerAngles.Enabled = true;
-            modulation.Enabled = true;
-            smoothing.Enabled = true;
-            modaccRI.Enabled = true;
-            sd.Enabled = true;
-            graficoAngoloTheta.Enabled = true;
-            Yvalue.Enabled = true;
+            if (checkedListBox1.CheckedIndices.Count == 4)
+            {
+                for (int i = 0; i < 4; i++)
+                    graphs[i] = GetGraphKey(checkedListBox1.CheckedIndices[i]);
+                server.StartListening();
+
+                infoSample.Enabled = true;
+                showSample.Enabled = true;
+                numSample.Enabled = true;
+
+                numSensor.Enabled = true;
+                numSensor.Maximum = 4;
+                eulerAngles.Enabled = true;
+                modulation.Enabled = true;
+                smoothing.Enabled = true;
+                modaccRI.Enabled = true;
+                sd.Enabled = true;
+                graficoAngoloTheta.Enabled = true;
+                Yvalue.Enabled = true;
+            }
+            else
+                MessageBox.Show("Seleziona 4 grafici che vuoi visualizzare!");
+        }
+
+        public string GetGraphKey(int index)
+        {
+            string key = "";
+
+            switch (index)
+            {
+                case 0:
+                    key = "modacc";
+                    break;
+                case 1:
+                    key = "modgiro";
+                    break;
+                case 2:
+                    key = "theta";
+                    break;
+                case 3:
+                    key = "thetaNoDiscontinuita";
+                    break;
+                case 4:
+                    key = "deviazioneStandard";
+                    break;
+                case 5:
+                    key = "yaw";
+                    break;
+                case 6:
+                    key = "yawNoDiscontinuita";
+                    break;
+                case 7:
+                    key = "pitch";
+                    break;
+                case 8:
+                    key = "pitchNoDiscontinuita";
+                    break;
+                case 9:
+                    key = "roll";
+                    break;
+                case 10:
+                    key = "rollNoDiscontinuita";
+                    break;
+            }
+            return key;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -139,17 +190,6 @@ namespace Esame
                 {
                     infoSample.AppendText(elem + " - ");
                 }
-                /*
-                // Visualizzo grafico dell'accelerometro
-                FormGraph fG1 = new FormGraph();
-                fG1.Show();
-                fG1.CreateGraph(modacc, "Segmentazione", "tempo", "MODACC");
-
-                // Visualizzo grafico del giroscopio
-                FormGraph fG2 = new FormGraph();
-                fG2.Show();
-                fG2.CreateGraph(modgiro, "Segmentazione", "tempo", "MODGIRO");
-                 */
             }
             if (smoothing.Checked == true)
             {
@@ -206,19 +246,9 @@ namespace Esame
                 infoSample.AppendText(smussati[i] + "\r\n");
                 
             }
-            /*
-            if (graficoAngoloTheta.Checked == true) 
-            {
-                FormGraph fG3 = new FormGraph();
-                fG3.Show();
-                fG3.CreateGraph(ElaboraDati.FunzioneOrientamento(Server.samplesList), "", "tempo", "Angolo Theta");
-            }
-             */
         
-      }
+        }
         
-       // public List<AngoloEulero[]> AngoliEulero { get; set; }
-
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             if (this.checkBox3.Checked == true)
@@ -230,10 +260,7 @@ namespace Esame
             if (this.checkBox5.Checked == true)
                 checkBox2.Checked = true;
         }
-
-       
     }
-   
 }
 
     

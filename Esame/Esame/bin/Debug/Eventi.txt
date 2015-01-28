@@ -1,44 +1,22 @@
 
-"TEMPO ZERO: 27/01/15 16:40:07 "
+"TEMPO ZERO: 28/01/15 03:21:46 "
 
-"16:40:10 16:40:11 girata verso destra di 33,04925 gradi"
+"03:21:49 03:21:50 girata verso destra di 33,04925 gradi"
 
-"16:40:12 16:40:12 girata verso sinistra di -10,15607 gradi"
+"03:21:51 03:21:51 girata verso sinistra di -10,15607 gradi"
 
-"16:40:12 16:40:12 girata verso destra di 7,539093 gradi"
+"03:21:51 03:21:52 girata verso destra di 7,539093 gradi"
 
-"16:40:13 16:40:13 girata verso sinistra di -6,790836 gradi"
+"03:21:52 03:21:52 girata verso sinistra di -6,790836 gradi"
 
-"16:40:15 16:40:16 girata verso destra di 47,58678 gradi"
+"03:21:46 03:21:49 Non in moto"
 
-"16:40:16 16:40:17 girata verso sinistra di -11,95828 gradi"
+"03:21:49 03:21:50 In moto"
 
-"16:40:07 16:40:10 Non in moto"
+"03:21:50 03:21:50 Non in moto"
 
-"16:40:10 16:40:10 In moto"
+"03:21:46 03:21:49 Seduto"
 
-"16:40:10 16:40:11 Non in moto"
+"03:21:50 03:21:53 In moto"
 
-"16:40:11 16:40:14 In moto"
-
-"16:40:14 16:40:16 Non in moto"
-
-"16:40:07 16:40:10 Seduto"
-
-"16:40:20 16:40:20 girata verso sinistra di -46,73498 gradi"
-
-"16:40:21 16:40:21 girata verso destra di 12,5819 gradi"
-
-"16:40:16 16:40:20 In moto"
-
-"16:40:20 16:40:21 Non in moto"
-
-"16:40:21 16:40:21 In moto"
-
-"16:40:21 16:40:23 girata verso sinistra di -29,23443 gradi"
-
-"16:40:17 16:40:22 In Piedi"
-
-"16:40:21 16:40:24 Non in moto"
-
-"16:40:22 16:40:24 Seduto"
+"03:21:49 03:21:53  In Piedi"

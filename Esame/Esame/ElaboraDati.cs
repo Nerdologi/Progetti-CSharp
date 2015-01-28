@@ -12,34 +12,23 @@ namespace Esame
     {
         public static bool GraphThreadStarted = false;
         public static Thread GraphThread = null;
-        static FormGraph fGAcc;
-        static FormGraph fGGiro;
-        static FormGraph fGTheta;
-        static FormGraph fgThetaNoDiscontinuita;
-        static FormGraph fgYaw;
-        static FormGraph fgYawNoDiscontinuita;
-        static FormGraph fgPitch;
-        static FormGraph fgPitchNoDiscontinuita;
-        static FormGraph fgRoll;
-        static FormGraph fgRollNoDiscontinuita;
-        static FormGraph fgDeadReckoning;
-        static FormGraph fgSD;
+        static FormGraph fg;
         public static bool datiAggiornati = false;
         public static bool datiFiniti = false;
         public static bool graphAck = false;
-        static List<float> modacc;
-        static List<float> modgiro;
-        static List<float> theta;
-        static List<float> thetaNoDiscontinuita;
-        static List<float> SD;
-        static List<float> yaw;
-        static List<float> yawNoDiscontinuita;
-        static List<float> pitch;
-        static List<float> pitchNoDiscontinuita;
-        static List<float> roll;
-        static List<float> rollNoDiscontinuita;
-        static List<float> samplesBacinoY;
-        static List<float[]> deadReckoning;
+        public static List<float> modacc;
+        public static List<float> modgiro;
+        public static List<float> theta;
+        public static List<float> thetaNoDiscontinuita;
+        public static List<float> SD;
+        public static List<float> yaw;
+        public static List<float> yawNoDiscontinuita;
+        public static List<float> pitch;
+        public static List<float> pitchNoDiscontinuita;
+        public static List<float> roll;
+        public static List<float> rollNoDiscontinuita;
+        public static List<float> samplesBacinoY;
+        public static List<float[]> deadReckoning;
         public static DateTime timeZero;
         public static int windowNumber = 0;
         public static DateTime timeStartLastEventMoto;
@@ -263,20 +252,7 @@ namespace Esame
                 // Itero i sensori del campione che sto considerando
                 for (int numSensore = 0; numSensore < 5; numSensore++)
                 {
-                   /*VERSIONE VECCHIA
-                    * float q0 = campioni[i][numSensore, 9];
-                    float q1 = campioni[i][numSensore, 10];
-                    float q2 = campioni[i][numSensore, 11];
-                    float q3 = campioni[i][numSensore, 12];
-                    //atan R -> (-pigreco/2, +pigreco/2)
-                    float yaw = (float)Math.Atan(((2 * q2 * q3) + (2 * q0 * q1)) / ((2 * q0 * q0) + (2 * q3 * q3) - 1));
-                    //arcsin [-1, 1] -> [-pigreco/2, +pigreco/2]
-                    float pitch = (float)Math.Asin(((2 * q1 * q3) - (2 * q0 * q2)));
-                    //atan R -> (-pigreco/2, +pigreco/2)
-                    float roll = (float)Math.Atan(((2 * q1 * q2) + (2 * q0 * q3)) / ((2 * q0 * q0) + (2 * q1 * q1) - 1));
-                    angoliEulero[i][numSensore] = new AngoloEulero(yaw, pitch, roll);*/
-
-                    float q0 = campioni[i][numSensore, 9];
+                   float q0 = campioni[i][numSensore, 9];
                     float q1 = campioni[i][numSensore, 10];
                     float q2 = campioni[i][numSensore, 11];
                     float q3 = campioni[i][numSensore, 12];
@@ -314,18 +290,18 @@ namespace Esame
             CalcoloGirata(thetaNoDiscontinuita);
             SD = DeviazioneStandard(modacc);
             CalcolaMoto(SD);
-            samplesBacinoY = extractionSamplesBacinoY(window);
+            samplesBacinoY = ExtractionSamplesBacinoY(window);
             samplesBacinoY = Smoothing(samplesBacinoY);
             CalcoloInclinazione(samplesBacinoY);
-            //serve solo per scopi di debug in modo da vedere sul grafico l' angolo theta smussato e verficare ad occhio se le girate sono rilevate correttamente
+            // Serve solo per scopi di debug in modo da vedere sul grafico l' angolo theta smussato e verficare ad occhio se le girate sono rilevate correttamente
             thetaNoDiscontinuita = Smoothing(thetaNoDiscontinuita);
 
-            // dead reckoning debug 
+            // Dead reckoning debug 
             List<AngoloEulero[]> tempAngoliEulero = AngoliEulero(window);
             yaw = new List<float>();
             pitch = new List<float>();
             roll = new List<float>();
-            //prendo tutti gli angoli di eulero per il sensore sul bacino
+            // Prendo tutti gli angoli di eulero per il sensore sul bacino
             foreach (AngoloEulero[] angolo in tempAngoliEulero)
             {
                 yaw.Add(angolo[0].getYaw());
@@ -359,53 +335,9 @@ namespace Esame
          */
         public static void InizializzaGrafico()
         {
-            /*fGAcc = new FormGraph();
-            fGAcc.InitGraph("Segmentazione", "tempo", "MODACC");
-            fGAcc.Show();
-
-            fGGiro = new FormGraph();
-            fGGiro.InitGraph("Segmentazione", "tempo", "MODGIRO");
-            fGGiro.Show();
-
-            fGTheta = new FormGraph();
-            fGTheta.InitGraph("Segmentazione", "tempo", "ArcTan(magnz/magnx)");
-            fGTheta.Show();*/
-
-            /*fgThetaNoDiscontinuita = new FormGraph();
-            fgThetaNoDiscontinuita.InitGraph("Segmentazione", "tempo", "ArcTan(magnx/magnz)");
-            fgThetaNoDiscontinuita .Show();*/
-
-            /*fgYaw = new FormGraph();
-            fgYaw.InitGraph("Segmentazione", "tempo", "Angolo eulero yaw sensore bacino");
-            fgYaw.Show();*/
-
-            fgYawNoDiscontinuita = new FormGraph();
-            fgYawNoDiscontinuita.InitGraph("Segmentazione", "tempo", "Angolo eulero yaw sensore bacino");
-            fgYawNoDiscontinuita.Show();
-
-            fgDeadReckoning = new FormGraph();
-            fgDeadReckoning.InitGraph("Dead Reckoning", "", "");
-            fgDeadReckoning.Show();
-
-            fgSD = new FormGraph();
-            fgSD.InitGraph("Deviazione Standard", "tempo", "Deviazione standard");
-            fgSD.Show();
-            
-            /*fgPitch = new FormGraph();
-            fgPitch.InitGraph("Segmentazione", "tempo", "Angolo eulero pitch sensore bacino");
-            fgPitch.Show();*/
-
-            /*fgPitchNoDiscontinuita = new FormGraph();
-            fgPitchNoDiscontinuita.InitGraph("Segmentazione", "tempo", "Angolo eulero pitch sensore bacino");
-            fgPitchNoDiscontinuita.Show();*/
-
-            /*fgRoll = new FormGraph();
-            fgRoll.InitGraph("Segmentazione", "tempo", "Angolo eulero roll sensore bacino");
-            fgRoll.Show();*/
-
-            /*fgRollNoDiscontinuita = new FormGraph();
-            fgRollNoDiscontinuita.InitGraph("Segmentazione", "tempo", "Angolo eulero roll sensore bacino");
-            fgRollNoDiscontinuita.Show();*/
+            fg = new FormGraph();
+            fg.InitGraph();
+            fg.Show();
         }
 
         // Questa fz. viene chiamata quando si lancia il thread che gestisce il grafico
@@ -416,19 +348,9 @@ namespace Esame
                 InizializzaGrafico();
                 GraphThreadStarted = true;
             }
-            /*fGAcc.DrawGraph(modacc, "modacc");
-            fGGiro.DrawGraph(modgiro, "modgiro");
-            fGTheta.DrawGraph(theta, "theta");*/
-            //fgThetaNoDiscontinuita.DrawGraph(thetaNoDiscontinuita, "thetaNoDiscontinuita");
-            //fgYaw.DrawGraph(yaw, "yaw");
-            fgYawNoDiscontinuita.DrawGraph(yawNoDiscontinuita, "yawNoDiscontinuita");
-            fgDeadReckoning.DrawGraphDR(deadReckoning, "deadReckoning");
-            fgSD.DrawGraph(SD, "deviazioneStandard");
-            //fgPitch.DrawGraph(pitch, "pitch");
-            //fgPitchNoDiscontinuita.DrawGraph(pitchNoDiscontinuita, "pitchNoDiscontinuita");
-            //fgRoll.DrawGraph(roll, "roll");
-            //fgRollNoDiscontinuita.DrawGraph(rollNoDiscontinuita, "rollNoDiscontinuita");
 
+            fg.DrawGraph(Form1.graphs);
+            
             // Informo il server che ho elaborato i dati aggiornati
             ElaboraDati.graphAck = true;
 
@@ -760,7 +682,7 @@ namespace Esame
             return returnList;
         }
 
-        public static List<float> extractionSamplesBacinoY(List<float[,]> samples)
+        public static List<float> ExtractionSamplesBacinoY(List<float[,]> samples)
         {
             List<float> valuesY=new List<float>();
              for (int i = 0; i < samples.Count; i++)                
