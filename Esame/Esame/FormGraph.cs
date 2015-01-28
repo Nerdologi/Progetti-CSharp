@@ -220,46 +220,5 @@ namespace Esame
             }
             return titles;
         }
-
-        /*public void DrawGraphDR(List<float[]> data, string category)
-        {
-            this.Text = "Grafico Dead Reckoning";
-
-            // Creo la lista di punti
-            PointPairList list1 = new PointPairList();
-            int inizio = numFinestra * 250;
-            numFinestra++;
-            numColore++;
-            for (int i = 0; i < data.Count; ++i)
-            {
-                list1.Add(data[i][0], data[i][1]);
-                inizio++;
-            }
-
-            myPane1.XAxis.Scale.Max = (inizio + 2) * 20;
-
-            if (numColore >= lc.Count)
-                numColore = 0;
-            // Creo la curva da visualizzare
-            myCurve = myPane1.AddCurve("",
-                  list1, lc[numColore], SymbolType.None);
-
-            // Risetto gli assi
-            zgc1.AxisChange();
-            // Forza la ri-scrittura dei dati sul grafico
-            zgc1.Invalidate();
-            // Ricarico grafico
-            zedGraphControl1.Refresh();
-        }*/
-
-        private void zedGraphControl1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void FormGraph_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }

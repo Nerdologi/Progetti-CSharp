@@ -98,3 +98,4 @@ C:\Users\Lorenzo\Documents\progetti_VisualStudio2\Esame\Esame\obj\x86\Debug\Esam
 C:\Users\Lorenzo\Documents\progetti_VisualStudio2\Esame\Esame\obj\x86\Debug\Esame.Properties.Resources.resources
 C:\Users\Lorenzo\Documents\progetti_VisualStudio2\Esame\Esame\obj\x86\Debug\Esame.csproj.GenerateResource.Cache
 \\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\bin\Debug\ZedGraph.dll
+\\psf\Home\Documents\Visual Studio 2010\Projects\Progetti-CSharp\Esame\Esame\obj\x86\Debug\Esame.FormGraphDR.resources

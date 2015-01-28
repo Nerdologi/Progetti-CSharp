@@ -71,8 +71,7 @@ namespace Esame
             {
                 for (int i = 0; i < 4; i++)
                     graphs[i] = GetGraphKey(checkedListBox1.CheckedIndices[i]);
-                server.StartListening();
-
+                
                 infoSample.Enabled = true;
                 showSample.Enabled = true;
                 numSample.Enabled = true;
@@ -86,6 +85,13 @@ namespace Esame
                 sd.Enabled = true;
                 graficoAngoloTheta.Enabled = true;
                 Yvalue.Enabled = true;
+
+                ElaboraDati.segnoAngoloTheta = 0;
+                ElaboraDati.segnoAngoloYaw = 0;
+                ElaboraDati.segnoAngoloPitch = 0;
+                ElaboraDati.segnoAngoloRoll = 0;
+
+                server.StartListening();
             }
             else
                 MessageBox.Show("Seleziona 4 grafici che vuoi visualizzare!");

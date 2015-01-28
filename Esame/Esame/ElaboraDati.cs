@@ -312,7 +312,7 @@ namespace Esame
             yawNoDiscontinuita = EliminaDiscontinuitaYaw(yaw);
             pitchNoDiscontinuita = EliminaDiscontinuitaPitch(pitch);
             rollNoDiscontinuita = EliminaDiscontinuitaRoll(roll);
-            deadReckoning = DeadReckoning(SD, yawNoDiscontinuita);
+            //deadReckoning = DeadReckoning(SD, yawNoDiscontinuita);
 
             for (int i = 0; i < yawNoDiscontinuita.Count; i++)
             {
@@ -728,7 +728,7 @@ namespace Esame
             int windowOverlapTime = 5000;
             int sampleTime = 20;
             DateTime precedentWindowTimeEnd = new DateTime(1993, 11, 13);
-            int jPiedi = 0, jSeduto = 0, jSdraiato = 0;
+            int jPiedi = 0;
             for (int i = 0; i < samples.Count(); i++)
             {
                 if (i == 0)
@@ -895,25 +895,27 @@ namespace Esame
             List<float> yawNoDisconituinitaSmooted = Smoothing(yaw);
             List<float[]> coordinateDR = new List<float[]>();
             // Queste variabili cambieranno in base alla frequanza di campionamento
-            int windowOverlapTime = 5000;
             float sampleTime = (float)0.020;
             bool start = true;
             float variazioneGlobale = 0;
             float variazioneLocale = 0;
-            float velocita = 1;
             int xTempGirata = 0;
             int xTempoTotale = 0;
             float yPrec = 0;
+            float angoloInizio;
+            float maxSD = SD.Max();
 
             for (int i = 0; i<yawNoDisconituinitaSmooted.Count; i++)
             {
                 yawNoDisconituinitaSmooted[i] = yawNoDisconituinitaSmooted[i] * (float)(180 / Math.PI);
             }
 
+            angoloInizio = yawNoDisconituinitaSmooted[0];
+
+            
             coordinateDR.Add(new float[2] { 0, 0 });
             for (int i = 1; i < yawNoDisconituinitaSmooted.Count; i++)
             {
-                /*
                 xTempGirata++;
                 xTempoTotale++;
                 variazioneLocale = variazioneLocale + (yawNoDisconituinitaSmooted[i] - yawNoDisconituinitaSmooted[i - 1]);
@@ -925,7 +927,7 @@ namespace Esame
                         start = false;
                         xTempGirata = 0;
                     }
-                    if (variazioneLocale >= (variazioneGlobale-2))
+                    if (variazioneLocale >= variazioneGlobale)
                         variazioneGlobale = variazioneLocale;
                     else if (variazioneLocale < variazioneGlobale)
                     {
@@ -937,46 +939,62 @@ namespace Esame
                             double angoloBeta = 180 - variazioneGlobale - 90;
                             float altezzaG = (float)(distanzaGirata * Math.Cos(angoloBeta));
                             float ascissaG = (float)(coordinateDR.Last()[0] + altezzaG);
-                            float ordinataG = (float)(Math.Sqrt(Math.Pow(distanzaGirata, 2) - Math.Pow(altezzaG, 2)) + coordinateDR.Last()[1]);
+                            float ordinataG = (float)(Math.Sqrt(Math.Pow(distanzaGirata, 2) - Math.Pow(altezzaG, 2)) + coordinateDR.Last()[1]);*/
 
-                            float distanzaDritto = velocita * (xTempoTotale - xTempGirata) * sampleTime;
-                            float ascissaD = 0;
-                            if (coordinateDR.Count == 0)
-                                ascissaD = distanzaDritto;
-                            else
-                                ascissaD = (float)(coordinateDR.Last()[0] + distanzaDritto);
-                            float ordinataD = (float)(Math.Sqrt(Math.Pow(distanzaGirata, 2) - Math.Pow(altezzaD, 2)) + coordinateDR.Last()[1]);
+                            float sum = 0;
+                            int count = 0;
+                            for (int m = (i-xTempoTotale); m<(i-xTempGirata); m++)
+                            {
+                                sum += SD[m];
+                                count++;
+                            }
+                            float velocitaD = sum / count / maxSD;
 
-                            coordinateDR.Add(new float[2] { ascissaG, ordinataG });
-                            xTempGirata = 0; */
+                            sum = 0;
+                            count = 0;
+                            for (int m = (i - xTempGirata); m < i; m++)
+                            {
+                                sum += SD[m];
+                                count++;
+                            }
+                            float velocitaG = sum / count / maxSD;
 
-                            /*float distanzaDritto = velocita * (xTempoTotale - xTempGirata) * sampleTime;
-                            float ascissaPrec = 0;
-                            float ordinataPrec = 0;
-                            if (coordinateDR.Count != 0)
-                            {
-                                ascissaPrec = coordinateDR.Last()[0];
-                                ordinataPrec = coordinateDR.Last()[1];
-                            }
-                            
-                            if (variazioneGlobale < 90)
-                            {
-                                coordinateDR.Add(new float[2] {ascissaPrec + distanzaDritto, ordinataPrec });   
-                            }
-                            else if (variazioneGlobale < 180)
-                            {
-                                coordinateDR.Add(new float[2] { ascissaPrec, ordinataPrec - distanzaDritto });
-                            }
-                            else if (variazioneGlobale < 270)
-                            {
-                                coordinateDR.Add(new float[2] { ascissaPrec - distanzaDritto , ordinataPrec });
-                            }
+                            float distanzaDritto = velocitaD * (xTempoTotale - xTempGirata) * sampleTime;
+                            float ascissaD = (float)(distanzaDritto * Math.Cos(angoloInizio * Math.PI / 180));
+                            float ordinataD = (float)(distanzaDritto * Math.Sin(angoloInizio * Math.PI / 180));
+
+                            coordinateDR.Add(new float[2] { coordinateDR.Last()[0] + ascissaD, coordinateDR.Last()[1] + ordinataD });
+
+                            float distanzaGirata = velocitaG * xTempGirata * sampleTime;
+                            float ascissaG = (float)(distanzaGirata * Math.Cos((variazioneGlobale + angoloInizio) * Math.PI / 180));
+                            float ordinataG = (float)(distanzaGirata * Math.Sin((variazioneGlobale + angoloInizio) * Math.PI / 180));
+
+                            coordinateDR.Add(new float[2] { coordinateDR.Last()[0] + ascissaG, coordinateDR.Last()[1] + ordinataG });
+
+                            xTempGirata = 0;
+                            xTempoTotale = 0;
+                            angoloInizio += variazioneGlobale;
                         }
                         variazioneLocale = 0;
                         variazioneGlobale = 0;
                     }
-                }*/
+                }
             }
+
+            float somma = 0;
+            int c = 0;
+            for (int m = (SD.Count - xTempoTotale); m < SD.Count; m++)
+            {
+                somma += SD[m];
+                c++;
+            }
+            float velocita = somma / c / maxSD;
+
+            float distanzaDrittoFinale = velocita * (xTempoTotale) * sampleTime;
+            float ascissaDFinale = (float)(distanzaDrittoFinale * Math.Cos(angoloInizio * Math.PI / 180));
+            float ordinataDFinale = (float)(distanzaDrittoFinale * Math.Sin(angoloInizio * Math.PI / 180));
+
+            coordinateDR.Add(new float[2] { coordinateDR.Last()[0] + ascissaDFinale, coordinateDR.Last()[1] + ordinataDFinale });
             return coordinateDR;
         }
     }

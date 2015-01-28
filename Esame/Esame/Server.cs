@@ -272,11 +272,32 @@ namespace Esame
                     // Informo i threads che gestiscono i grafici che non avranno più nessun dato da elaborare
                     ElaboraDati.datiFiniti = true;
 
-                    // Attendo avvenuta ricezione di "dati finiti" da entrambi i Threads
+                    // Attendo avvenuta ricezione di "dati finiti" 
                     ElaboraDati.graphAck = false;
                     while (!ElaboraDati.graphAck)
                     { }
                     // ... ora posso proseguire ...
+
+                    ElaboraDati.segnoAngoloTheta = 0;
+                    ElaboraDati.segnoAngoloYaw = 0;
+                    ElaboraDati.segnoAngoloPitch = 0;
+                    ElaboraDati.segnoAngoloRoll = 0;
+                    List<float> yaw = new List<float>();
+                    
+                    // Prendo tutti gli angoli di eulero per il sensore sul bacino
+                    foreach (AngoloEulero[] angolo in ElaboraDati.AngoliEulero(samplesList))
+                    {
+                        yaw.Add(angolo[0].getYaw());
+                    }
+
+                    List<float[]> coordinate = ElaboraDati.DeadReckoning(ElaboraDati.DeviazioneStandard(ElaboraDati.Modulation(samplesList, 0, 0)), ElaboraDati.EliminaDiscontinuitaYaw(yaw));
+                    FormGraphDR fgdr = new FormGraphDR();
+                    fgdr.InitGraph();
+                    fgdr.Show();
+                    fgdr.DrawGraph(coordinate);
+                    Application.Run();
+                    
+
                     //Scrivo l'evento dell'ultima finestra del moto
                    using (StreamWriter sw = File.AppendText(Server.path))
                     {

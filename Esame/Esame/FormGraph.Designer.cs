@@ -48,7 +48,6 @@
             this.zedGraphControl1.ScrollMinY2 = 0D;
             this.zedGraphControl1.Size = new System.Drawing.Size(550, 303);
             this.zedGraphControl1.TabIndex = 0;
-            this.zedGraphControl1.Load += new System.EventHandler(this.zedGraphControl1_Load);
             // 
             // zedGraphControl2
             // 
@@ -103,7 +102,6 @@
             this.Controls.Add(this.zedGraphControl1);
             this.Name = "FormGraph";
             this.Text = "Grafico";
-            this.Load += new System.EventHandler(this.FormGraph_Load);
             this.ResumeLayout(false);
 
         }
