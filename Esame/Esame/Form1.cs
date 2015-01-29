@@ -140,6 +140,9 @@ namespace Esame
                 case 10:
                     key = "rollNoDiscontinuita";
                     break;
+                case 11:
+                    key = "DR";
+                    break;
             }
             return key;
         }
