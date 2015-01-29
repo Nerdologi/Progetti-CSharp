@@ -225,7 +225,8 @@
             "Angolo Pitch",
             "Angolo Pitch senza discontinuità",
             "Angolo Roll",
-            "Angolo Roll senza discontinuità"});
+            "Angolo Roll senza discontinuità",
+            "DR"});
             this.checkedListBox1.Location = new System.Drawing.Point(311, 60);
             this.checkedListBox1.Name = "checkedListBox1";
             this.checkedListBox1.Size = new System.Drawing.Size(233, 184);

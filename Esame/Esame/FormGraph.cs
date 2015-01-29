@@ -76,17 +76,26 @@ namespace Esame
                 // Creo la lista di punti
                 PointPairList list1 = new PointPairList();
                 int inizio = numFinestra * 250;
-                for (int i = 0; i < data[k].Count; ++i)
+                if (categories[k] != "DR")
+                    for (int i = 0; i < data[k].Count; ++i)
+                    {
+                        list1.Add((float)inizio * 20, data[k][i]);
+                        inizio++;
+                    }
+                else
                 {
-                    list1.Add((float)inizio * 20, data[k][i]);
-                    inizio++;
+                    list1 = ElaboraDati.drPoints;
                 }
 
                 if (numColore >= lc.Count)
                     numColore = 0;
                 // Creo la curva da visualizzare
-                myCurve = myPanes[k].AddCurve("",
+                if (categories[k] != "DR")
+                    myCurve = myPanes[k].AddCurve("",
                       list1, lc[numColore], SymbolType.None);
+                else
+                    myCurve = myPanes[k].AddCurve("",
+                      list1, lc[numColore], SymbolType.Circle);
 
                 // Risetto gli assi
                 zgcs[k].AxisChange();
@@ -140,6 +149,9 @@ namespace Esame
                         break;
                     case "rollNoDiscontinuita":
                         data[i] = ElaboraDati.rollNoDiscontinuita;
+                        break;
+                    case "DR":
+                        data[i] = null;
                         break;
                 }
             }
@@ -197,6 +209,10 @@ namespace Esame
                     case "rollNoDiscontinuita":
                         titles[0] = "tempo";
                         titles[1] = "Angolo Eulero Roll sensore bacino";
+                        break;
+                    case "DR":
+                        titles[0] = "metri";
+                        titles[1] = "metri";
                         break;
                 }
             }

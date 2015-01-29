@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using System.IO;
+using ZedGraph;
 
 namespace Esame
 {
@@ -28,7 +29,7 @@ namespace Esame
         public static List<float> roll;
         public static List<float> rollNoDiscontinuita;
         public static List<float> samplesBacinoY;
-        public static List<float[]> deadReckoning;
+        public static PointPairList drPoints;
         public static DateTime timeZero;
         public static int windowNumber = 0;
         public static DateTime timeStartLastEventMoto;
@@ -41,6 +42,8 @@ namespace Esame
         public static DateTime timeEndLastEventInclinazione;
         public static string stateLastEventInclinazione;
         public static bool eventAllWindow = false;
+        public static double x_prec = 0;
+        public static double y_prec = 0;
         
         //potrebbero essere variablili condivise da più thread?
         public static float segnoAngoloTheta = 0;
@@ -219,7 +222,8 @@ namespace Esame
         }
 
         /*
-         * La funzione prende un vettore di valori in ingresso e 
+         * La 
+         * prende un vettore di valori in ingresso e 
          * restituisce il vettore monodimensionale RI[]. 
          * L' elemento RI[i] rappresenta il Rapporto Incrementale
          * della funzione nel punto i.
@@ -311,10 +315,12 @@ namespace Esame
             pitchNoDiscontinuita = EliminaDiscontinuitaPitch(pitch);
             rollNoDiscontinuita = EliminaDiscontinuitaRoll(roll);
 
-            for (int i = 0; i < yawNoDiscontinuita.Count; i++)
+            drPoints = DR(SD, yawNoDiscontinuita);
+
+            /*for (int i = 0; i < yawNoDiscontinuita.Count; i++)
             {
                 yawNoDiscontinuita[i] = (float)(yawNoDiscontinuita[i] * 180 / Math.PI);
-            }
+            }*/
             ElaboraDati.datiAggiornati = true;
 
             
@@ -1014,6 +1020,28 @@ namespace Esame
             fgdr.Show();
             fgdr.DrawGraph(coordinate);
             Application.Run();
+        }
+
+        public static PointPairList DR(List<float> SD, List<float> yaw)
+        {
+            double x = 0, y = 0;
+            PointPairList punti = new PointPairList();
+
+            for (int i = 1; i < SD.Count; i++) 
+            {
+                if (SD[i] > 1.5)
+                {
+                    if (yaw[i] > Math.PI)
+                    { }
+                    x = SD[i] * Math.Cos(yaw[i]);
+                    y =SD[i] * Math.Sin(yaw[i]);
+                    punti.Add(new PointPair(x_prec, y_prec));
+                    x_prec += x;
+                    y_prec += y;
+                }
+            }
+
+            return punti;
         }
     }
 }
